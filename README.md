@@ -1,22 +1,26 @@
 # GymBuddy
 
-Gym Buddy is a workout assistant that keeps track of all of your workout data in one place.
+Gym Buddy is a all-in workout assistant that helps you kees track of all of your workout and customize you existing wokrout  all  in one place.
 
 ## Iteration Documents
 
 ## Vision Statement
 
-Gym Buddy is a workout assistant app designed to help users stay organized and motivated on their fitness journey. It helps to simplify tracking workouts and setting goals by keeping all workout data in one place. Gym Buddy helps user stay organized with customized workout routines, set personal targets, and monitor their progress, Gym Buddy serves as a valuable companion for anyone looking to enhance their fitness journey. 
+Gym Buddy is a workout assistant app that helps people stay organized and motivated as they work toward their fitness goals. It brings all workout information into one easy-to-use platform, making it simple to track routines, set goals, and see progress. By offering tools to create personalized workout plans and achievable targets, Gym Buddy is a helpful partner for anyone looking to improve their fitness.
 
-The primary audience for Gym Buddy consists of athletes, gym-goers, and university students who are looking for a streamlined approach to tracking and managing their workouts. Often, these users find themselves jumping between multiple apps or relying on outdated methods like notebooks and spreadsheets to monitor their fitness progress. Gym Buddy replaces the hassle of juggling different tools by providing everything they need in one app, making the process simpler and more efficient. Whether it’s a seasoned athlete aiming for personal records or a university student just starting their fitness journey, Gym Buddy is designed to accommodate users at all experience levels. 
+This app is designed for athletes, gym enthusiasts, and students who want an easier way to manage their workouts. Many people today use several apps or rely on notebooks and spreadsheets to keep track of their progress. Gym Buddy removes this inconvenience by putting everything they need in one place. Whether someone is an experienced athlete aiming for new records or just starting their fitness journey, Gym Buddy is made for all levels of experience.
 
-The app’s core features revolve around accessibility and customization. Users can build workouts using an assortment of predefined exercises or create their own custom exercises to reflect their unique training routines. Gym Buddy’s "workout mode" provides users a streamlined way to track their workouts. This includes a step-by-step walkthrough of each exercise with the required sets, repitions, and weight, as well as an easy way to track their performance and exertion levels. The app is flexible enough to allow the user to track all sessions, including any slight deviations from their routine. By guiding users, Gym Buddy helps them breeze through their workouts, and make steady progress towards their fitness goals. 
+Gym Buddy’s main features focus on making fitness simple and flexible. Users can build their workout plans using ready-made exercises or create their own to match their specific needs. The app’s workout mode guides users through each session, showing steps for every exercise, including how many sets, repetitions, and rest times they need. It also makes it easy to track how they are doing and adjust plans when needed.
 
-Gym Buddy stands out because it helps users reflect on their fitness journey while planning for future progress. By giving users detailed insights into their performance and achievements, the app encourages them to set clear, achievable goals and track their improvement over time. Its straightforward and intuitive design makes it easy to use, even for beginners, while still providing the advanced features that experienced athletes expect. This combination of simplicity and functionality makes Gym Buddy a valuable tool for anyone serious about improving their fitness. 
+To keep workouts flexible, Gym Buddy offers alternative exercises that target the same muscles but have different levels of difficulty. This allows users to make quick changes if something feels too hard or too easy. The app also gives clear feedback on progress, helping users plan their next steps and stay motivated to reach their goals. A search tool helps users find exercises for specific muscle groups, making it easier to focus on areas they want to improve.
 
-The success of Gym Buddy will be evaluated through specific and measurable criteria. First, the app aims to achieve an average rating of 4.5 stars or higher, with at least 50 reviews within the first six months of release. In addition, user surveys will assess satisfaction with the app’s ability to track progress, set goals, and improve workouts. Engagement metrics, such as the number of active users and the frequency of workouts logged, will also be monitored. If most users report that Gym Buddy has helped them stay organized, motivated, and on track to achieve their fitness goals, the project will be considered a success. 
+What makes Gym Buddy stand out is its ability to keep users motivated. It includes a fun competition feature where users can compete with others, climb ranks, and earn rewards based on their progress. This creates a sense of community and gives people more reasons to stay active. To ensure users stay healthy, the app sets limits on workout hours, promoting balance and safety. By combining progress tracking with friendly competition, Gym Buddy keeps fitness fun and engaging.
 
-Gym Buddy is designed to make fitness tracking simple and effective for everyone. By focusing on customization, ease of use, and meaningful insights, this app is built to support users at every stage of their fitness journey and help them reach their full potential. 
+The app’s success will be measured in simple, clear ways. Within six months of launch, Gym Buddy aims to have at least 200 regular users and an average rating of 4.5 stars or higher. It also hopes to gather 50 positive reviews in that time. The team will track how often people use the app and how satisfied they are through surveys and feedback. If users feel Gym Buddy has helped them stay organized, motivated, and on track with their fitness goals, the app will be considered successful.
+
+Gym Buddy makes fitness tracking easy and effective for everyone. By focusing on clear guidance, flexibility, and motivation, the app supports users at every step of their fitness journey. Whether someone is reaching for personal milestones or trying to stay consistent, Gym Buddy is designed to help them succeed.
+
+
 
 ## Iteration Milestones
 
@@ -27,4 +31,3 @@ Gym Buddy is designed to make fitness tracking simple and effective for everyone
 ## Developer Tasks
 
 ## Architecture
-
