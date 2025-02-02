@@ -1,4 +1,4 @@
-package com.example.gymbuddy;
+package comp3350.gymbuddy;
 
 import android.content.Context;
 

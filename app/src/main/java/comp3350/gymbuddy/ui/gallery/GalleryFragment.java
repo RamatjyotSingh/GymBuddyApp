@@ -1,4 +1,4 @@
-package com.example.gymbuddy.ui.gallery;
+package comp3350.gymbuddy.ui.gallery;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

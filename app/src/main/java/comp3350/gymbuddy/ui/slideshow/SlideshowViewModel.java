@@ -1,4 +1,4 @@
-package com.example.gymbuddy.ui.slideshow;
+package comp3350.gymbuddy.ui.slideshow;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
