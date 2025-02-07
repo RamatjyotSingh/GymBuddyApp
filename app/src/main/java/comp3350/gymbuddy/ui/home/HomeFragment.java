@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.gymbuddy.databinding.FragmentHomeBinding;
+import comp3350.gymbuddy.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
 

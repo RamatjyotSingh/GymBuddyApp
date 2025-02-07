@@ -13,7 +13,7 @@
         android:theme="@style/Theme.GymBuddy"
         tools:targetApi="31">
         <activity
-            android:name="comp3350.example.gymbuddy.comp3350.gymbuddy.presentation.MainActivity"
+            android:name="comp3350.gymbuddy.presentation.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.GymBuddy.NoActionBar">
