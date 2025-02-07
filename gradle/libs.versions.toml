@@ -15,8 +15,6 @@ navigationFragment = "2.8.6"
 navigationUi = "2.8.6"
 
 [libraries]
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jacksonDatabind" }
 json = { module = "org.json:json", version.ref = "json" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
