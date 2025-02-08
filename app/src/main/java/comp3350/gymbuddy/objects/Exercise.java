@@ -1,27 +1,27 @@
 package comp3350.gymbuddy.objects;
 
-import comp3350.gymbuddy.objects.Difficulty;
+import java.util.List;
 
 public class Exercise {
-    private String name;
-    private Difficulty diff;
-    private String[] primaryMuscles;
-    private String[] secondaryMuscles;
-    private String instructions;
+    private final String name;
+    private final List<Tag> tags;
+    private final String instructions;
 
-    public Exercise(){
-        this.name = null;
-        this.diff = null;
-        this.primaryMuscles = null;
-        this.secondaryMuscles = null;
-        this.instructions = null;
+    public Exercise(String name, List<Tag> tags, String instructions) {
+        this.name = name;
+        this.tags = tags;
+        this.instructions = instructions;
     }
 
-    public Exercise(String name, Difficulty diff, String[] primaryMuscles, String[] secondaryMuscles, String instructions){
-        this.name = name;
-        this.diff = diff;
-        this.primaryMuscles = primaryMuscles;
-        this.secondaryMuscles = secondaryMuscles;
-        this.instructions = instructions;
+    public String getName() {
+        return name;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public String getInstructions() {
+        return instructions;
     }
 }
