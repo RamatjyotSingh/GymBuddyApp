@@ -6,13 +6,15 @@ import org.json.JSONObject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import comp3350.gymbuddy.logic.ExerciseService;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
+import comp3350.gymbuddy.persistence.IWorkoutItemPersistence;
 
-public class WorkoutItemStub {
+public class WorkoutItemStub implements IWorkoutItemPersistence {
     private List<WorkoutItem> workoutItems;
 
     public WorkoutItemStub(){
@@ -48,5 +50,9 @@ public class WorkoutItemStub {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public List<WorkoutItem> getAllWorkoutItems(){
+        return Collections.unmodifiableList(this.workoutItems);
     }
 }
