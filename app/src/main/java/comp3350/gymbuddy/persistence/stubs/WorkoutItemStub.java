@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import comp3350.gymbuddy.logic.ExerciseService;
@@ -43,9 +42,10 @@ public class WorkoutItemStub implements IWorkoutItemPersistence {
 
                 Double weight = (item.getDouble("Weight") >= 0) ? (item.getDouble("Weight")) : null;
                 Integer repetitions = (item.getInt("Repetitions") >= 0) ? (item.getInt("Repetitions")) : null;
+                Integer sets = (item.getInt("Sets") >= 0) ? (item.getInt("Sets")) : null;
                 Double time = (item.getDouble("Time") >= 0) ? (item.getDouble("Time")) : null;
 
-                workoutItems.add(new WorkoutItem(toAdd, weight, repetitions, time));
+                workoutItems.add(new WorkoutItem(toAdd, weight, repetitions, sets, time));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -53,6 +53,6 @@ public class WorkoutItemStub implements IWorkoutItemPersistence {
     }
 
     public List<WorkoutItem> getAllWorkoutItems(){
-        return Collections.unmodifiableList(this.workoutItems);
+        return new ArrayList<WorkoutItem>(this.workoutItems);
     }
 }
