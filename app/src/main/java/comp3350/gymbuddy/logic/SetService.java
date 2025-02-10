@@ -24,7 +24,7 @@ public class SetService {
         }
     }
 
-    public List<Set> getAllSetItems() {
+    public List<Set> getAllSets() {
         return this.setPersistence.getAllSets();
     }
 }
