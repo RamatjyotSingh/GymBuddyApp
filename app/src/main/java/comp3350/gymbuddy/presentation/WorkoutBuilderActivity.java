@@ -1,5 +1,9 @@
 package comp3350.gymbuddy.presentation;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.widget.ImageView;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.Button;
@@ -21,12 +25,16 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private WorkoutAdapter adapter;
     private List<WorkoutItem> workoutItems;
+    private EditText edtWorkoutName;
+    private ImageView imgWorkoutIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_builder);
 
+        edtWorkoutName = findViewById(R.id.edtWorkoutName);
+        imgWorkoutIcon = findViewById(R.id.imgWorkoutIcon);
         recyclerView = findViewById(R.id.recyclerWorkoutItems);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -35,6 +43,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         findViewById(R.id.fabAddItem).setOnClickListener(v -> showAddWorkoutItemDialog());
+        imgWorkoutIcon.setOnClickListener(v -> openIconSelector());
     }
 
     private void showAddWorkoutItemDialog() {
@@ -70,5 +79,9 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void openIconSelector() {
+        // TODO: Open a dialog or new screen to select an icon
     }
 }
