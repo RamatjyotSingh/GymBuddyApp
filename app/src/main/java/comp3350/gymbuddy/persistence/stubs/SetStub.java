@@ -13,7 +13,7 @@ public class SetStub implements ISetPersistence {
     private List<Set> sets;
 
     public SetStub(){
-        this.sets = new ArrayList<Set>();
+        this.sets = new ArrayList<>();
 
         WorkoutItemService itemService = new WorkoutItemService();
         List<WorkoutItem> items = itemService.getAllWorkoutItems();
@@ -26,7 +26,7 @@ public class SetStub implements ISetPersistence {
 
             for(int j=0; j<numSets; j++){
                 // random # of reps, varies by at most 1 from original # of reps
-                int randReps = randNum.nextInt(3) + wi.getRepetitions() - 1;
+                int randReps = randNum.nextInt(3) + wi.getReps() - 1;
 
                 sets.add(new Set(wi.getWeight(), randReps, wi.getTime(), wi));
             }
@@ -34,6 +34,6 @@ public class SetStub implements ISetPersistence {
     }
 
     public List<Set> getAllSets(){
-        return new ArrayList<Set>(sets);
+        return new ArrayList<>(sets);
     }
 }

@@ -17,7 +17,7 @@ public class WorkoutItemStub implements IWorkoutItemPersistence {
     private List<WorkoutItem> workoutItems;
 
     public WorkoutItemStub(){
-        this.workoutItems = new ArrayList<WorkoutItem>();
+        this.workoutItems = new ArrayList<>();
 
         ExerciseService exService = new ExerciseService();
         List<Exercise> exercises = exService.getAllExercises();
@@ -40,12 +40,12 @@ public class WorkoutItemStub implements IWorkoutItemPersistence {
                     }
                 }
 
-                Double weight = (item.getDouble("Weight") >= 0) ? (item.getDouble("Weight")) : null;
-                Integer repetitions = (item.getInt("Repetitions") >= 0) ? (item.getInt("Repetitions")) : null;
-                Integer sets = (item.getInt("Sets") >= 0) ? (item.getInt("Sets")) : null;
-                Double time = (item.getDouble("Time") >= 0) ? (item.getDouble("Time")) : null;
+                double weight = (item.getDouble("Weight") >= 0) ? (item.getDouble("Weight")) : 0.0;
+                int repetitions = (item.getInt("Repetitions") >= 0) ? (item.getInt("Repetitions")) : 0;
+                int sets = (item.getInt("Sets") >= 0) ? (item.getInt("Sets")) : 1;
+                double time = (item.getDouble("Time") >= 0) ? (item.getDouble("Time")) : 0.0;
 
-                workoutItems.add(new WorkoutItem(toAdd, weight, repetitions, sets, time));
+                workoutItems.add(new WorkoutItem(toAdd, sets, repetitions, weight, time));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -53,6 +53,6 @@ public class WorkoutItemStub implements IWorkoutItemPersistence {
     }
 
     public List<WorkoutItem> getAllWorkoutItems(){
-        return new ArrayList<WorkoutItem>(this.workoutItems);
+        return new ArrayList<>(this.workoutItems);
     }
 }
