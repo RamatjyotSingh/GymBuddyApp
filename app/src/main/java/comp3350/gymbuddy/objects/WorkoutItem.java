@@ -2,14 +2,16 @@ package comp3350.gymbuddy.objects;
 
 public class WorkoutItem {
     private Exercise exercise;
-    private Double weight;
-    private Integer repetitions;
-    private Double time;
+    private int sets;
+    private int reps;
+    private double weight; // 0 indicates no weight.
+    private double time; // 0 indicates no time.
 
-    public WorkoutItem(Exercise exercise, Double weight, Integer repetitions, Double time) {
+    public WorkoutItem(Exercise exercise, int sets, int reps, double weight, double time) {
         this.exercise = exercise;
+        this.sets = sets;
+        this.reps = reps;
         this.weight = weight;
-        this.repetitions = repetitions;
         this.time = time;
     }
 
@@ -17,15 +19,15 @@ public class WorkoutItem {
         return exercise;
     }
 
-    public Double getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public Integer getRepetitions() {
-        return repetitions;
+    public int getReps() {
+        return reps;
     }
 
-    public Double getTime() {
+    public double getTime() {
         return time;
     }
 
@@ -33,15 +35,23 @@ public class WorkoutItem {
         this.exercise = exercise;
     }
 
-    public void setWeight(Double weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 
-    public void setRepetitions(Integer repetitions) {
-        this.repetitions = repetitions;
+    public void setReps(int reps) {
+        this.reps = reps;
     }
 
-    public void setTime(Double time) {
+    public void setTime(double time) {
         this.time = time;
+    }
+
+    public int getSets() {
+        return sets;
+    }
+
+    public void setSets(int sets) {
+        this.sets = sets;
     }
 }
