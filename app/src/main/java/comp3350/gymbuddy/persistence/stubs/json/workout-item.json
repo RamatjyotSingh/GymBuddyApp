@@ -1,0 +1,23 @@
+[
+  {
+    "Exercise Name": "Push-Up",
+    "Weight": -1,
+    "Repetitions": 10,
+    "Sets": 3,
+    "Time": -1
+  },
+  {
+    "Exercise Name": "Squat",
+    "Weight": 125,
+    "Repetitions": 8,
+    "Sets": 4,
+    "Time": -1
+  },
+  {
+    "Exercise Name": "Calf Raise",
+    "Weight": 225,
+    "Repetitions": 5,
+    "Sets": 2,
+    "Time": -1
+  }
+]

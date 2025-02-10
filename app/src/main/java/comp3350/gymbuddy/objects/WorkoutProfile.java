@@ -5,12 +5,12 @@ import java.util.List;
 public class WorkoutProfile {
     private String name;
     private String iconPath;
-    private List<Exercise> exercises;
+    private List<WorkoutItem> workoutItems;
 
-    public WorkoutProfile(String name, String icon_path, List<Exercise> exercises) {
+    public WorkoutProfile(String name, String icon_path, List<WorkoutItem> workout_items) {
         this.name = name;
         this.iconPath = icon_path;
-        this.exercises = exercises;
+        this.workoutItems = workout_items;
     }
 
     public String getName() {
@@ -21,8 +21,8 @@ public class WorkoutProfile {
         return iconPath;
     }
 
-    public List<Exercise> getExercises() {
-        return exercises;
+    public List<WorkoutItem> getExercises() {
+        return workoutItems;
     }
 
     public void setName(String name) {
@@ -33,7 +33,7 @@ public class WorkoutProfile {
         this.iconPath = iconPath;
     }
 
-    public void setExercises(List<Exercise> exercises) {
-        this.exercises = exercises;
+    public void setExercises(List<WorkoutItem> workoutItems) {
+        this.workoutItems = workoutItems;
     }
 }
