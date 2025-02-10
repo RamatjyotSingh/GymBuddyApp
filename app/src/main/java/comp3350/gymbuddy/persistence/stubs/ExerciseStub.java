@@ -4,15 +4,14 @@ import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.persistence.IExercisePersistence;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Array;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
-import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class ExerciseStub implements IExercisePersistence {
     private List<Exercise> exercises;
@@ -21,7 +20,13 @@ public class ExerciseStub implements IExercisePersistence {
         this.exercises = new ArrayList<>();
 
         try {
-            String content = new String(Files.readAllBytes(Paths.get("exercise.json")));
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("exercisedata.json");
+            if (inputStream == null) {
+                throw new RuntimeException("File not found: exercisedata.json");
+            }
+
+            // Read the JSON file content
+            String content = new Scanner(inputStream, StandardCharsets.UTF_8).useDelimiter("\\A").next();
             JSONArray exercisesJSON = new JSONArray(content);
 
             for (int i = 0; i < exercisesJSON.length(); i++) {
@@ -56,6 +61,6 @@ public class ExerciseStub implements IExercisePersistence {
 
     @Override
     public List<Exercise> getAllExercises() {
-        return new ArrayList<Exercise>(this.exercises);
+        return new ArrayList<>(exercises);
     }
 }

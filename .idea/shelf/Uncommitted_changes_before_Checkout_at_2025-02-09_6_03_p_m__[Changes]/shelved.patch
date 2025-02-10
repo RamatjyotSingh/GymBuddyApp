@@ -1,0 +1,31 @@
+Index: app/src/main/java/comp3350/gymbuddy/persistence/stubs/ExerciseStub.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package comp3350.gymbuddy.persistence.stubs;\r\n\r\nimport comp3350.gymbuddy.objects.Exercise;\r\nimport comp3350.gymbuddy.objects.Tag;\r\nimport comp3350.gymbuddy.persistence.IExercisePersistence;\r\n\r\nimport java.nio.file.Files;\r\nimport java.nio.file.Paths;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\nimport org.json.JSONObject;\r\nimport org.json.JSONArray;\r\n\r\npublic class ExerciseStub implements IExercisePersistence {\r\n    private List<Exercise> exercises;\r\n\r\n    public ExerciseStub() {\r\n        this.exercises = new ArrayList<>();\r\n\r\n        try {\r\n            String content = new String(Files.readAllBytes(Paths.get(\"exercises_array.json\")));\r\n            JSONArray exercisesJSON = new JSONArray(content);\r\n\r\n            for (int i = 0; i < exercisesJSON.length(); i++) {\r\n                JSONObject ex = exercisesJSON.getJSONObject(i);\r\n\r\n                String name = ex.getString(\"Exercise Name\");\r\n                String instructions = ex.getString(\"Instructions\");\r\n\r\n                List<Tag> tags = new ArrayList<>();\r\n\r\n                // Convert Difficulty Level into a tag\r\n                tags.add(new Tag(ex.getString(\"Difficulty Level\"), \"blue\"));\r\n\r\n                // Convert Primary Muscles Worked into tags\r\n                for (String muscle : ex.getString(\"Primary Muscles Worked\").split(\",\")) {\r\n                    tags.add(new Tag(muscle.trim(), \"red\"));\r\n                }\r\n\r\n                // Convert Secondary Muscles Worked into tags\r\n                for (String muscle : ex.getString(\"Secondary Muscles Worked\").split(\",\")) {\r\n                    tags.add(new Tag(muscle.trim(), \"green\"));\r\n                }\r\n\r\n                // Create and add the Exercise\r\n                exercises.add(new Exercise(name, tags, instructions));\r\n            }\r\n\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public List<Exercise> getAllExercises() {\r\n        return new ArrayList<>(exercises);\r\n    }\r\n}\r\n
+===================================================================
+diff --git a/app/src/main/java/comp3350/gymbuddy/persistence/stubs/ExerciseStub.java b/app/src/main/java/comp3350/gymbuddy/persistence/stubs/ExerciseStub.java
+--- a/app/src/main/java/comp3350/gymbuddy/persistence/stubs/ExerciseStub.java	(revision d47516b6ea5e9dd82b5aed0a53c5815f78cf9e6e)
++++ b/app/src/main/java/comp3350/gymbuddy/persistence/stubs/ExerciseStub.java	(date 1739145066790)
+@@ -19,7 +19,7 @@
+         this.exercises = new ArrayList<>();
+ 
+         try {
+-            String content = new String(Files.readAllBytes(Paths.get("exercises_array.json")));
++            String content = new String(Files.readAllBytes(Paths.get("exercise.json")));
+             JSONArray exercisesJSON = new JSONArray(content);
+ 
+             for (int i = 0; i < exercisesJSON.length(); i++) {
+Index: app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package comp3350.gymbuddy.business;\r\n\r\nimport comp3350.gymbuddy.objects.Exercise;\r\nimport comp3350.gymbuddy.persistence.IExercisePersistence;\r\nimport comp3350.gymbuddy.persistence.stubs.ExerciseStub;\r\nimport java.util.List;\r\n\r\npublic class ExerciseService {\r\n    private IExercisePersistence exercisePersistence;\r\n\r\n    // Default constructor uses ExerciseStub\r\n    public ExerciseService() {\r\n        this.exercisePersistence = new ExerciseStub(); // Default stub implementation\r\n    }\r\n\r\n    public ExerciseService(IExercisePersistence exercisePersistence) {\r\n        this.exercisePersistence = exercisePersistence;\r\n    }\r\n\r\n    public List<Exercise> getAllExercises() {\r\n        return exercisePersistence.getAllExercises();\r\n    }\r\n}\r\n
+===================================================================
+diff --git a/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java b/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java
+--- a/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java	(revision d47516b6ea5e9dd82b5aed0a53c5815f78cf9e6e)
++++ b/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java	(date 1739144610233)
+@@ -1,4 +1,4 @@
+-package comp3350.gymbuddy.business;
++package comp3350.gymbuddy.logic;
+ 
+ import comp3350.gymbuddy.objects.Exercise;
+ import comp3350.gymbuddy.persistence.IExercisePersistence;
