@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.business;
+package comp3350.gymbuddy.logic;
 
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.persistence.IExercisePersistence;
