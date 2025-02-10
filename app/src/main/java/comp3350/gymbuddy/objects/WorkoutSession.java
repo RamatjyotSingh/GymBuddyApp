@@ -5,13 +5,13 @@ import java.util.List;
 public class WorkoutSession {
     private final int timestamp;
     private final float duration;
-    private final List<WorkoutItem> items;
+    private final List<Set> sets;
     private final WorkoutProfile profile;
 
-    public WorkoutSession(int timestamp, float duration, List<WorkoutItem> items, WorkoutProfile profile) {
+    public WorkoutSession(int timestamp, float duration, List<Set> sets, WorkoutProfile profile) {
         this.timestamp = timestamp;
         this.duration = duration;
-        this.items = items;
+        this.sets = sets;
         this.profile = profile;
     }
 
@@ -23,15 +23,15 @@ public class WorkoutSession {
         return duration;
     }
 
-    public List<WorkoutItem> getItems() {
-        return items;
+    public List<Set> getItems() {
+        return sets;
     }
 
     public WorkoutProfile getProfile() {
         return profile;
     }
 
-    public void addItem(WorkoutItem item) {
-        items.add(item);
+    public void addItem(Set sets) {
+        this.sets.add(sets);
     }
 }
