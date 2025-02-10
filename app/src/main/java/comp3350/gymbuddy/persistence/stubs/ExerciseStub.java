@@ -6,7 +6,9 @@ import comp3350.gymbuddy.persistence.IExercisePersistence;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -19,7 +21,7 @@ public class ExerciseStub implements IExercisePersistence {
         this.exercises = new ArrayList<>();
 
         try {
-            String content = new String(Files.readAllBytes(Paths.get("exercises_array.json")));
+            String content = new String(Files.readAllBytes(Paths.get("exercise.json")));
             JSONArray exercisesJSON = new JSONArray(content);
 
             for (int i = 0; i < exercisesJSON.length(); i++) {
@@ -54,6 +56,6 @@ public class ExerciseStub implements IExercisePersistence {
 
     @Override
     public List<Exercise> getAllExercises() {
-        return new ArrayList<>(exercises);
+        return new ArrayList<Exercise>(this.exercises);
     }
 }
