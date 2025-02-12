@@ -37,18 +37,12 @@ public class ExerciseListActivity extends AppCompatActivity {
         recyclerView.setAdapter(exerciseAdapter);
     }
 
-    private List<Tag> getTags() {
-        // Example tag creation. Replace with actual tags if needed
-        List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag("Upper Body", "#FFBB86FC"));
-        tags.add(new Tag("Beginner", "#FF6200EE"));
-        return tags;
-    }
-
     private void openExerciseDetail(Exercise exercise) {
         Intent intent = new Intent(this, ExerciseDetailActivity.class);
         intent.putExtra("title", exercise.getName());
-        intent.putExtra("imagePath", "images/" + exercise.getImagePath());
+        if(exercise.getImagePath() != null){
+            intent.putExtra("imagePath", "images/" + exercise.getImagePath());
+        }
         intent.putExtra("instructions", exercise.getInstructions());  // Pass instructions
 
         // Convert tags to String List

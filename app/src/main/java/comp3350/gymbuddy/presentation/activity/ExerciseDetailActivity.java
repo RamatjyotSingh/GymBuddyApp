@@ -61,7 +61,9 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         }
 
         // Load Image
-        loadImageFromAssets(imagePath, exerciseImage);
+        if(imagePath != null){
+            loadImageFromAssets(imagePath, exerciseImage);
+        }
 
         // Set Instructions
         if (instructions != null) {
