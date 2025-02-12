@@ -5,15 +5,15 @@ import comp3350.gymbuddy.persistence.IExercisePersistence;
 import comp3350.gymbuddy.persistence.stubs.ExerciseStub;
 import java.util.List;
 
-public class ExerciseService {
+public class AccessExercises {
     private IExercisePersistence exercisePersistence;
 
     // Default constructor uses ExerciseStub
-    public ExerciseService() {
+    public AccessExercises() {
         this.exercisePersistence = new ExerciseStub(); // Default stub implementation
     }
 
-    public ExerciseService(IExercisePersistence exercisePersistence) {
+    public AccessExercises(IExercisePersistence exercisePersistence) {
         this.exercisePersistence = exercisePersistence;
     }
 

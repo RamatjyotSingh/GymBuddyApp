@@ -15,9 +15,11 @@ import org.json.JSONObject;
 
 public class ExerciseStub implements IExercisePersistence {
     private List<Exercise> exercises;
+    private TagStub tagStub; // Use the TagStub to fetch predefined tags
 
     public ExerciseStub() {
         this.exercises = new ArrayList<>();
+        this.tagStub = new TagStub();
 
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("exercisedata.json");
@@ -25,7 +27,6 @@ public class ExerciseStub implements IExercisePersistence {
                 throw new RuntimeException("File not found: exercisedata.json");
             }
 
-            // Read the JSON file content
             String content = new Scanner(inputStream, StandardCharsets.UTF_8).useDelimiter("\\A").next();
             JSONArray exercisesJSON = new JSONArray(content);
 
@@ -37,23 +38,22 @@ public class ExerciseStub implements IExercisePersistence {
 
                 List<Tag> tags = new ArrayList<>();
 
-                // Convert Difficulty Level into a tag
-                tags.add(new Tag(ex.getString("Difficulty Level"), "blue"));
+                // Get Difficulty Level as a tag
+                tags.add(tagStub.getTagByName(ex.getString("Difficulty Level")));
 
-                // Convert Primary Muscles Worked into tags
+                // Get Primary Muscles Worked
                 for (String muscle : ex.getString("Primary Muscles Worked").split(",")) {
-                    tags.add(new Tag(muscle.trim(), "red"));
+                    tags.add(tagStub.getTagByName(muscle.trim()));
                 }
 
-                // Convert Secondary Muscles Worked into tags
+                // Get Secondary Muscles Worked
                 for (String muscle : ex.getString("Secondary Muscles Worked").split(",")) {
-                    tags.add(new Tag(muscle.trim(), "green"));
+                    tags.add(tagStub.getTagByName(muscle.trim()));
                 }
 
                 // Create and add the Exercise
                 exercises.add(new Exercise(name, tags, instructions));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
