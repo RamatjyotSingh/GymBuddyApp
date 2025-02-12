@@ -112,7 +112,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
             // Get exercise details from the Intent
             String exerciseName = data.getStringExtra("exerciseName");
-            String exerciseInstructions = data.getStringExtra("exerciseInstructions");
+            ArrayList<String> exerciseInstructions = data.getStringArrayListExtra("exerciseInstructions");
             String exerciseImage = data.getStringExtra("exerciseImage");
             ArrayList<String> tagNames = data.getStringArrayListExtra("tagNames");
             ArrayList<String> tagColors = data.getStringArrayListExtra("tagColors");

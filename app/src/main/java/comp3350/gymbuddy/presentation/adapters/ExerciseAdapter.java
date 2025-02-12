@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.presentation.adapters;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -54,7 +60,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
         // Load image from assets
         String imagePath  = "images/" + exercise.getImagePath();
-        loadImageFromAssets(imagePath, holder.exerciseImage);
+        loadImage(imagePath, holder.exerciseImage);
 
         // Handle View More button click
         holder.viewMoreButton.setOnClickListener(v -> clickListener.onExerciseClick(exercise));
@@ -62,6 +68,33 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
             // Show BottomSheetDialogFragment with the selected exercise
             AddExerciseBottomSheetFragment bottomSheetFragment = new AddExerciseBottomSheetFragment(exercise);
             bottomSheetFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheetFragment.getTag());
+        });
+    }
+    private void loadImage(String imagePath, ShapeableImageView imageView) {
+        if (imagePath.startsWith("http")) {  // URL Handling
+            loadImageFromURL(imagePath, imageView);
+        } else {  // Asset Handling
+            loadImageFromAssets(imagePath, imageView);
+        }
+    }
+
+    private void loadImageFromURL(String imageUrl, ShapeableImageView imageView) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executorService.execute(() -> {
+            try {
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream inputStream = connection.getInputStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                handler.post(() -> imageView.setImageBitmap(bitmap)); // Set image on UI thread
+                inputStream.close();
+            } catch (Exception e) {
+                Log.e("loadImageFromURL", "Error: " + e.getMessage());
+            }
         });
     }
 

@@ -25,7 +25,7 @@
             />
     </LinearLayout>
     <!-- Exercise Image -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/exerciseImage"
         android:layout_width="match_parent"
         android:layout_height="270dp"

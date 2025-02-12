@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,10 +19,16 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.imageview.ShapeableImageView;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import comp3350.gymbuddy.R;
 
@@ -37,7 +45,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exercise_detail);
 
         TextView exerciseTitle = findViewById(R.id.exerciseTitle);
-        ImageView exerciseImage = findViewById(R.id.exerciseImage);
+        ShapeableImageView exerciseImage = findViewById(R.id.exerciseImage);
         ChipGroup tagContainer = findViewById(R.id.tagContainer);
         LinearLayout exerciseInstructions = findViewById(R.id.exerciseInstructions);
         ImageButton backButton = findViewById(R.id.backButton);
@@ -47,7 +55,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
         String imagePath = intent.getStringExtra("imagePath");
-        String instructions = intent.getStringExtra("instructions");
+        ArrayList<String> instructions = intent.getStringArrayListExtra("instructions");
         ArrayList<String> tagNames = intent.getStringArrayListExtra("tagNames");
         ArrayList<String> tagColors = intent.getStringArrayListExtra("tagColors");
 
@@ -59,7 +67,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
         // Load Image
         if(imagePath != null){
-            loadImageFromAssets(imagePath, exerciseImage);
+            loadImage(imagePath, exerciseImage);
         }
 
         // Set Instructions
@@ -123,44 +131,76 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
     }
 
-    private void setInstructions(String instructions, LinearLayout exerciseInstructions) {
-        String[] lines = instructions.trim().split("\r\n");
-        for (String line : lines) {
-            LinearLayout instructionLine = new LinearLayout(this);
+
+    private void setInstructions(ArrayList<String> instructions, LinearLayout exerciseInstructions) {
+        exerciseInstructions.removeAllViews(); // Clear previous instructions
+
+        for (int i = 0; i < instructions.size(); i++) {
+            String instructionText = instructions.get(i).trim();
+            if (instructionText.isEmpty()) continue; // Skip empty instructions
+
+            LinearLayout instructionLine = new LinearLayout(exerciseInstructions.getContext());
             instructionLine.setOrientation(LinearLayout.HORIZONTAL);
+            instructionLine.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
 
-            // Extract instruction number and text
-            String instructionNo = line.substring(0, line.indexOf("."));
-            TextView num = new TextView(instructionLine.getContext());
-            num.setText(instructionNo);
-            num.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_background));
+            // Create Number Circle
+            TextView num = new TextView(exerciseInstructions.getContext());
+            num.setText(String.valueOf(i + 1)); // Dynamically assign instruction number
+            num.setBackground(ContextCompat.getDrawable(exerciseInstructions.getContext(), R.drawable.circle_background));
+            num.setTextColor(Color.parseColor("#1E40AF"));
+            num.setPadding(16, 8, 16, 8);
 
-
-            String instructionText = line.substring(line.indexOf(".") + 1).trim();
-            TextView instruction = new TextView(instructionLine.getContext());
+            // Create Instruction Text
+            TextView instruction = new TextView(exerciseInstructions.getContext());
             instruction.setText(instructionText);
+            instruction.setTextSize(18);
 
-            // Set margin for 'instruction' TextView
             LinearLayout.LayoutParams instructionParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            instructionParams.setMargins(16, 8, 16, 8);  // (left, top, right, bottom)
+            instructionParams.setMargins(16, 8, 16, 8);
             instruction.setLayoutParams(instructionParams);
 
-            // Set text size for instruction
-            instruction.setTextSize(18);
-
-            // Add both views to the instruction line
+            // Add views to the layout
             instructionLine.addView(num);
             instructionLine.addView(instruction);
-
-            // Add instruction line to the exercise instructions layout
             exerciseInstructions.addView(instructionLine);
         }
     }
 
-    private void loadImageFromAssets(String imagePath, ImageView imageView) {
+    private void loadImage(String imagePath, ShapeableImageView imageView) {
+        if (imagePath.startsWith("http")) {  // URL Handling
+            loadImageFromURL(imagePath, imageView);
+        } else {  // Asset Handling
+            loadImageFromAssets(imagePath, imageView);
+        }
+    }
+
+    private void loadImageFromURL(String imageUrl, ShapeableImageView imageView) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executorService.execute(() -> {
+            try {
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream inputStream = connection.getInputStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                handler.post(() -> imageView.setImageBitmap(bitmap)); // Set image on UI thread
+                inputStream.close();
+            } catch (Exception e) {
+                Log.e("loadImageFromURL", "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    private void loadImageFromAssets(String imagePath, ShapeableImageView imageView) {
         try {
             InputStream inputStream = getAssets().open(imagePath);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);

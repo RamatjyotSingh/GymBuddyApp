@@ -19,7 +19,6 @@ import comp3350.gymbuddy.presentation.fragments.AddExerciseBottomSheetFragment;
 import comp3350.gymbuddy.logic.AccessExercises;
 
 public class ExerciseListActivity extends AppCompatActivity {
-    private List<Exercise> exerciseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +30,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         // Initialize the exercise list and adapter
         AccessExercises accessExercises = new AccessExercises();
-        exerciseList = accessExercises.getAllExercises();
+        List<Exercise> exerciseList = accessExercises.getAllExercises();
 
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, exerciseList, this::openExerciseDetail);
         recyclerView.setAdapter(exerciseAdapter);
@@ -43,7 +42,7 @@ public class ExerciseListActivity extends AppCompatActivity {
         if(exercise.getImagePath() != null){
             intent.putExtra("imagePath", "images/" + exercise.getImagePath());
         }
-        intent.putExtra("instructions", exercise.getInstructions());  // Pass instructions
+        intent.putStringArrayListExtra("instructions", exercise.getInstructions());  // Pass instructions
 
         // Convert tags to String List
         ArrayList<String> tagsList = new ArrayList<>();
@@ -70,7 +69,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK && data != null) {
             String exerciseName = data.getStringExtra("exerciseName");
-            String exerciseInstructions = data.getStringExtra("exerciseInstructions");
+            ArrayList<String> exerciseInstructions = data.getStringArrayListExtra("exerciseInstructions");
             String exerciseImage = data.getStringExtra("exerciseImage");
 
             ArrayList<String> tagsList = data.getStringArrayListExtra("tagNames");

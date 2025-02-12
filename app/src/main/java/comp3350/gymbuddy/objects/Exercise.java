@@ -1,21 +1,22 @@
 package comp3350.gymbuddy.objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Exercise {
     private final String name;
     private final List<Tag> tags;
-    private final String instructions;
+    private final ArrayList<String> instructions;
     private final String imagePath;
 
-    public Exercise(String name, List<Tag> tags, String instructions, String imagePath) {
+    public Exercise(String name, List<Tag> tags, ArrayList<String> instructions, String imagePath) {
         this.name = name;
         this.tags = tags;
         this.instructions = instructions;
         this.imagePath = imagePath;
     }
 
-    public Exercise(String name, List<Tag> tags, String instructions) {
+    public Exercise(String name, List<Tag> tags, ArrayList<String> instructions) {
         this.name = name;
         this.tags = tags;
         this.instructions = instructions;
@@ -30,7 +31,7 @@ public class Exercise {
         return tags;
     }
 
-    public String getInstructions() {
+    public ArrayList<String> getInstructions() {
         return instructions;
     }
 
