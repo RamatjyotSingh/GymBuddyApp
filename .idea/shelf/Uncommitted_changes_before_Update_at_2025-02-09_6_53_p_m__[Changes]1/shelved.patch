@@ -1,0 +1,16 @@
+Index: app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package comp3350.gymbuddy.business;\r\n\r\nimport comp3350.gymbuddy.objects.Exercise;\r\nimport comp3350.gymbuddy.persistence.IExercisePersistence;\r\nimport comp3350.gymbuddy.persistence.stubs.ExerciseStub;\r\nimport java.util.List;\r\n\r\npublic class ExerciseService {\r\n    private IExercisePersistence exercisePersistence;\r\n\r\n    // Default constructor uses ExerciseStub\r\n    public ExerciseService() {\r\n        this.exercisePersistence = new ExerciseStub(); // Default stub implementation\r\n    }\r\n\r\n    public ExerciseService(IExercisePersistence exercisePersistence) {\r\n        this.exercisePersistence = exercisePersistence;\r\n    }\r\n\r\n    public List<Exercise> getAllExercises() {\r\n        return exercisePersistence.getAllExercises();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java b/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java
+--- a/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java	(revision d47516b6ea5e9dd82b5aed0a53c5815f78cf9e6e)
++++ b/app/src/main/java/comp3350/gymbuddy/logic/ExerciseService.java	(date 1739146577144)
+@@ -1,4 +1,4 @@
+-package comp3350.gymbuddy.business;
++package comp3350.gymbuddy.logic;
+ 
+ import comp3350.gymbuddy.objects.Exercise;
+ import comp3350.gymbuddy.persistence.IExercisePersistence;

@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.gymbuddy"
+    namespace = "comp3350.gymbuddy"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.gymbuddy"
+        applicationId = "comp3350.gymbuddy"
         minSdk = 34
         targetSdk = 34
         versionCode = 1
@@ -43,6 +43,12 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.json)
+    implementation(libs.material)
+    // RecyclerView & CardView
+    implementation(libs.recyclerview)
+    implementation(libs.cardview)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
