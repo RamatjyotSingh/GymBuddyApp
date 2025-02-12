@@ -11,7 +11,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,7 +50,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> finish());
 
-        // Get Intent Data
+
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
         String imagePath = intent.getStringExtra("imagePath");
@@ -60,72 +59,71 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         ArrayList<String> tagColors = intent.getStringArrayListExtra("tagColors");
 
 
-        // Set Title
+
         if (title != null) {
             exerciseTitle.setText(title);
         }
 
-        // Load Image
+
         if(imagePath != null){
             loadImage(imagePath, exerciseImage);
         }
 
-        // Set Instructions
+
         if (instructions != null) {
             setInstructions(instructions, exerciseInstructions);
         }
 
+        assert tagColors != null;
+        assert tagNames != null;
         if (tagColors.size() != tagNames.size()) {
             throw new RuntimeException();
         }
-        // Populate tagNames
-        if (tagNames != null && tagColors != null) {
-            for (int i = 0; i < tagNames.size(); i++) {
-                Chip chip = new Chip(this);
-                chip.setText(tagNames.get(i));
 
-                // Set background color using color resources from colors.xml
-                switch (tagNames.get(i)) {
-                    case "Upper Body":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundUpperBody)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextUpperBody));
-                        break;
-                    case "Lower Body":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundLowerBody)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextLowerBody));
-                        break;
-                    case "Core":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundCore)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextCore));
-                        break;
-                    case "Cardio":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundCardio)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextCardio));
-                        break;
-                    case "Full Body":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundFullBody)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextFullBody));
-                        break;
-                    case "Beginner":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundBeginner)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextBeginner));
-                        break;
-                    case "Intermediate":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundIntermediate)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextIntermediate));
-                        break;
-                    case "Advanced":
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundAdvanced)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextAdvanced));
-                        break;
-                    default:
-                        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundNoEquipment)));
-                        chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextNoEquipment));
-                        break;
-                }
+        for (int i = 0; i < tagNames.size(); i++) {
+            Chip chip = new Chip(this);
+            chip.setText(tagNames.get(i));
 
-                tagContainer.addView(chip);
+            switch (tagNames.get(i)) {
+                case "Upper Body":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundUpperBody)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextUpperBody));
+                    break;
+                case "Lower Body":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundLowerBody)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextLowerBody));
+                    break;
+                case "Core":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundCore)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextCore));
+                    break;
+                case "Cardio":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundCardio)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextCardio));
+                    break;
+                case "Full Body":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundFullBody)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextFullBody));
+                    break;
+                case "Beginner":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundBeginner)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextBeginner));
+                    break;
+                case "Intermediate":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundIntermediate)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextIntermediate));
+                    break;
+                case "Advanced":
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundAdvanced)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextAdvanced));
+                    break;
+                default:
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundNoEquipment)));
+                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextNoEquipment));
+                    break;
             }
+
+            tagContainer.addView(chip);
         }
 
 
@@ -146,14 +144,12 @@ public class ExerciseDetailActivity extends AppCompatActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT
             ));
 
-            // Create Number Circle
             TextView num = new TextView(exerciseInstructions.getContext());
             num.setText(String.valueOf(i + 1)); // Dynamically assign instruction number
             num.setBackground(ContextCompat.getDrawable(exerciseInstructions.getContext(), R.drawable.circle_background));
             num.setTextColor(Color.parseColor("#1E40AF"));
             num.setPadding(16, 8, 16, 8);
 
-            // Create Instruction Text
             TextView instruction = new TextView(exerciseInstructions.getContext());
             instruction.setText(instructionText);
             instruction.setTextSize(18);
@@ -165,7 +161,6 @@ public class ExerciseDetailActivity extends AppCompatActivity {
             instructionParams.setMargins(16, 8, 16, 8);
             instruction.setLayoutParams(instructionParams);
 
-            // Add views to the layout
             instructionLine.addView(num);
             instructionLine.addView(instruction);
             exerciseInstructions.addView(instructionLine);
@@ -173,9 +168,9 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     }
 
     private void loadImage(String imagePath, ShapeableImageView imageView) {
-        if (imagePath.startsWith("http")) {  // URL Handling
+        if (imagePath.startsWith("http")) {
             loadImageFromURL(imagePath, imageView);
-        } else {  // Asset Handling
+        } else {
             loadImageFromAssets(imagePath, imageView);
         }
     }
@@ -192,7 +187,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
                 connection.connect();
                 InputStream inputStream = connection.getInputStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                handler.post(() -> imageView.setImageBitmap(bitmap)); // Set image on UI thread
+                handler.post(() -> imageView.setImageBitmap(bitmap));
                 inputStream.close();
             } catch (Exception e) {
                 Log.e("loadImageFromURL", "Error: " + e.getMessage());

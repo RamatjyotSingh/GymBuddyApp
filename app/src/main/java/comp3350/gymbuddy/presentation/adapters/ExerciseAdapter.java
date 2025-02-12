@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -29,11 +30,14 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseBottomSheetFragment;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder> {
     private final Context context;
     private final List<Exercise> exerciseList;
+    private final List<Exercise> fullExerciseList;
+
     private final OnExerciseClickListener clickListener;
 
     public interface OnExerciseClickListener {
@@ -42,7 +46,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     public ExerciseAdapter(Context context, List<Exercise> exerciseList, OnExerciseClickListener clickListener) {
         this.context = context;
-        this.exerciseList = exerciseList;
+        this.exerciseList = new ArrayList<>(exerciseList);
+        this.fullExerciseList = new ArrayList<>(exerciseList);
         this.clickListener = clickListener;
     }
 
@@ -62,18 +67,17 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         String imagePath  = "images/" + exercise.getImagePath();
         loadImage(imagePath, holder.exerciseImage);
 
-        // Handle View More button click
         holder.viewMoreButton.setOnClickListener(v -> clickListener.onExerciseClick(exercise));
         holder.itemView.setOnClickListener(v -> {
-            // Show BottomSheetDialogFragment with the selected exercise
+
             AddExerciseBottomSheetFragment bottomSheetFragment = new AddExerciseBottomSheetFragment(exercise);
             bottomSheetFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheetFragment.getTag());
         });
     }
     private void loadImage(String imagePath, ShapeableImageView imageView) {
-        if (imagePath.startsWith("http")) {  // URL Handling
+        if (imagePath.startsWith("http")) {
             loadImageFromURL(imagePath, imageView);
-        } else {  // Asset Handling
+        } else {
             loadImageFromAssets(imagePath, imageView);
         }
     }
@@ -90,7 +94,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
                 connection.connect();
                 InputStream inputStream = connection.getInputStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                handler.post(() -> imageView.setImageBitmap(bitmap)); // Set image on UI thread
+                handler.post(() -> imageView.setImageBitmap(bitmap));
                 inputStream.close();
             } catch (Exception e) {
                 Log.e("loadImageFromURL", "Error: " + e.getMessage());
@@ -124,6 +128,33 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
             inputStream.close();
         } catch (IOException e) {
             Log.e( "loadImageFromAssets: ", Objects.requireNonNull(e.getMessage()));
+        }
+    }
+    public void filter(String query) {
+        List<Exercise> filteredList = new ArrayList<>();
+
+        if (query.isEmpty()) {
+            filteredList.addAll(fullExerciseList);
+        } else {
+            String lowerCaseQuery = query.toLowerCase();
+            for (Exercise exercise : fullExerciseList) {
+                if (exercise.getName().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredList.add(exercise);
+                } else {
+                    for (Tag tag : exercise.getTags()) {
+                        if (tag.getName().toLowerCase().contains(lowerCaseQuery)) {
+                            filteredList.add(exercise);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!filteredList.equals(exerciseList)) {
+            exerciseList.clear();
+            exerciseList.addAll(filteredList);
+            notifyDataSetChanged();
         }
     }
 }
