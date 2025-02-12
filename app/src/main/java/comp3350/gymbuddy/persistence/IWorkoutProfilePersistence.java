@@ -6,5 +6,4 @@ import java.util.List;
 
 public interface IWorkoutProfilePersistence {
     List<WorkoutProfile> getAllWorkoutProfiles();
-    void addWorkoutProfile(WorkoutProfile profile);
 }

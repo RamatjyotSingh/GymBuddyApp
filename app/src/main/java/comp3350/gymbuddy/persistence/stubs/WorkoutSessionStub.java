@@ -25,8 +25,4 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
 
         sessions.add(new WorkoutSession(now.getTime(), 100*(rand.nextFloat()+1), sets, profiles.get(0)));
     }
-
-    public List<WorkoutSession> getAllSessions() {
-        return Collections.unmodifiableList(sessions);
-    }
 }

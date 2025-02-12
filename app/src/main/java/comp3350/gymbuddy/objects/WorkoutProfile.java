@@ -17,23 +17,7 @@ public class WorkoutProfile {
         return name;
     }
 
-    public String getIconPath() {
-        return iconPath;
-    }
-
-    public List<WorkoutItem> getExercises() {
-        return workoutItems;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setIconPath(String iconPath) {
-        this.iconPath = iconPath;
-    }
-
-    public void setExercises(List<WorkoutItem> workoutItems) {
-        this.workoutItems = workoutItems;
     }
 }
