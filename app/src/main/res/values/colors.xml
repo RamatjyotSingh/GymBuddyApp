@@ -1,10 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="blue_500">#2196F3</color> <!-- Primary blue color -->
+    <color name="blue_700">#1976D2</color> <!-- Darker blue -->
+    <color name="blue_200">#81D4FA</color> <!-- Light blue -->
+    <color name="blue_400">#29B6F6</color> <!-- Slightly lighter blue -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Light background colors for chips -->
+    <color name="chipBackgroundUpperBody">#D1E8FF</color> <!-- Light Blue for Upper Body -->
+    <color name="chipBackgroundLowerBody">#E9D8FD</color> <!-- Light Purple for Lower Body -->
+    <color name="chipBackgroundCore">#B2F5EA</color> <!-- Light Teal for Core -->
+    <color name="chipBackgroundCardio">#FFEDD5</color> <!-- Light Orange for Cardio -->
+    <color name="chipBackgroundFullBody">#DCFCE7</color> <!-- Light Green for Full Body -->
+
+    <!-- Light background colors for difficulty levels -->
+    <color name="chipBackgroundBeginner">#DCFCE7</color> <!-- Light Green for Beginner -->
+    <color name="chipBackgroundIntermediate">#FEF3C7</color> <!-- Light Yellow for Intermediate -->
+    <color name="chipBackgroundAdvanced">#FEE2E2</color> <!-- Light Red for Advanced -->
+
+    <!-- Dark text colors for good contrast -->
+    <!-- Muscles Worked -->
+    <color name="chipTextUpperBody">#1D4ED8</color> <!-- Dark Blue for Upper Body -->
+    <color name="chipTextLowerBody">#6B21A8</color> <!-- Dark Purple for Lower Body -->
+    <color name="chipTextCore">#0D9488</color> <!-- Dark Teal for Core -->
+    <color name="chipTextCardio">#D97706</color> <!-- Dark Orange for Cardio -->
+    <color name="chipTextFullBody">#15803D</color> <!-- Dark Green for Full Body -->
+
+    <!-- Difficulty Levels -->
+    <color name="chipTextBeginner">#10B981</color> <!-- Dark Green for Beginner -->
+    <color name="chipTextIntermediate">#F59E0B</color> <!-- Dark Yellow for Intermediate -->
+    <color name="chipTextAdvanced">#DC2626</color> <!-- Dark Red for Advanced -->
+
+    <color name="chipBackgroundNoEquipment">#E0F2FE</color> <!-- Light Blue for No Equipment -->
+    <color name="chipTextNoEquipment">#1E3A8A</color> <!-- Darker Blue for No Equipment -->
+
 </resources>

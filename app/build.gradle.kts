@@ -44,7 +44,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.json)
-
+    implementation(libs.material)
     // RecyclerView & CardView
     implementation(libs.recyclerview)
     implementation(libs.cardview)

@@ -16,4 +16,16 @@ public class Tag {
     public String getColor() {
         return color;
     }
+
+    public boolean isDifficultyTag() {
+        return name.equals("Beginner") || name.equals("Intermediate") || name.equals("Advanced");
+    }
+
+    public String getDifficulty() {
+        return isDifficultyTag() ? name : "";
+    }
+
+    public String getMusclesWorked() {
+        return isDifficultyTag() ? "" : name; // Assuming non-difficulty tags are muscle groups
+    }
 }

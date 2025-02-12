@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.presentation;
+package comp3350.gymbuddy.presentation.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,7 @@ import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.objects.WorkoutItem;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
-    private List<WorkoutItem> workoutItems;
+    private final List<WorkoutItem> workoutItems;
 
     public WorkoutAdapter(List<WorkoutItem> workoutItems) {
         this.workoutItems = workoutItems;
@@ -59,4 +59,5 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         workoutItems.add(item);
         notifyItemInserted(workoutItems.size() - 1);
     }
+
 }
