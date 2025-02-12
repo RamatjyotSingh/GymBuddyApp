@@ -27,4 +27,8 @@ public class AccessWorkoutProfiles {
     public List<WorkoutProfile> getAllProfiles() {
         return this.profilePersistence.getAllWorkoutProfiles();
     }
+
+    public void addProfile(WorkoutProfile profile) {
+        profilePersistence.addWorkoutProfile(profile);
+    }
 }

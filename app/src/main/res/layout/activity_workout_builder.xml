@@ -27,7 +27,8 @@
             android:paddingEnd="12dp"
             android:paddingStart="0dp"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:onClick="onClickIcon" />
 
         <!-- Workout Name Input -->
         <EditText
@@ -48,7 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:text="Save" />
+        android:text="Save"
+        android:onClick="onClickSave" />
 
     <!-- RecyclerView for Workout Items -->
     <androidx.recyclerview.widget.RecyclerView
@@ -65,5 +67,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add" />
+        android:src="@android:drawable/ic_input_add"
+        android:onClick="onClickFAB" />
 </LinearLayout>

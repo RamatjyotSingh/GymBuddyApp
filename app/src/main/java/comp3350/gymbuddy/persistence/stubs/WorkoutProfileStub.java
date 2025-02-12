@@ -23,4 +23,8 @@ public class WorkoutProfileStub implements IWorkoutProfilePersistence {
     public List<WorkoutProfile> getAllWorkoutProfiles(){
         return new ArrayList<WorkoutProfile>(this.profiles);
     }
+
+    public void addWorkoutProfile(WorkoutProfile profile) {
+        profiles.add(profile);
+    }
 }
