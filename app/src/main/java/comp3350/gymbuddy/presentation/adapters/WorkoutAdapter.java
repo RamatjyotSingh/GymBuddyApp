@@ -59,8 +59,4 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         workoutItems.add(item);
         notifyItemInserted(workoutItems.size() - 1);
     }
-
-    public List<WorkoutItem> getWorkoutItems() {
-        return workoutItems;
-    }
 }

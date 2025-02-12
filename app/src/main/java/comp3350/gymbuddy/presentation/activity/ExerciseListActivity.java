@@ -59,10 +59,6 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
-    private void showAddExerciseBottomSheet(Exercise exercise) {
-        AddExerciseBottomSheetFragment bottomSheetFragment = new AddExerciseBottomSheetFragment(exercise);
-        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

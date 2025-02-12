@@ -39,9 +39,4 @@ public class TagStub implements ITagPersistence {
     public Tag getTagByName(String name) {
         return tags.getOrDefault(name, new Tag(name, "black")); // Default to black if not found
     }
-
-    @Override
-    public List<Tag> getAllTags() {
-        return new ArrayList<>(tags.values()); // Return all tags as a list
-    }
 }

@@ -35,23 +35,7 @@ public class WorkoutItem {
         this.exercise = exercise;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public void setReps(int reps) {
-        this.reps = reps;
-    }
-
-    public void setTime(double time) {
-        this.time = time;
-    }
-
     public int getSets() {
         return sets;
-    }
-
-    public void setSets(int sets) {
-        this.sets = sets;
     }
 }

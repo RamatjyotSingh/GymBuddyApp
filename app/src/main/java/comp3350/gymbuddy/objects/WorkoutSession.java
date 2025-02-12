@@ -14,24 +14,4 @@ public class WorkoutSession {
         this.sets = sets;
         this.profile = profile;
     }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public float getDuration() {
-        return duration;
-    }
-
-    public List<Set> getItems() {
-        return sets;
-    }
-
-    public WorkoutProfile getProfile() {
-        return profile;
-    }
-
-    public void addItem(Set sets) {
-        this.sets.add(sets);
-    }
 }
