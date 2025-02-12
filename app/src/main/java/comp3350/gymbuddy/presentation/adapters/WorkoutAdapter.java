@@ -11,7 +11,7 @@ import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.objects.WorkoutItem;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
-    private final List<WorkoutItem> workoutItems;
+    private List<WorkoutItem> workoutItems;
 
     public WorkoutAdapter(List<WorkoutItem> workoutItems) {
         this.workoutItems = workoutItems;
@@ -60,4 +60,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         notifyItemInserted(workoutItems.size() - 1);
     }
 
+    public List<WorkoutItem> getWorkoutItems() {
+        return workoutItems;
+    }
 }

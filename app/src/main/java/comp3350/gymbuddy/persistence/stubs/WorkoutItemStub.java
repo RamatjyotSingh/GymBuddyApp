@@ -1,58 +1,78 @@
 package comp3350.gymbuddy.persistence.stubs;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import comp3350.gymbuddy.logic.ExerciseService;
-import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.IWorkoutItemPersistence;
 
 public class WorkoutItemStub implements IWorkoutItemPersistence {
-    private List<WorkoutItem> workoutItems;
+    final private List<WorkoutItem> workoutItems;
 
-    public WorkoutItemStub(){
-        this.workoutItems = new ArrayList<>();
+    public WorkoutItemStub() {
+        workoutItems = new ArrayList<>();
 
-        ExerciseService exService = new ExerciseService();
-        List<Exercise> exercises = exService.getAllExercises();
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Push-Up"),
+                4,
+                12,
+                0.0,
+                0.0));
 
-        try{
-            String content = new String(Files.readAllBytes(Paths.get("workout-item.json")));
-            JSONArray workoutItemsJSON = new JSONArray(content);
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Squat"),
+                4,
+                10,
+                0.0,
+                0.0));
 
-            for(int i=0; i<workoutItemsJSON.length(); i++){
-                JSONObject item = workoutItemsJSON.getJSONObject(i);
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Pull-Up"),
+                3,
+                8,
+                0.0,
+                0.0));
 
-                // look through exercises DB stub for corresponding exercise
-                // just so these workout items link to an existing exercise
-                String exerciseName = item.getString("Exercise Name");
-                Exercise toAdd = null;
-                for(Exercise e : exercises){
-                    if(e.getName().equalsIgnoreCase(exerciseName)){
-                        toAdd = e;
-                        break;
-                    }
-                }
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Deadlift"),
+                4,
+                5,
+                80.0,
+                0.0));
 
-                double weight = (item.getDouble("Weight") >= 0) ? (item.getDouble("Weight")) : 0.0;
-                int repetitions = (item.getInt("Repetitions") >= 0) ? (item.getInt("Repetitions")) : 0;
-                int sets = (item.getInt("Sets") >= 0) ? (item.getInt("Sets")) : 1;
-                double time = (item.getDouble("Time") >= 0) ? (item.getDouble("Time")) : 0.0;
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Dumbbell Shoulder Press"),
+                3,
+                10,
+                15.0,
+                0.0));
 
-                workoutItems.add(new WorkoutItem(toAdd, sets, repetitions, weight, time));
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Bicep Curls"),
+                3,
+                12,
+                12.5,
+                0.0));
+
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Triceps Dips"),
+                3,
+                10,
+                0.0,
+                0.0));
+
+        workoutItems.add(new WorkoutItem(
+                Services.getExercisePersistence().getExerciseByName("Bent-Over Rows"),
+                4,
+                8,
+                50.0,
+                0.0));
+
     }
 
-    public List<WorkoutItem> getAllWorkoutItems(){
-        return new ArrayList<>(this.workoutItems);
+    public List<WorkoutItem> getAllWorkoutItems() {
+        return Collections.unmodifiableList(workoutItems);
     }
 }

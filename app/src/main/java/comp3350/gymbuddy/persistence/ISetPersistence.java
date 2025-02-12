@@ -5,5 +5,5 @@ import java.util.List;
 import comp3350.gymbuddy.objects.Set;
 
 public interface ISetPersistence {
-    public List<Set> getAllSets();
+    List<Set> getAllSets();
 }

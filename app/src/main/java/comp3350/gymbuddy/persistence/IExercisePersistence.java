@@ -5,5 +5,6 @@ import comp3350.gymbuddy.objects.Exercise;
 import java.util.List;
 
 public interface IExercisePersistence {
-    public List<Exercise> getAllExercises();
+    List<Exercise> getAllExercises();
+    Exercise getExerciseByName(String name);
 }

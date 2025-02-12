@@ -1,22 +1,22 @@
 package comp3350.gymbuddy.persistence.stubs;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
-import comp3350.gymbuddy.logic.WorkoutItemService;
+import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.Set;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.ISetPersistence;
 
 public class SetStub implements ISetPersistence {
-    private List<Set> sets;
+    final private List<Set> sets;
 
     public SetStub(){
-        this.sets = new ArrayList<>();
+        sets = new ArrayList<>();
 
-        WorkoutItemService itemService = new WorkoutItemService();
-        List<WorkoutItem> items = itemService.getAllWorkoutItems();
+        List<WorkoutItem> items = Services.getWorkoutItemPersistence().getAllWorkoutItems();
 
         for(int i=0; i<items.size(); i++){
             WorkoutItem wi = items.get(i);
@@ -34,6 +34,6 @@ public class SetStub implements ISetPersistence {
     }
 
     public List<Set> getAllSets(){
-        return new ArrayList<>(sets);
+        return Collections.unmodifiableList(sets);
     }
 }

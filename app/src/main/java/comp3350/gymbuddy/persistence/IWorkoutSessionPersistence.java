@@ -5,5 +5,5 @@ import comp3350.gymbuddy.objects.WorkoutSession;
 import java.util.List;
 
 public interface IWorkoutSessionPersistence {
-    public List<WorkoutSession> getAllSessions();
+    List<WorkoutSession> getAllSessions();
 }
