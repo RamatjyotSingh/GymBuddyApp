@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import comp3350.gymbuddy.R;
+import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.presentation.adapters.ExerciseAdapter;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseBottomSheetFragment;
+import comp3350.gymbuddy.logic.AccessExercises;
 
 public class ExerciseListActivity extends AppCompatActivity {
     private List<Exercise> exerciseList;
@@ -28,18 +30,11 @@ public class ExerciseListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize the exercise list and adapter
-        exerciseList = new ArrayList<>();
-        loadExercises();  // Load exercises (from assets or database)
+        AccessExercises accessExercises = new AccessExercises();
+        exerciseList = accessExercises.getAllExercises();
 
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, exerciseList, this::openExerciseDetail);
         recyclerView.setAdapter(exerciseAdapter);
-    }
-
-    private void loadExercises() {
-        // Populate the exercise list with dummy data or fetch from your data source
-        exerciseList.add(new Exercise("Push-Up", getTags(), "1.Do a push-up by lowering and raising your body.\r\n 2. Keep your elbows close to your body. ", "push_up.png"));
-        exerciseList.add(new Exercise("Squat", getTags(), "1.Lower your hips while keeping your back straight.\r\n 2. Keep your legs together. ", "squat.png"));
-        // Add more exercises as needed
     }
 
     private List<Tag> getTags() {
