@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.Application;
+package comp3350.gymbuddy.application;
 
 import comp3350.gymbuddy.persistence.IExercisePersistence;
 import comp3350.gymbuddy.persistence.ITagPersistence;
