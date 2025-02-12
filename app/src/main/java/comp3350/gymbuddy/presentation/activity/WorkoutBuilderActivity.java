@@ -22,9 +22,7 @@ import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.presentation.adapters.WorkoutAdapter;
 
 public class WorkoutBuilderActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
     private WorkoutAdapter adapter;
-    private List<WorkoutItem> workoutItems;
     private Exercise selectedExercise; // Store selected exercise
     private Button btnSelectExercise; // Reference to update UI in the dialog
 
@@ -37,10 +35,10 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_builder);
 
-        recyclerView = findViewById(R.id.recyclerWorkoutItems);
+        RecyclerView recyclerView = findViewById(R.id.recyclerWorkoutItems);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        workoutItems = new ArrayList<>();
+        List<WorkoutItem> workoutItems = new ArrayList<>();
         adapter = new WorkoutAdapter(workoutItems);
         recyclerView.setAdapter(adapter);
 
@@ -51,7 +49,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_workout_item);
 
-        Button btnSelectExercise = dialog.findViewById(R.id.btnSelectExercise);
+        btnSelectExercise = dialog.findViewById(R.id.btnSelectExercise);
         EditText edtSets = dialog.findViewById(R.id.edtSets);
         EditText edtReps = dialog.findViewById(R.id.edtReps);
         EditText edtWeight = dialog.findViewById(R.id.edtWeight);
@@ -70,7 +68,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
         // Add Workout Item button
         btnAddWorkoutItem.setOnClickListener(v -> {
-            // ✅ Check if an exercise is selected
+
             if (selectedExercise == null) {
                 btnSelectExercise.setError("Please select an exercise.");
                 return;
@@ -78,7 +76,6 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
                 btnSelectExercise.setError(null);
             }
 
-            // ✅ Validate numeric inputs (sets & reps must not be empty)
             if (edtSets.getText().toString().trim().isEmpty()) {
                 edtSets.setError("Required");
                 return;
@@ -88,17 +85,14 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
                 return;
             }
 
-            // ✅ Parse values safely
             int sets = Integer.parseInt(edtSets.getText().toString().trim());
             int reps = Integer.parseInt(edtReps.getText().toString().trim());
             double weight = edtWeight.getText().toString().trim().isEmpty() ? 0.0 : Double.parseDouble(edtWeight.getText().toString().trim());
             double time = edtTime.getText().toString().trim().isEmpty() ? 0.0 : Double.parseDouble(edtTime.getText().toString().trim());
 
-            // ✅ Create and add the workout item
             WorkoutItem newItem = new WorkoutItem(selectedExercise, sets, reps, weight, time);
             adapter.addWorkoutItem(newItem);
 
-            // ✅ Reset UI
             selectedExercise = null;
             btnSelectExercise.setText("Select Exercise");
             edtSets.setText("");
