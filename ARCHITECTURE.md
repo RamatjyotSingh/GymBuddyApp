@@ -1,1 +1,1 @@
-![ArchitectureDiagram.drawio](ArchitectureDiagram.drawio.svg)
+![ArchitectureDiagram.drawio](ArchitectureDiagram.drawio.png)
