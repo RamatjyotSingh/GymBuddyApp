@@ -57,7 +57,7 @@ Contains data about a completed workout. The information contained is:
 
 ## Set
 
-Represents a recorded set from a workout session. Workouts are stored in sets, as this provides the flexibility to encode deviations in the amount of reps or weight that was performed on a per-set basis. In other words, if a user could not finish their set, or decided to increase the weight, the database is flexible enough to support this level of detail.
+Represents a recorded set from a workout session. Workouts are stored in sets, as this provides the flexibility to encode deviations in the amount of reps, weight, or time that was performed on a per-set basis. In other words, if a user could not finish their set, or decided to increase the weight, the database is flexible enough to support this level of detail.
 
 A set contains the following information:
 
