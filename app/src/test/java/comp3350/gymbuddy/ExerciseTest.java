@@ -1,4 +1,4 @@
-package com.example.gymbuddy.logic;
+package comp3350.gymbuddy;
 
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.persistence.stubs.ExerciseStub;

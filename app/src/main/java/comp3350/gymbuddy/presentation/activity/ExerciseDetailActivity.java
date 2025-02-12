@@ -52,9 +52,6 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         ArrayList<String> tagColors = intent.getStringArrayListExtra("tagColors");
 
 
-
-
-
         // Set Title
         if (title != null) {
             exerciseTitle.setText(title);
