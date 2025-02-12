@@ -31,4 +31,5 @@ Gym Buddy makes fitness tracking easy and effective for everyone. By focusing on
 ## Developer Tasks
 
 ## Architecture
-https://code.cs.umanitoba.ca/comp3350-winter2025/a01-g02-ctrl-alt-elite/-/blob/main/ARCHITECTURE.md?ref_type=heads
+
+Our architecture for Iteration 1 is outlined in detail in [ARCHITECTURE.md](ARCHITECTURE.md).
