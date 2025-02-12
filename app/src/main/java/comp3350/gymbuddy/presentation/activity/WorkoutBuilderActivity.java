@@ -130,6 +130,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
             // Update button text in the dialog
             if (btnSelectExercise != null) {
                 btnSelectExercise.setText(exerciseName); // Show selected exercise name
+                btnSelectExercise.setError(null);
             }
         }
     }
