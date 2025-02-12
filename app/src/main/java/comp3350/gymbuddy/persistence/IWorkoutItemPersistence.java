@@ -5,5 +5,5 @@ import java.util.List;
 import comp3350.gymbuddy.objects.WorkoutItem;
 
 public interface IWorkoutItemPersistence {
-    public List<WorkoutItem> getAllWorkoutItems();
+    List<WorkoutItem> getAllWorkoutItems();
 }

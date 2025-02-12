@@ -1,6 +1,6 @@
 package comp3350.gymbuddy.persistence.stubs;
 
-import comp3350.gymbuddy.logic.WorkoutItemService;
+import comp3350.gymbuddy.logic.AccessWorkoutItems;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.IWorkoutProfilePersistence;
@@ -14,7 +14,7 @@ public class WorkoutProfileStub implements IWorkoutProfilePersistence {
     public WorkoutProfileStub(){
         this.profiles = new ArrayList<WorkoutProfile>();
 
-        WorkoutItemService itemService = new WorkoutItemService();
+        AccessWorkoutItems itemService = new AccessWorkoutItems();
         List<WorkoutItem> items = itemService.getAllWorkoutItems();
 
         this.profiles.add(new WorkoutProfile("Profile 1", null, items));

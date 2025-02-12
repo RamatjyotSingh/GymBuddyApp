@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
-import comp3350.gymbuddy.logic.WorkoutItemService;
+import comp3350.gymbuddy.logic.AccessWorkoutItems;
 import comp3350.gymbuddy.objects.Set;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.ISetPersistence;
@@ -15,7 +15,7 @@ public class SetStub implements ISetPersistence {
     public SetStub(){
         this.sets = new ArrayList<>();
 
-        WorkoutItemService itemService = new WorkoutItemService();
+        AccessWorkoutItems itemService = new AccessWorkoutItems();
         List<WorkoutItem> items = itemService.getAllWorkoutItems();
 
         for(int i=0; i<items.size(); i++){
