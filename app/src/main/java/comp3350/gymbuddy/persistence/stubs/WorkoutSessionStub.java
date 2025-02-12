@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Date;
 import java.util.Random;
 
-import comp3350.gymbuddy.logic.SetService;
+import comp3350.gymbuddy.logic.AccessSets;
 import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
 import comp3350.gymbuddy.objects.Set;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -19,7 +19,7 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
         this.sessions = new ArrayList<WorkoutSession>();
 
         AccessWorkoutProfiles profileService = new AccessWorkoutProfiles();
-        SetService setService = new SetService();
+        AccessSets setService = new AccessSets();
 
         List<WorkoutProfile> profiles = profileService.getAllProfiles();
         List<Set> sets = setService.getAllSets();
