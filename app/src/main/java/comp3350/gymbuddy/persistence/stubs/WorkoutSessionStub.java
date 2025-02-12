@@ -1,35 +1,32 @@
 package comp3350.gymbuddy.persistence.stubs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 import java.util.Random;
 
-import comp3350.gymbuddy.logic.AccessSets;
-import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
+import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.Set;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.IWorkoutSessionPersistence;
 
 public class WorkoutSessionStub implements IWorkoutSessionPersistence {
-    private List<WorkoutSession> sessions;
+    final private List<WorkoutSession> sessions;
 
     public WorkoutSessionStub(){
-        this.sessions = new ArrayList<WorkoutSession>();
+        sessions = new ArrayList<>();
 
-        AccessWorkoutProfiles profileService = new AccessWorkoutProfiles();
-        AccessSets setService = new AccessSets();
-
-        List<WorkoutProfile> profiles = profileService.getAllProfiles();
-        List<Set> sets = setService.getAllSets();
+        List<WorkoutProfile> profiles = Services.getWorkoutProfilePersistence().getAllWorkoutProfiles();
+        List<Set> sets = Services.getSetPersistence().getAllSets();
         Date now = new Date();
         Random rand = new Random();
 
-        this.sessions.add(new WorkoutSession(now.getTime(), 100*(rand.nextFloat()+1), sets, profiles.get(0)));
+        sessions.add(new WorkoutSession(now.getTime(), 100*(rand.nextFloat()+1), sets, profiles.get(0)));
     }
 
-    public List<WorkoutSession> getAllSessions(){
-        return new ArrayList<WorkoutSession>(sessions);
+    public List<WorkoutSession> getAllSessions() {
+        return Collections.unmodifiableList(sessions);
     }
 }

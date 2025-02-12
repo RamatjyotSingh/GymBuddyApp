@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IExercisePersistence {
     List<Exercise> getAllExercises();
+    Exercise getExerciseByName(String name);
 }
