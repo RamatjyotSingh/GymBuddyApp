@@ -32,4 +32,4 @@ Gym Buddy makes fitness tracking easy and effective for everyone. By focusing on
 
 ## Architecture
 
-Our architecture for Iteration 1 is outlined in detail in [ARCHITECTURE.md](ARCHITECTURE.md).
+Our architecture for Iteration 1 is outlined in detail in [ARCHITECTURE.md](doc/ARCHITECTURE.md).
