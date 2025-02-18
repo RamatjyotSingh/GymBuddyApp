@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.objects.WorkoutItem;
@@ -108,28 +110,16 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
     private void handleActivityResult(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-            Intent data = result.getData();
+            Intent data = result.getData(); // THIS INTENT SHOULD JUST CONTAIN THE EXERCISE ID
 
-            // Get exercise details from the Intent
-            String exerciseName = data.getStringExtra("exerciseName");
-            ArrayList<String> exerciseInstructions = data.getStringArrayListExtra("exerciseInstructions");
-            String exerciseImage = data.getStringExtra("exerciseImage");
-            ArrayList<String> tagNames = data.getStringArrayListExtra("tagNames");
-            ArrayList<String> tagColors = data.getStringArrayListExtra("tagColors");
+            AccessExercises accessExercises = new AccessExercises();
 
-            // Convert tags from received data
-            List<Tag> tags = new ArrayList<>();
-            for (int i = 0; i < Objects.requireNonNull(tagNames).size(); i++) {
-                assert tagColors != null;
-                tags.add(new Tag(tagNames.get(i), tagColors.get(i)));
-            }
-
-            // Create Exercise object
-            selectedExercise = new Exercise(exerciseName, tags, exerciseInstructions, exerciseImage);
+            // Assign the object we picked from exercise list
+            selectedExercise = accessExercises.getExerciseByID(data.getIntExtra("exerciseID", 0));
 
             // Update button text in the dialog
             if (btnSelectExercise != null) {
-                btnSelectExercise.setText(exerciseName); // Show selected exercise name
+                btnSelectExercise.setText(selectedExercise.getName()); // Show selected exercise name
                 btnSelectExercise.setError(null);
             }
         }

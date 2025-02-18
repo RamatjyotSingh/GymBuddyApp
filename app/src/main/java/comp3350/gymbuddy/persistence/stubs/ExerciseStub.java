@@ -144,4 +144,16 @@ public class ExerciseStub implements IExercisePersistence {
         }
         return null; // Return null instead of incomplete code
     }
+
+    public Exercise getExerciseByID(int id){
+        Exercise result = null;
+
+        for(int i=0; i<exercises.size() && result == null; i++){
+            if(exercises.get(i).getID() == id){
+                result = exercises.get(i);
+            }
+        }
+
+        return result;
+    }
 }
