@@ -16,4 +16,8 @@ public class AccessExercises {
     public List<Exercise> getAllExercises() {
         return Collections.unmodifiableList(exercisePersistence.getAllExercises());
     }
+
+    public Exercise getExerciseByID(int id){
+        return exercisePersistence.getExerciseByID(id);
+    }
 }

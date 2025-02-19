@@ -41,22 +41,7 @@ public class AddExerciseBottomSheetFragment extends BottomSheetDialogFragment {
         btnAddExercise.setOnClickListener(v -> {
             // Send exercise data back to the previous activity (WorkoutBuilderActivity)
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("exerciseName", exercise.getName());
-            resultIntent.putExtra("exerciseInstructions", exercise.getInstructions());
-            resultIntent.putExtra("exerciseImage", "images/" + exercise.getImagePath());
-
-            // Convert tags to String List
-            ArrayList<String> tagsList = new ArrayList<>();
-            for (Tag tag : exercise.getTags()) {
-                tagsList.add(tag.getName());
-            }
-            resultIntent.putStringArrayListExtra("tagNames", tagsList);
-
-            ArrayList<String> colorsList = new ArrayList<>();
-            for (Tag tag : exercise.getTags()) {
-                colorsList.add(tag.getColor());
-            }
-            resultIntent.putStringArrayListExtra("tagColors", colorsList);
+            resultIntent.putExtra("exerciseID", exercise.getID());
 
             // Set the result and close the BottomSheet
             requireActivity().setResult(Activity.RESULT_OK, resultIntent);
