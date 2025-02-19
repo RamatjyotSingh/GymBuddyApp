@@ -10,16 +10,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class ExerciseStub implements IExercisePersistence {
+    private static int id_counter = 0;
     private List<Exercise> exercises;
 
     private Exercise createExercise(String name, String[] tagNames, ArrayList<String> instructions) {
         List<Tag> tags = new ArrayList<>();
 
+
         for (var tagName : tagNames) {
             tags.add(Services.getTagPersistence().getTagByName(tagName));
         }
 
-        return new Exercise(name, tags, instructions);
+        return new Exercise(id_counter++, name, tags, instructions);
     }
 
     public ExerciseStub() {
