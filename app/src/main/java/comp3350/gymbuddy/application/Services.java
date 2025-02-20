@@ -2,13 +2,13 @@ package comp3350.gymbuddy.application;
 
 import comp3350.gymbuddy.persistence.IExercisePersistence;
 import comp3350.gymbuddy.persistence.ITagPersistence;
-import comp3350.gymbuddy.persistence.ISetPersistence;
+import comp3350.gymbuddy.persistence.ISessionItemPersistence;
 import comp3350.gymbuddy.persistence.IWorkoutItemPersistence;
 import comp3350.gymbuddy.persistence.IWorkoutProfilePersistence;
 import comp3350.gymbuddy.persistence.IWorkoutSessionPersistence;
 import comp3350.gymbuddy.persistence.stubs.ExerciseStub;
 import comp3350.gymbuddy.persistence.stubs.TagStub;
-import comp3350.gymbuddy.persistence.stubs.SetStub;
+import comp3350.gymbuddy.persistence.stubs.SessionItemStub;
 import comp3350.gymbuddy.persistence.stubs.WorkoutItemStub;
 import comp3350.gymbuddy.persistence.stubs.WorkoutProfileStub;
 import comp3350.gymbuddy.persistence.stubs.WorkoutSessionStub;
@@ -16,7 +16,7 @@ import comp3350.gymbuddy.persistence.stubs.WorkoutSessionStub;
 public class Services {
     private static IExercisePersistence exercisePersistence = null;
     private static ITagPersistence tagPersistence = null;
-    private static ISetPersistence setPersistence = null;
+    private static ISessionItemPersistence sessionItemPersistence = null;
     private static IWorkoutItemPersistence workoutItemPersistence = null;
     private static IWorkoutProfilePersistence workoutProfilePersistence = null;
     private static IWorkoutSessionPersistence workoutSessionPersistence = null;
@@ -35,11 +35,11 @@ public class Services {
         return tagPersistence;
     }
 
-    public static synchronized ISetPersistence getSetPersistence() {
-        if (setPersistence == null) {
-            setPersistence = new SetStub(); // Stub version for now
+    public static synchronized ISessionItemPersistence getSessionItemPersistence() {
+        if (sessionItemPersistence == null) {
+            sessionItemPersistence = new SessionItemStub(); // Stub version for now
         }
-        return setPersistence;
+        return sessionItemPersistence;
     }
 
     public static synchronized IWorkoutItemPersistence getWorkoutItemPersistence() {
