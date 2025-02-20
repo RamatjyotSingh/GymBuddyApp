@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.Tag;
+import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
+import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.presentation.adapters.WorkoutAdapter;
@@ -92,7 +92,12 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
             double weight = edtWeight.getText().toString().trim().isEmpty() ? 0.0 : Double.parseDouble(edtWeight.getText().toString().trim());
             double time = edtTime.getText().toString().trim().isEmpty() ? 0.0 : Double.parseDouble(edtTime.getText().toString().trim());
 
-            WorkoutItem newItem = new WorkoutItem(selectedExercise, sets, reps, weight, time);
+            WorkoutItem newItem;
+            if (time > 0.0) {
+                newItem = new TimeBasedWorkoutItem(selectedExercise, sets, time);
+            } else {
+                newItem = new RepBasedWorkoutItem(selectedExercise, sets, reps, weight);
+            }
             adapter.addWorkoutItem(newItem);
 
             selectedExercise = null;
