@@ -18,14 +18,6 @@ public class Exercise {
         this.imagePath = imagePath;
     }
 
-    public Exercise(int id, String name, List<Tag> tags, ArrayList<String> instructions) {
-        this.id = id;
-        this.name = name;
-        this.tags = tags;
-        this.instructions = instructions;
-        this.imagePath = null;
-    }
-
     public int getID(){ return id; }
 
     public String getName() {
