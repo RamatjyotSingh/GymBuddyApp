@@ -65,7 +65,7 @@ public class WorkoutItemStub implements IWorkoutItemPersistence {
 
     }
 
-    public List<WorkoutItem> getAllWorkoutItems() {
+    public List<WorkoutItem> getAll() {
         return Collections.unmodifiableList(workoutItems);
     }
 }

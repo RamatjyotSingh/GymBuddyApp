@@ -1,6 +1,7 @@
 package comp3350.gymbuddy.persistence.stubs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 import java.util.Random;
@@ -17,11 +18,15 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
     public WorkoutSessionStub(){
         sessions = new ArrayList<>();
 
-        List<WorkoutProfile> profiles = Services.getWorkoutProfilePersistence().getAllWorkoutProfiles();
-        List<SessionItem> sessionItems = Services.getSessionItemPersistence().getAllSessionItems();
+        List<WorkoutProfile> profiles = Services.getWorkoutProfilePersistence().getAll();
+        List<SessionItem> sessionItems = Services.getSessionItemPersistence().getAll();
         Date now = new Date();
         Random rand = new Random();
 
         sessions.add(new WorkoutSession(now.getTime(), 100*(rand.nextFloat()+1), sessionItems, profiles.get(0)));
+    }
+
+    public List<WorkoutSession> getAll(){
+        return Collections.unmodifiableList(sessions);
     }
 }

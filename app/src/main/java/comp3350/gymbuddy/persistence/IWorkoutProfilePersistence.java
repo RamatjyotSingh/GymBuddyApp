@@ -4,6 +4,6 @@ import java.util.List;
 
 import comp3350.gymbuddy.objects.WorkoutProfile;
 
-public interface IWorkoutProfilePersistence {
-    List<WorkoutProfile> getAllWorkoutProfiles();
+public interface IWorkoutProfilePersistence extends IPersistence{
+    List<WorkoutProfile> getAll();
 }

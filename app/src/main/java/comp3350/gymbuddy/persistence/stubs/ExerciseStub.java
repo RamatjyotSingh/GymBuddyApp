@@ -147,7 +147,7 @@ public class ExerciseStub implements IExercisePersistence {
     }
 
     @Override
-    public List<Exercise> getAllExercises() {
+    public List<Exercise> getAll() {
         return Collections.unmodifiableList(exercises);
     }
 

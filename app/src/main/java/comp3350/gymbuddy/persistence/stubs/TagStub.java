@@ -1,6 +1,8 @@
 package comp3350.gymbuddy.persistence.stubs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import comp3350.gymbuddy.objects.Tag;
@@ -32,6 +34,17 @@ public class TagStub implements ITagPersistence {
         tags.put("Low", new Tag("Low", "lightgray"));
         tags.put("Medium", new Tag("Medium", "blue"));
         tags.put("High", new Tag("High", "red"));
+    }
+
+    @Override
+    public List<Tag> getAll(){
+        List<Tag> tagList = new ArrayList<Tag>();
+
+        for(String key : tags.keySet()){
+            tagList.add(tags.get(key));
+        }
+
+        return tagList;
     }
 
     @Override

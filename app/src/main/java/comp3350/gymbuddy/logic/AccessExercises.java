@@ -14,7 +14,7 @@ public class AccessExercises {
         exercisePersistence = Services.getExercisePersistence();
     }
     public List<Exercise> getAllExercises() {
-        return Collections.unmodifiableList(exercisePersistence.getAllExercises());
+        return Collections.unmodifiableList(exercisePersistence.getAll());
     }
 
     public Exercise getExerciseByID(int id){

@@ -19,14 +19,14 @@ public class ExerciseTest {
 
     @Test
     public void testExerciseListNotEmpty() {
-        List<Exercise> exercises = exerciseStub.getAllExercises();
+        List<Exercise> exercises = exerciseStub.getAll();
         assertNotNull(exercises);
         assertFalse(exercises.isEmpty());
     }
 
     @Test
     public void testExerciseHasName() {
-        List<Exercise> exercises = exerciseStub.getAllExercises();
+        List<Exercise> exercises = exerciseStub.getAll();
         for (Exercise exercise : exercises) {
             assertNotNull(exercise.getName());
             assertFalse(exercise.getName().isEmpty());
