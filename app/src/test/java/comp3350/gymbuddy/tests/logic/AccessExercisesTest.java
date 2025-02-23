@@ -55,22 +55,5 @@ public class AccessExercisesTest {
 
         verify(exercisePersistence).getExerciseByID(0);
     }
-
-    @Test
-    public void testFilterByQuery(){
-        final List<Exercise> filteredList = new ArrayList<>();
-        final List<Exercise> resultList;
-
-        filteredList.add(new Exercise(0, "Push-up", null, null, null));
-
-        when(exercisePersistence.filterByQuery("Pu")).thenReturn(filteredList);
-
-        resultList = accessExercises.filterByQuery("Pu");
-        assertNotNull(resultList);
-        assertFalse(resultList.isEmpty());
-        assertEquals(1, resultList.size());
-
-        verify(exercisePersistence).filterByQuery("Pu");
-    }
 }
 

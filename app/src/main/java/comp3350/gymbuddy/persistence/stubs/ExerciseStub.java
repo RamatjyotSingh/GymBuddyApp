@@ -172,35 +172,4 @@ public class ExerciseStub implements IExercisePersistence {
 
         return result;
     }
-
-    public List<Exercise> filterByQuery(String query){
-        List<Exercise> filteredList = new ArrayList<>();
-
-        if (query.isEmpty()) {
-            filteredList.addAll(exercises);
-        } else {
-            String lowerCaseQuery = query.toLowerCase();
-
-            // go through all exercises
-            for (Exercise exercise : exercises) {
-                // check if the exercise name contains the query
-                if (exercise.getName().toLowerCase().contains(lowerCaseQuery)) {
-                    filteredList.add(exercise);
-                } else {
-                    // this was recommended to change to something more efficient
-                    // we would have to change how we store tags
-
-                    // otherwise look through the exercise's tags for the query
-                    for (Tag tag : exercise.getTags()) {
-                        if (tag.getName().toLowerCase().contains(lowerCaseQuery)) {
-                            filteredList.add(exercise);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return filteredList;
-    }
 }

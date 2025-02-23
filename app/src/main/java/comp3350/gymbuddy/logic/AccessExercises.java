@@ -26,8 +26,4 @@ public class AccessExercises {
     public Exercise getExerciseByID(int id){
         return exercisePersistence.getExerciseByID(id);
     }
-
-    public List<Exercise> filterByQuery(String query){
-        return exercisePersistence.filterByQuery(query);
-    }
 }

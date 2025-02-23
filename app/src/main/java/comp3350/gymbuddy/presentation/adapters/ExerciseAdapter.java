@@ -40,6 +40,7 @@ import comp3350.gymbuddy.R;
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder> {
     private final Context context;
     private final List<Exercise> exerciseList;
+    private final List<Exercise> fullExerciseList;
     private final OnExerciseClickListener clickListener;
 
     public interface OnExerciseClickListener {
@@ -49,6 +50,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     public ExerciseAdapter(Context context, List<Exercise> exerciseList, OnExerciseClickListener clickListener) {
         this.context = context;
         this.exerciseList = new ArrayList<>(exerciseList);
+        this.fullExerciseList = new ArrayList<>(exerciseList);
         this.clickListener = clickListener;
     }
 
@@ -196,8 +198,30 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     }
     public void filter(String query) {
         // send filter request down to DB layer
-        AccessExercises accessExercises = new AccessExercises();
-        List<Exercise> filteredList = accessExercises.filterByQuery(query);
+        List<Exercise> filteredList = new ArrayList<>();
+
+        if (query.isEmpty()) {
+            filteredList.addAll(fullExerciseList);
+        } else {
+            String lowerCaseQuery = query.toLowerCase();
+
+            // go through all exercises
+            for (Exercise exercise : fullExerciseList) {
+                // check if the exercise name contains the query
+                if (exercise.getName().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredList.add(exercise);
+                } else {
+                    // this was recommended to change to something more efficient
+                    // otherwise look through the exercise's tags for the query
+                    for (Tag tag : exercise.getTags()) {
+                        if (tag.getName().toLowerCase().contains(lowerCaseQuery)) {
+                            filteredList.add(exercise);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         if (!filteredList.equals(exerciseList)) {
             exerciseList.clear();

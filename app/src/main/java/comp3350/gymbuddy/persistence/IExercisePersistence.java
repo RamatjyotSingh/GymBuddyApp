@@ -8,5 +8,4 @@ public interface IExercisePersistence extends IPersistence{
     List<Exercise> getAll();
     Exercise getExerciseByName(String name);
     Exercise getExerciseByID(int id);
-    List<Exercise> filterByQuery(String query);
 }
