@@ -40,8 +40,6 @@ import comp3350.gymbuddy.R;
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder> {
     private final Context context;
     private final List<Exercise> exerciseList;
-    private final List<Exercise> fullExerciseList;
-
     private final OnExerciseClickListener clickListener;
 
     public interface OnExerciseClickListener {
@@ -51,7 +49,6 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     public ExerciseAdapter(Context context, List<Exercise> exerciseList, OnExerciseClickListener clickListener) {
         this.context = context;
         this.exerciseList = new ArrayList<>(exerciseList);
-        this.fullExerciseList = new ArrayList<>(exerciseList);
         this.clickListener = clickListener;
     }
 

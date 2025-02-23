@@ -51,24 +51,8 @@ public class ExerciseListActivity extends AppCompatActivity {
 
     private void openExerciseDetail(Exercise exercise) {
         Intent intent = new Intent(this, ExerciseDetailActivity.class);
-        intent.putExtra("title", exercise.getName());
-        if(exercise.getImagePath() != null){
-            intent.putExtra("imagePath", "images/" + exercise.getImagePath());
-        }
-        intent.putStringArrayListExtra("instructions", (ArrayList<String>)exercise.getInstructions());  // Pass instructions
 
-        // Convert tags to String List
-        List<String> tagsList = new ArrayList<>();
-        for (Tag tag : exercise.getTags()) {
-            tagsList.add(tag.getName());
-        }
-        intent.putStringArrayListExtra("tagNames", (ArrayList<String>)tagsList);
-
-        List<String> colorsList = new ArrayList<>();
-        for (Tag tag : exercise.getTags()) {
-            colorsList.add(tag.getColor());
-        }
-        intent.putStringArrayListExtra("tagColors", (ArrayList<String>)colorsList);
+        intent.putExtra("exerciseID", exercise.getID());
 
         startActivity(intent);
     }
