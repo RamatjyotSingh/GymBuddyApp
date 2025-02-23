@@ -74,21 +74,4 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            String exerciseName = data.getStringExtra("exerciseName");
-            ArrayList<String> exerciseInstructions = data.getStringArrayListExtra("exerciseInstructions");
-            String exerciseImage = data.getStringExtra("exerciseImage");
-
-            ArrayList<String> tagsList = data.getStringArrayListExtra("tagNames");
-            ArrayList<String> colorsList = data.getStringArrayListExtra("tagColors");
-
-
-        }
-    }
-
-
 }
