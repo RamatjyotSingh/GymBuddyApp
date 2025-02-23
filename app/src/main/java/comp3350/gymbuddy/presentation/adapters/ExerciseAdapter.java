@@ -199,7 +199,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     }
     public void filter(String query) {
         // send filter request down to DB layer
-        List<Exercise> filteredList = (new AccessExercises()).filterByQuery(query);
+        AccessExercises accessExercises = new AccessExercises();
+        List<Exercise> filteredList = accessExercises.filterByQuery(query);
 
         if (!filteredList.equals(exerciseList)) {
             exerciseList.clear();
