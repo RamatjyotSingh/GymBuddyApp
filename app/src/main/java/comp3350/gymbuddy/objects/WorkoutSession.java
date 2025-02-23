@@ -1,5 +1,6 @@
 package comp3350.gymbuddy.objects;
 
+import java.util.Collections;
 import java.util.List;
 
 public class WorkoutSession {
@@ -13,5 +14,21 @@ public class WorkoutSession {
         this.duration = duration;
         this.sessionItems = sessionItems;
         this.profile = profile;
+    }
+
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    public float getDuration() {
+        return this.duration;
+    }
+
+    public List<SessionItem> getSessionItems() {
+        return Collections.unmodifiableList(this.sessionItems);
+    }
+
+    public WorkoutProfile getWorkoutProfile() {
+        return this.profile;
     }
 }

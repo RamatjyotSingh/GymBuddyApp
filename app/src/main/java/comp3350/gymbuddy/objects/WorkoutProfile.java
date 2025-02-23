@@ -1,5 +1,8 @@
 package comp3350.gymbuddy.objects;
 
+import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
+
+import java.util.Collections;
 import java.util.List;
 
 public class WorkoutProfile {
@@ -20,4 +23,8 @@ public class WorkoutProfile {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getIconPath(){ return this.iconPath; }
+
+    public List<WorkoutItem> getWorkoutItems(){ return Collections.unmodifiableList(workoutItems); }
 }

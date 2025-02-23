@@ -7,4 +7,6 @@ public class TimeBasedSessionItem extends SessionItem {
         super(associatedWorkoutItem);
         this.time = time;
     }
+
+    public double getTime(){ return this.time; }
 }
