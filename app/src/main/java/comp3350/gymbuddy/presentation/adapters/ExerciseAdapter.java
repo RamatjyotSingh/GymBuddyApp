@@ -33,6 +33,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import comp3350.gymbuddy.R;
+import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseBottomSheetFragment;
@@ -198,25 +199,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         }
     }
     public void filter(String query) {
-        List<Exercise> filteredList = new ArrayList<>();
-
-        if (query.isEmpty()) {
-            filteredList.addAll(fullExerciseList);
-        } else {
-            String lowerCaseQuery = query.toLowerCase();
-            for (Exercise exercise : fullExerciseList) {
-                if (exercise.getName().toLowerCase().contains(lowerCaseQuery)) {
-                    filteredList.add(exercise);
-                } else {
-                    for (Tag tag : exercise.getTags()) {
-                        if (tag.getName().toLowerCase().contains(lowerCaseQuery)) {
-                            filteredList.add(exercise);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        // send filter request down to DB layer
+        List<Exercise> filteredList = (new AccessExercises()).filterByQuery(query);
 
         if (!filteredList.equals(exerciseList)) {
             exerciseList.clear();
