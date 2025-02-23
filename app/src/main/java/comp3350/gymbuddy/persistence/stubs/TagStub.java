@@ -1,12 +1,11 @@
 package comp3350.gymbuddy.persistence.stubs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.persistence.ITagPersistence;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TagStub implements ITagPersistence {
     private final Map<String, Tag> tags;

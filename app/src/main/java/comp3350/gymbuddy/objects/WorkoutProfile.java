@@ -7,10 +7,10 @@ public class WorkoutProfile {
     private String iconPath;
     private List<WorkoutItem> workoutItems;
 
-    public WorkoutProfile(String name, String icon_path, List<WorkoutItem> workout_items) {
+    public WorkoutProfile(String name, String iconPath, List<WorkoutItem> workoutItems) {
         this.name = name;
-        this.iconPath = icon_path;
-        this.workoutItems = workout_items;
+        this.iconPath = iconPath;
+        this.workoutItems = workoutItems;
     }
 
     public String getName() {

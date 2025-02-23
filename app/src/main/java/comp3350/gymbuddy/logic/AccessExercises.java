@@ -1,13 +1,11 @@
 package comp3350.gymbuddy.logic;
 
-import comp3350.gymbuddy.application.Services;
-import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.Tag;
-import comp3350.gymbuddy.persistence.IExercisePersistence;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import comp3350.gymbuddy.application.Services;
+import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.persistence.IExercisePersistence;
 
 public class AccessExercises {
     final private IExercisePersistence exercisePersistence;
