@@ -11,7 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import comp3350.gymbuddy.temp.logic.AccessExercises;
+import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.persistence.IExercisePersistence;
 
