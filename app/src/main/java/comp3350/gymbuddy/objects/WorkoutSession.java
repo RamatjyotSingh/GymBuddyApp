@@ -4,24 +4,24 @@ import java.util.Collections;
 import java.util.List;
 
 public class WorkoutSession {
-    private final long timestamp;
-    private final float duration;
+    private final long startTime;
+    private final long endTime;
     private final List<SessionItem> sessionItems;
     private final WorkoutProfile profile;
 
-    public WorkoutSession(long timestamp, float duration, List<SessionItem> sessionItems, WorkoutProfile profile) {
-        this.timestamp = timestamp;
-        this.duration = duration;
+    public WorkoutSession(long startTime, long endTime, List<SessionItem> sessionItems, WorkoutProfile profile) {
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.sessionItems = sessionItems;
         this.profile = profile;
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public long getStartTime() {
+        return this.startTime;
     }
 
     public float getDuration() {
-        return this.duration;
+        return (float)(this.endTime - this.startTime);
     }
 
     public List<SessionItem> getSessionItems() {

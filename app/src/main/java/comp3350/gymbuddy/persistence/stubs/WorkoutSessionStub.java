@@ -23,7 +23,7 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
         Date now = new Date();
         Random rand = new Random();
 
-        sessions.add(new WorkoutSession(now.getTime(), 100*(rand.nextFloat()+1), sessionItems, profiles.get(0)));
+        sessions.add(new WorkoutSession(now.getTime(), now.getTime()+ rand.nextLong(), sessionItems, profiles.get(0)));
     }
 
     public List<WorkoutSession> getAll(){

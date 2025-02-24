@@ -1,8 +1,8 @@
 package comp3350.gymbuddy.objects;
 
 public class WorkoutItem {
-    private Exercise exercise;
-    private int sets;
+    private final Exercise exercise;
+    private final int sets;
 
     public WorkoutItem(Exercise exercise, int sets) {
         this.exercise = exercise;

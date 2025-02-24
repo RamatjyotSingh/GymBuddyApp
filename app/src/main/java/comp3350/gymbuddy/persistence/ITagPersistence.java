@@ -6,5 +6,6 @@ import comp3350.gymbuddy.objects.Tag;
 
 public interface ITagPersistence extends IPersistence{
     List<Tag> getAll();
-    Tag getTagByName(String name);
+
+    List<Tag> getTagsByExerciseID(int ExerciseID);
 }
