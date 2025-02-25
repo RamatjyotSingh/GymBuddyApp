@@ -25,7 +25,7 @@ public class SessionItemStub implements ISessionItemPersistence {
         sessionItems = new ArrayList<>();
 
         AccessWorkoutItems accessWorkoutItems = new AccessWorkoutItems();
-        List<WorkoutItem> items = accessWorkoutItems.getAllWorkoutItems();
+        List<WorkoutItem> items = accessWorkoutItems.getAll();
 
         // Create random number generator.
         Random randNum = new Random();

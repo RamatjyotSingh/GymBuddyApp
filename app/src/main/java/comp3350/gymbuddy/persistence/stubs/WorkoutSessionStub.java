@@ -22,8 +22,8 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
         AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
         AccessSessionItems accessSessionItems = new AccessSessionItems();
 
-        List<WorkoutProfile> profiles = accessWorkoutProfiles.getAllWorkoutProfiles();
-        List<SessionItem> sessionItems = accessSessionItems.getAllSessionItems();
+        List<WorkoutProfile> profiles = accessWorkoutProfiles.getAll();
+        List<SessionItem> sessionItems = accessSessionItems.getAll();
         Date now = new Date();
         Random rand = new Random();
 

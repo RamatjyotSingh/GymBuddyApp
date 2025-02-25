@@ -3,7 +3,11 @@ package comp3350.gymbuddy.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
 import comp3350.gymbuddy.tests.logic.AccessExercisesTest;
+import comp3350.gymbuddy.tests.logic.AccessSessionItemsTest;
+import comp3350.gymbuddy.tests.logic.AccessWorkoutItemsTest;
+import comp3350.gymbuddy.tests.logic.AccessWorkoutProfilesTest;
 import comp3350.gymbuddy.tests.objects.ExerciseTest;
 import comp3350.gymbuddy.tests.objects.RepBasedSessionItemTest;
 import comp3350.gymbuddy.tests.objects.RepBasedWorkoutItemTest;
@@ -17,6 +21,9 @@ import comp3350.gymbuddy.tests.objects.WorkoutSessionTest;
 @Suite.SuiteClasses({
         // logic tests
         AccessExercisesTest.class,
+        AccessSessionItemsTest.class,
+        AccessWorkoutItemsTest.class,
+        AccessWorkoutProfilesTest.class,
 
         // object tests
         ExerciseTest.class,

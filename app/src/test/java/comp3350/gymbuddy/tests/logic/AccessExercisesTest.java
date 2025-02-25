@@ -20,7 +20,7 @@ public class AccessExercisesTest {
     private IExercisePersistence exercisePersistence;
 
     @Before
-    public void setUp() {
+    public void setup() {
         // Initialize before each test
         exercisePersistence = mock(IExercisePersistence.class);
         accessExercises = new AccessExercises(exercisePersistence);
@@ -30,15 +30,17 @@ public class AccessExercisesTest {
         final List<Exercise> exerciseList = new ArrayList<>();
         final List<Exercise> resultList;
 
-        exerciseList.add(new Exercise(0, "Push-up", null, null, null));
+        final Exercise exercise = new Exercise(0, "Push-up", null, null, null);
+        exerciseList.add(exercise);
 
         // define the behaviour of the mock inside the logic object when this method is called with these arguments
         when(exercisePersistence.getAll()).thenReturn(exerciseList);
 
-        resultList = accessExercises.getAllExercises();
+        resultList = accessExercises.getAll();
         assertNotNull(resultList);
         assertFalse(resultList.isEmpty());
         assertEquals(1, resultList.size());
+        assertEquals(exercise, resultList.get(0));
 
         verify(exercisePersistence).getAll();
     }
