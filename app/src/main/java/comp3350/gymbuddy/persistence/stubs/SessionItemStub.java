@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
-import comp3350.gymbuddy.application.Services;
+import comp3350.gymbuddy.logic.AccessWorkoutItems;
 import comp3350.gymbuddy.objects.RepBasedSessionItem;
 import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
 import comp3350.gymbuddy.objects.SessionItem;
@@ -24,7 +24,8 @@ public class SessionItemStub implements ISessionItemPersistence {
     public SessionItemStub() {
         sessionItems = new ArrayList<>();
 
-        List<WorkoutItem> items = Services.getWorkoutItemPersistence().getAll();
+        AccessWorkoutItems accessWorkoutItems = new AccessWorkoutItems();
+        List<WorkoutItem> items = accessWorkoutItems.getAllWorkoutItems();
 
         // Create random number generator.
         Random randNum = new Random();
