@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.TimeBasedSessionItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 

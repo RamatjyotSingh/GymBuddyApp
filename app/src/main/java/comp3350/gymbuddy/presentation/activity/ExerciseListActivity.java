@@ -8,13 +8,11 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.presentation.adapters.ExerciseAdapter;
 
 public class ExerciseListActivity extends AppCompatActivity {

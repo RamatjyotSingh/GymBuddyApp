@@ -1,44 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="blue_500">#2196F3</color> <!-- Primary blue color -->
-    <color name="blue_700">#1976D2</color> <!-- Darker blue -->
-    <color name="blue_200">#81D4FA</color> <!-- Light blue -->
-    <color name="blue_400">#29B6F6</color> <!-- Slightly lighter blue -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+        <color name="purple_200">#FFBB86FC</color>
+        <color name="purple_500">#FF6200EE</color>
+        <color name="purple_700">#FF3700B3</color>
+        <color name="teal_200">#FF03DAC5</color>
+        <color name="teal_700">#FF018786</color>
+        <color name="blue_500">#2196F3</color> <!-- Primary blue color -->
+        <color name="blue_700">#1976D2</color> <!-- Darker blue -->
+        <color name="blue_200">#81D4FA</color> <!-- Light blue -->
+        <color name="blue_400">#29B6F6</color> <!-- Slightly lighter blue -->
+        <color name="black">#FF000000</color>
+        <color name="white">#FFFFFFFF</color>
 
-    <!-- Light background colors for chips -->
-    <color name="chipBackgroundUpperBody">#D1E8FF</color> <!-- Light Blue for Upper Body -->
-    <color name="chipBackgroundLowerBody">#E9D8FD</color> <!-- Light Purple for Lower Body -->
-    <color name="chipBackgroundCore">#B2F5EA</color> <!-- Light Teal for Core -->
-    <color name="chipBackgroundCardio">#FFEDD5</color> <!-- Light Orange for Cardio -->
-    <color name="chipBackgroundFullBody">#DCFCE7</color> <!-- Light Green for Full Body -->
 
-    <!-- Light background colors for difficulty levels -->
-    <color name="chipBackgroundBeginner">#DCFCE7</color> <!-- Light Green for Beginner -->
-    <color name="chipBackgroundIntermediate">#FEF3C7</color> <!-- Light Yellow for Intermediate -->
-    <color name="chipBackgroundAdvanced">#FEE2E2</color> <!-- Light Red for Advanced -->
+        <!-- Muscle Groups -->
+        <color name="tag_muscle_upper_body_bg">#D1E8FF</color> <!-- Light Blue for Upper Body -->
+        <color name="tag_muscle_upper_body_text">#1D4ED8</color> <!-- Dark Blue for Upper Body -->
+        <color name="tag_muscle_lower_body_bg">#E9D8FD</color> <!-- Light Purple for Lower Body -->
+        <color name="tag_muscle_lower_body_text">#6B21A8</color> <!-- Dark Purple for Lower Body -->
+        <color name="tag_muscle_core_bg">#B2F5EA</color> <!-- Light Teal for Core -->
+        <color name="tag_muscle_core_text">#0D9488</color> <!-- Dark Teal for Core -->
+        <color name="tag_muscle_full_body_bg">#DCFCE7</color> <!-- Light Green for Full Body -->
+        <color name="tag_muscle_full_body_text">#15803D</color> <!-- Dark Green for Full Body -->
 
-    <!-- Dark text colors for good contrast -->
-    <!-- Muscles Worked -->
-    <color name="chipTextUpperBody">#1D4ED8</color> <!-- Dark Blue for Upper Body -->
-    <color name="chipTextLowerBody">#6B21A8</color> <!-- Dark Purple for Lower Body -->
-    <color name="chipTextCore">#0D9488</color> <!-- Dark Teal for Core -->
-    <color name="chipTextCardio">#D97706</color> <!-- Dark Orange for Cardio -->
-    <color name="chipTextFullBody">#15803D</color> <!-- Dark Green for Full Body -->
+        <!-- Difficulty Levels -->
+        <color name="tag_difficulty_beginner_bg">#DCFCE7</color> <!-- Light Green for Beginner -->
+        <color name="tag_difficulty_beginner_text">#10B981</color> <!-- Dark Green for Beginner -->
+        <color name="tag_difficulty_intermediate_bg">#FEF3C7</color> <!-- Light Yellow for Intermediate -->
+        <color name="tag_difficulty_intermediate_text">#F59E0B</color> <!-- Dark Yellow for Intermediate -->
+        <color name="tag_difficulty_advanced_bg">#FEE2E2</color> <!-- Light Red for Advanced -->
+        <color name="tag_difficulty_advanced_text">#DC2626</color> <!-- Dark Red for Advanced -->
 
-    <!-- Difficulty Levels -->
-    <color name="chipTextBeginner">#10B981</color> <!-- Dark Green for Beginner -->
-    <color name="chipTextIntermediate">#F59E0B</color> <!-- Dark Yellow for Intermediate -->
-    <color name="chipTextAdvanced">#DC2626</color> <!-- Dark Red for Advanced -->
+        <!-- Exercise Types -->
+        <color name="tag_type_cardio_bg">#FFEDD5</color> <!-- Light Orange for Cardio -->
+        <color name="tag_type_cardio_text">#D97706</color> <!-- Dark Orange for Cardio -->
+        <color name="tag_type_strength_bg">#FFD6E8</color> <!-- Light Pink for Strength -->
+        <color name="tag_type_strength_text">#DB2777</color> <!-- Dark Pink for Strength -->
+        <color name="tag_type_flexibility_bg">#D1FAE5</color> <!-- Light Mint for Flexibility -->
+        <color name="tag_type_flexibility_text">#059669</color> <!-- Dark Mint for Flexibility -->
+        <color name="tag_type_balance_bg">#E0E7FF</color> <!-- Light Lavender for Balance -->
+        <color name="tag_type_balance_text">#4338CA</color> <!-- Dark Lavender for Balance -->
+        <color name="tag_type_endurance_bg">#FFE4E6</color> <!-- Light Coral for Endurance -->
+        <color name="tag_type_endurance_text">#DB2777</color> <!-- Dark Coral for Endurance -->
 
-    <color name="chipBackgroundNoEquipment">#E0F2FE</color> <!-- Light Blue for No Equipment -->
-    <color name="chipTextNoEquipment">#1E3A8A</color> <!-- Darker Blue for No Equipment -->
+        <!-- Equipment -->
+        <color name="tag_equipment_no_equipment_bg">#E0F2FE</color> <!-- Light Blue for No Equipment -->
+        <color name="tag_equipment_no_equipment_text">#1E3A8A</color> <!-- Darker Blue for No Equipment -->
+        <color name="tag_equipment_dumbbells_bg">#FCE7F3</color> <!-- Light Pink for Dumbbells -->
+        <color name="tag_equipment_dumbbells_text">#BE185D</color> <!-- Dark Pink for Dumbbells -->
+        <color name="tag_equipment_resistance_bands_bg">#FEF3C7</color> <!-- Light Yellow for Resistance Bands -->
+        <color name="tag_equipment_resistance_bands_text">#D97706</color> <!-- Dark Yellow for Resistance Bands -->
 
 </resources>

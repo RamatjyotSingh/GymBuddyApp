@@ -47,7 +47,7 @@ dependencies {
     // RecyclerView & CardView
     implementation(libs.recyclerview)
     implementation(libs.cardview)
-
+    implementation(libs.hsqldb)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.mockito.core)
     androidTestImplementation(libs.ext.junit)

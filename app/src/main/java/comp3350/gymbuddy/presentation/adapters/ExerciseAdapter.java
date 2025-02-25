@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -31,7 +32,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
 
-import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseBottomSheetFragment;
@@ -78,9 +78,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         List<Tag> tags = exercise.getTags();
         for (int i = 0; i < Math.min(tags.size(), 2); i++) {
             Tag tag = tags.get(i);
-            Chip chip = new Chip(context);
-
-            chip.setText(tag.getName());
+            Chip chip = new Chip(context);;
 
             setTagStyle(tag, chip);
 
@@ -101,38 +99,14 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     private void setTagStyle(Tag tag, Chip chip) {
 
-        int textColor;
-        int backgroundColor;
+        String name = tag.getName();
+        String textColor = tag.getTextColor();
+        String backgroundColor = tag.getBgColor();
 
-        if (tag.getName().equalsIgnoreCase("upper body")) {
-            backgroundColor = ContextCompat.getColor(context, R.color.chipBackgroundUpperBody);
-            textColor = ContextCompat.getColor(context, R.color.chipTextUpperBody);
-        } else if (tag.getName().equalsIgnoreCase("lower body")) {
-            backgroundColor = ContextCompat.getColor(context, R.color.chipBackgroundLowerBody);
-            textColor = ContextCompat.getColor(context, R.color.chipTextLowerBody);
-        } else if (tag.getName().equalsIgnoreCase("core")) {
-            backgroundColor = ContextCompat.getColor(context, R.color.chipBackgroundCore);
-            textColor = ContextCompat.getColor(context, R.color.chipTextCore);
-        }
-        else if (tag.getName().equalsIgnoreCase("beginner")) {
-            backgroundColor = ContextCompat.getColor(context, R.color.chipBackgroundBeginner);
-            textColor = ContextCompat.getColor(context, R.color.chipTextBeginner);
-        } else if (tag.getName().equalsIgnoreCase("intermediate")) {
-            backgroundColor = ContextCompat.getColor(context, R.color.chipBackgroundIntermediate);
-            textColor = ContextCompat.getColor(context, R.color.chipTextIntermediate);
-        } else if (tag.getName().equalsIgnoreCase("advanced")) {
-            backgroundColor = ContextCompat.getColor(context, R.color.chipBackgroundAdvanced);
-            textColor = ContextCompat.getColor(context, R.color.chipTextAdvanced);
-        }
-        // Default styling if the tag doesn't match any specific category
-        else {
-            backgroundColor = ContextCompat.getColor(context, R.color.chipBackgroundNoEquipment);
-            textColor = ContextCompat.getColor(context, R.color.chipTextNoEquipment);
-        }
 
-        // Set chip background color and text color
-        chip.setChipBackgroundColor(ColorStateList.valueOf(backgroundColor));
-        chip.setTextColor(textColor);
+        chip.setText(name);
+        chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(backgroundColor)));
+        chip.setTextColor(Color.parseColor(textColor));
     }
     private void loadImage(String imagePath, ShapeableImageView imageView) {
         if (imagePath.startsWith("http")) {

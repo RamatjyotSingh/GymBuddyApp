@@ -1,48 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true">
 
-    <Button
-        android:id="@+id/btnSelectExercise"
+    <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Exercise" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/edtSets"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sets"
-        android:inputType="number" />
+        <Button
+            android:id="@+id/btnSelectExercise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Exercise" />
 
-    <EditText
-        android:id="@+id/edtReps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Reps"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/edtSets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sets"
+            android:inputType="number" />
 
-    <EditText
-        android:id="@+id/edtWeight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Weight (kg, optional)"
-        android:inputType="numberDecimal" />
+        <EditText
+            android:id="@+id/edtReps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Reps"
+            android:inputType="number" />
 
-    <EditText
-        android:id="@+id/edtTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Time (seconds, optional)"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/edtWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Weight (kg, optional)"
+            android:inputType="numberDecimal" />
 
-    <Button
-        android:id="@+id/btnAddWorkoutItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add" />
-</LinearLayout>
+        <EditText
+            android:id="@+id/edtTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Time (seconds, optional)"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btnAddWorkoutItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

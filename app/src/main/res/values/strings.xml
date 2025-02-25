@@ -10,66 +10,33 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="search_hint">Search Exercises...</string>
+    <string name="search_hint">Search Exercises…</string>
     <string name="default_string">Default String</string>
-    <string name="push_up_name">Push-Up</string>
-    <string name="push_up_difficulty">Medium</string>
-    <string name="push_up_primary_muscles">Chest, Triceps</string>
-    <string name="push_up_secondary_muscles">Shoulders, Core</string>
-    <string name="push_up_instructions">Start in a plank position, lower your body until your chest nearly touches the floor, then push back up.</string>
-
-    <string name="squat_name">Squat</string>
-    <string name="squat_difficulty">Medium</string>
-    <string name="squat_primary_muscles">Quadriceps, Hamstrings, Glutes</string>
-    <string name="squat_secondary_muscles">Core, Lower Back</string>
-    <string name="squat_instructions">Stand with feet shoulder-width apart, lower your body by bending your knees, then return to standing.</string>
-
-    <string name="pull_up_name">Pull-Up</string>
-    <string name="pull_up_difficulty">High</string>
-    <string name="pull_up_primary_muscles">Back, Biceps</string>
-    <string name="pull_up_secondary_muscles">Shoulders, Core</string>
-    <string name="pull_up_instructions">Grab a pull-up bar with palms facing away, pull yourself up until your chin is above the bar, then lower yourself down.</string>
-
-    <string name="lunges_name">Lunges</string>
-    <string name="lunges_difficulty">Medium</string>
-    <string name="lunges_primary_muscles">Quadriceps, Hamstrings, Glutes</string>
-    <string name="lunges_secondary_muscles">Core, Balance</string>
-    <string name="lunges_instructions">Step forward with one leg, lower your hips until both knees are bent at 90 degrees, then push back to starting position.</string>
-
-    <string name="deadlift_name">Deadlift</string>
-    <string name="deadlift_difficulty">High</string>
-    <string name="deadlift_primary_muscles">Hamstrings, Glutes, Lower Back</string>
-    <string name="deadlift_secondary_muscles">Core, Forearms</string>
-    <string name="deadlift_instructions">Stand with feet hip-width apart, grip the barbell, lift by extending your hips and knees, then lower it back.</string>
-
-    <string name="bench_press_name">Bench Press</string>
-    <string name="bench_press_difficulty">High</string>
-    <string name="bench_press_primary_muscles">Chest, Triceps</string>
-    <string name="bench_press_secondary_muscles">Shoulders</string>
-    <string name="bench_press_instructions">Lie on a bench, grip the barbell, lower it to your chest, then press it back up.</string>
-
-    <string name="bicep_curl_name">Bicep Curl</string>
-    <string name="bicep_curl_difficulty">Low</string>
-    <string name="bicep_curl_primary_muscles">Biceps</string>
-    <string name="bicep_curl_secondary_muscles">Forearms</string>
-    <string name="bicep_curl_instructions">Hold a dumbbell in each hand, curl your arms upward while keeping your elbows stationary, then lower back down.</string>
-
-    <string name="shoulder_press_name">Shoulder Press</string>
-    <string name="shoulder_press_difficulty">Medium</string>
-    <string name="shoulder_press_primary_muscles">Shoulders, Triceps</string>
-    <string name="shoulder_press_secondary_muscles">Upper Chest</string>
-    <string name="shoulder_press_instructions">Hold dumbbells at shoulder height, press them overhead until arms are fully extended, then lower back down.</string>
-
-    <string name="triceps_dips_name">Triceps Dips</string>
-    <string name="triceps_dips_difficulty">High</string>
-    <string name="triceps_dips_primary_muscles">Triceps</string>
-    <string name="triceps_dips_secondary_muscles">Chest, Shoulders</string>
-    <string name="triceps_dips_instructions">Position yourself on parallel bars, lower your body by bending elbows, then push back up.</string>
-
-    <string name="calf_raise_name">Calf Raise</string>
-    <string name="calf_raise_difficulty">Low</string>
-    <string name="calf_raise_primary_muscles">Calves</string>
-    <string name="calf_raise_secondary_muscles">Ankles</string>
-    <string name="calf_raise_instructions">Stand with feet flat, raise your heels until standing on toes, then lower back down.</string>
     <string name="view_more">view more</string>
+
+    <!-- Exercise Names   -->
+
+        <!-- Muscle Groups -->
+        <string name="tag_muscle_upper_body">Upper Body</string>
+        <string name="tag_muscle_lower_body">Lower Body</string>
+        <string name="tag_muscle_core">Core</string>
+        <string name="tag_muscle_full_body">Full Body</string>
+
+        <!-- Difficulty Levels -->
+        <string name="tag_difficulty_beginner">Beginner</string>
+        <string name="tag_difficulty_intermediate">Intermediate</string>
+        <string name="tag_difficulty_advanced">Advanced</string>
+
+        <!-- Exercise Types -->
+        <string name="tag_type_cardio">Cardio</string>
+        <string name="tag_type_strength">Strength</string>
+        <string name="tag_type_flexibility">Flexibility</string>
+        <string name="tag_type_balance">Balance</string>
+        <string name="tag_type_endurance">Endurance</string>
+
+        <!-- Equipment -->
+        <string name="tag_equipment_no_equipment">No Equipment</string>
+        <string name="tag_equipment_dumbbells">Dumbbells</string>
+        <string name="tag_equipment_resistance_bands">Resistance Bands</string>
+
 </resources>

@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -61,7 +62,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         Exercise exercise = accessExercises.getExerciseByID(exerciseID);
 
         exerciseTitle.setText(exercise.getName());
-
+        Log.d("ExerciseDetailActivity", "Exercise image: " + exercise.getImagePath());
         if(exercise.getImagePath() != null){
             loadImage(exercise.getImagePath(), exerciseImage);
         }
@@ -72,46 +73,12 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
         for (int i = 0; i < tagList.size(); i++) {
             Chip chip = new Chip(this);
-            chip.setText(tagList.get(i).getName());
 
-            switch (tagList.get(i).getName()) {
-                case "Upper Body":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundUpperBody)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextUpperBody));
-                    break;
-                case "Lower Body":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundLowerBody)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextLowerBody));
-                    break;
-                case "Core":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundCore)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextCore));
-                    break;
-                case "Cardio":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundCardio)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextCardio));
-                    break;
-                case "Full Body":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundFullBody)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextFullBody));
-                    break;
-                case "Beginner":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundBeginner)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextBeginner));
-                    break;
-                case "Intermediate":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundIntermediate)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextIntermediate));
-                    break;
-                case "Advanced":
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundAdvanced)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextAdvanced));
-                    break;
-                default:
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundNoEquipment)));
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextNoEquipment));
-                    break;
-            }
+            chip.setText(tagList.get(i).getName());
+            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(tagList.get(i).getBgColor())));
+            chip.setTextColor(ColorStateList.valueOf(Color.parseColor(tagList.get(i).getTextColor())));
+
+
 
             tagContainer.addView(chip);
         }
@@ -140,21 +107,27 @@ public class ExerciseDetailActivity extends AppCompatActivity {
             num.setTextColor(Color.parseColor("#1E40AF"));
             num.setPadding(16, 8, 16, 8);
 
-            TextView instruction = new TextView(exerciseInstructions.getContext());
-            instruction.setText(instructionText);
-            instruction.setTextSize(18);
-
-            LinearLayout.LayoutParams instructionParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            instructionParams.setMargins(16, 8, 16, 8);
-            instruction.setLayoutParams(instructionParams);
+            TextView instruction = getInstruction(exerciseInstructions, instructionText);
 
             instructionLine.addView(num);
             instructionLine.addView(instruction);
             exerciseInstructions.addView(instructionLine);
         }
+    }
+
+    @NonNull
+    private static TextView getInstruction(LinearLayout exerciseInstructions, String instructionText) {
+        TextView instruction = new TextView(exerciseInstructions.getContext());
+        instruction.setText(instructionText);
+        instruction.setTextSize(18);
+
+        LinearLayout.LayoutParams instructionParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        instructionParams.setMargins(16, 8, 16, 8);
+        instruction.setLayoutParams(instructionParams);
+        return instruction;
     }
 
     private void loadImage(String imagePath, ShapeableImageView imageView) {
@@ -186,8 +159,9 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     }
 
     private void loadImageFromAssets(String imagePath, ShapeableImageView imageView) {
+        String path = "images/" + imagePath;
         try {
-            InputStream inputStream = getAssets().open(imagePath);
+            InputStream inputStream = getAssets().open(path);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             imageView.setImageBitmap(bitmap);
             inputStream.close();

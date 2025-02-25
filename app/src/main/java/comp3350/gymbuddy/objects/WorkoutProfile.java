@@ -1,14 +1,12 @@
 package comp3350.gymbuddy.objects;
 
-import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
-
 import java.util.Collections;
 import java.util.List;
 
 public class WorkoutProfile {
     private String name;
-    private String iconPath;
-    private List<WorkoutItem> workoutItems;
+    private final String iconPath;
+    private final List<WorkoutItem> workoutItems;
 
     public WorkoutProfile(String name, String iconPath, List<WorkoutItem> workoutItems) {
         this.name = name;

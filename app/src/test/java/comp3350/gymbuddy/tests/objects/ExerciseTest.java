@@ -15,7 +15,7 @@ public class ExerciseTest {
     public void testExercise(){
         Exercise exercise;
 
-        List<Tag> tagList = List.of(new Tag("Chest", "blue"));
+        List<Tag> tagList = List.of(new Tag(Tag.TagType.MUSCLE_GROUP,"Chest", "#000","#fff"));
         List<String> instructions = List.of("Placeholder");
 
         exercise = new Exercise(0, "Push-up", tagList, instructions, "path");
