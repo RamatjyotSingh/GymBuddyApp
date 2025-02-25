@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -24,12 +25,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import comp3350.gymbuddy.R;
+import comp3350.gymbuddy.logic.AccessExercises;
+import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.objects.Tag;
 
 public class ExerciseDetailActivity extends AppCompatActivity {
 
@@ -52,39 +56,25 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        String title = intent.getStringExtra("title");
-        String imagePath = intent.getStringExtra("imagePath");
-        ArrayList<String> instructions = intent.getStringArrayListExtra("instructions");
-        ArrayList<String> tagNames = intent.getStringArrayListExtra("tagNames");
-        ArrayList<String> tagColors = intent.getStringArrayListExtra("tagColors");
+        AccessExercises accessExercises = new AccessExercises();
+        int exerciseID = intent.getIntExtra("exerciseID", 0);
+        Exercise exercise = accessExercises.getExerciseByID(exerciseID);
 
+        exerciseTitle.setText(exercise.getName());
 
-
-        if (title != null) {
-            exerciseTitle.setText(title);
+        if(exercise.getImagePath() != null){
+            loadImage(exercise.getImagePath(), exerciseImage);
         }
 
+        setInstructions(exercise.getInstructions(), exerciseInstructions);
 
-        if(imagePath != null){
-            loadImage(imagePath, exerciseImage);
-        }
+        List<Tag> tagList = exercise.getTags();
 
-
-        if (instructions != null) {
-            setInstructions(instructions, exerciseInstructions);
-        }
-
-        assert tagColors != null;
-        assert tagNames != null;
-        if (tagColors.size() != tagNames.size()) {
-            throw new RuntimeException();
-        }
-
-        for (int i = 0; i < tagNames.size(); i++) {
+        for (int i = 0; i < tagList.size(); i++) {
             Chip chip = new Chip(this);
-            chip.setText(tagNames.get(i));
+            chip.setText(tagList.get(i).getName());
 
-            switch (tagNames.get(i)) {
+            switch (tagList.get(i).getName()) {
                 case "Upper Body":
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipBackgroundUpperBody)));
                     chip.setTextColor(ContextCompat.getColor(this, R.color.chipTextUpperBody));
@@ -130,7 +120,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     }
 
 
-    private void setInstructions(ArrayList<String> instructions, LinearLayout exerciseInstructions) {
+    private void setInstructions(List<String> instructions, LinearLayout exerciseInstructions) {
         exerciseInstructions.removeAllViews(); // Clear previous instructions
 
         for (int i = 0; i < instructions.size(); i++) {

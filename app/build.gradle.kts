@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -50,6 +49,7 @@ dependencies {
     implementation(libs.cardview)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.mockito.core)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

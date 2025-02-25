@@ -24,7 +24,7 @@ public class SessionItemStub implements ISessionItemPersistence {
     public SessionItemStub() {
         sessionItems = new ArrayList<>();
 
-        List<WorkoutItem> items = Services.getWorkoutItemPersistence().getAllWorkoutItems();
+        List<WorkoutItem> items = Services.getWorkoutItemPersistence().getAll();
 
         // Create random number generator.
         Random randNum = new Random();
@@ -52,7 +52,7 @@ public class SessionItemStub implements ISessionItemPersistence {
         }
     }
 
-    public List<SessionItem> getAllSessionItems()
+    public List<SessionItem> getAll()
     {
         return Collections.unmodifiableList(sessionItems);
     }

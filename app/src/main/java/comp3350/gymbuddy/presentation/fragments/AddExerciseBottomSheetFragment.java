@@ -13,12 +13,10 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
-import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.Tag;
+import comp3350.gymbuddy.R;
+
+
 public class AddExerciseBottomSheetFragment extends BottomSheetDialogFragment {
 
     private Exercise exercise;
