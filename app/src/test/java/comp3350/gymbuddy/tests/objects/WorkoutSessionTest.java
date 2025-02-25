@@ -24,7 +24,7 @@ public class WorkoutSessionTest {
 
         WorkoutProfile profile = new WorkoutProfile("Profile 1", "path", null);
 
-        session = new WorkoutSession(100, 10, sessionItemList, profile);
+        session = new WorkoutSession(100, 110, sessionItemList, profile);
         assertNotNull(session);
         assertEquals(100, session.getStartTime());
         assertEquals(10, session.getDuration(), 0);
