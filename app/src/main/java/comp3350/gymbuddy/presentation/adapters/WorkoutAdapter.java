@@ -16,7 +16,7 @@ import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
-    private List<WorkoutItem> workoutItems;
+    private final List<WorkoutItem> workoutItems;
 
     public WorkoutAdapter(List<WorkoutItem> workoutItems) {
         this.workoutItems = workoutItems;
@@ -43,7 +43,8 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
             if (repItem.getWeight() > 0) {
                 details += " | " + repItem.getWeight() + " kg";
             }
-        } else if (item instanceof TimeBasedWorkoutItem) {
+        }
+        else if (item instanceof TimeBasedWorkoutItem) {
             var timeItem = (TimeBasedWorkoutItem)item;
             details = timeItem.getTime() + " sec";
         }

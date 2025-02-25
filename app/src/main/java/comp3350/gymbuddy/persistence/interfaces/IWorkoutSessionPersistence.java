@@ -1,9 +1,9 @@
-package comp3350.gymbuddy.persistence;
+package comp3350.gymbuddy.persistence.interfaces;
 
 import comp3350.gymbuddy.objects.WorkoutSession;
 
 import java.util.List;
 
 public interface IWorkoutSessionPersistence extends IPersistence{
-    public List<WorkoutSession> getAll();
+    List<WorkoutSession> getAll();
 }

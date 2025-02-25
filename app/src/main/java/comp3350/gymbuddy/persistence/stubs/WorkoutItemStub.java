@@ -7,7 +7,7 @@ import java.util.List;
 import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
-import comp3350.gymbuddy.persistence.IWorkoutItemPersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutItemPersistence;
 
 public class WorkoutItemStub implements IWorkoutItemPersistence {
     final private List<RepBasedWorkoutItem> workoutItems;

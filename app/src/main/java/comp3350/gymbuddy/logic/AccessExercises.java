@@ -5,7 +5,7 @@ import java.util.List;
 
 import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.persistence.IExercisePersistence;
+import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
 
 public class AccessExercises {
     private IExercisePersistence exercisePersistence;

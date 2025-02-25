@@ -1,11 +1,11 @@
 package comp3350.gymbuddy.application;
 
-import comp3350.gymbuddy.persistence.IExercisePersistence;
-import comp3350.gymbuddy.persistence.ITagPersistence;
-import comp3350.gymbuddy.persistence.ISessionItemPersistence;
-import comp3350.gymbuddy.persistence.IWorkoutItemPersistence;
-import comp3350.gymbuddy.persistence.IWorkoutProfilePersistence;
-import comp3350.gymbuddy.persistence.IWorkoutSessionPersistence;
+import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
+import comp3350.gymbuddy.persistence.interfaces.ITagPersistence;
+import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutItemPersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionPersistence;
 import comp3350.gymbuddy.persistence.stubs.ExerciseStub;
 import comp3350.gymbuddy.persistence.stubs.TagStub;
 import comp3350.gymbuddy.persistence.stubs.SessionItemStub;
