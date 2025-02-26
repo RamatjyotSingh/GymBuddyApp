@@ -2,12 +2,10 @@ package comp3350.gymbuddy.presentation.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -17,7 +15,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.Objects;
 
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.R;
@@ -34,7 +31,7 @@ public class AddExerciseBottomSheetFragment extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        setRetainInstance(true);
+
 
         View view = inflater.inflate(R.layout.fragment_add_exercise_bottom_sheet, container, false);
 
