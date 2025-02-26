@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.persistence;
+package comp3350.gymbuddy.persistence.interfaces;
 
 import java.util.List;
 

@@ -1,55 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+        <!-- Primary Blue Colors -->
+        <color name="blue_500">#2962FF</color> <!-- Primary blue (vibrant, cool tone) -->
+        <color name="blue_700">#0039CB</color> <!-- Darker blue (deep blue, fits well with dark theme) -->
+        <color name="blue_200">#82B1FF</color> <!-- Light blue (cool, refreshing tone) -->
+        <color name="blue_400">#448AFF</color> <!-- Slightly lighter blue (crisp and cool) -->
 
-        <color name="purple_200">#FFBB86FC</color>
-        <color name="purple_500">#FF6200EE</color>
-        <color name="purple_700">#FF3700B3</color>
-        <color name="teal_200">#FF03DAC5</color>
-        <color name="teal_700">#FF018786</color>
-        <color name="blue_500">#2196F3</color> <!-- Primary blue color -->
-        <color name="blue_700">#1976D2</color> <!-- Darker blue -->
-        <color name="blue_200">#81D4FA</color> <!-- Light blue -->
-        <color name="blue_400">#29B6F6</color> <!-- Slightly lighter blue -->
-        <color name="black">#FF000000</color>
-        <color name="white">#FFFFFFFF</color>
+        <!-- Dark Blue for Backgrounds and UI Elements -->
+        <color name="blue_900">#0D47A1</color> <!-- Very dark blue (used for background or borders) -->
 
+        <!-- Add the missing blue colors here -->
+        <color name="blue_800">#1565C0</color> <!-- A dark, medium blue tone -->
+        <color name="blue_600">#039BE5</color> <!-- A brighter blue tone -->
 
-        <!-- Muscle Groups -->
-        <color name="tag_muscle_upper_body_bg">#D1E8FF</color> <!-- Light Blue for Upper Body -->
-        <color name="tag_muscle_upper_body_text">#1D4ED8</color> <!-- Dark Blue for Upper Body -->
-        <color name="tag_muscle_lower_body_bg">#E9D8FD</color> <!-- Light Purple for Lower Body -->
-        <color name="tag_muscle_lower_body_text">#6B21A8</color> <!-- Dark Purple for Lower Body -->
-        <color name="tag_muscle_core_bg">#B2F5EA</color> <!-- Light Teal for Core -->
-        <color name="tag_muscle_core_text">#0D9488</color> <!-- Dark Teal for Core -->
-        <color name="tag_muscle_full_body_bg">#DCFCE7</color> <!-- Light Green for Full Body -->
-        <color name="tag_muscle_full_body_text">#15803D</color> <!-- Dark Green for Full Body -->
+        <!-- Secondary Accent Colors -->
+        <color name="teal_200">#00B8D4</color> <!-- A cool teal accent -->
+        <color name="teal_700">#00838F</color> <!-- Darker teal, can be used as secondary accent -->
 
-        <!-- Difficulty Levels -->
-        <color name="tag_difficulty_beginner_bg">#DCFCE7</color> <!-- Light Green for Beginner -->
-        <color name="tag_difficulty_beginner_text">#10B981</color> <!-- Dark Green for Beginner -->
-        <color name="tag_difficulty_intermediate_bg">#FEF3C7</color> <!-- Light Yellow for Intermediate -->
-        <color name="tag_difficulty_intermediate_text">#F59E0B</color> <!-- Dark Yellow for Intermediate -->
-        <color name="tag_difficulty_advanced_bg">#FEE2E2</color> <!-- Light Red for Advanced -->
-        <color name="tag_difficulty_advanced_text">#DC2626</color> <!-- Dark Red for Advanced -->
+        <!-- Purple Colors (for accents and additional depth) -->
+        <color name="purple_200">#BB86FC</color> <!-- Light purple -->
+        <color name="purple_500">#6200EE</color> <!-- Main purple tone -->
+        <color name="purple_700">#3700B3</color> <!-- Dark purple (fits well with dark theme) -->
 
-        <!-- Exercise Types -->
-        <color name="tag_type_cardio_bg">#FFEDD5</color> <!-- Light Orange for Cardio -->
-        <color name="tag_type_cardio_text">#D97706</color> <!-- Dark Orange for Cardio -->
-        <color name="tag_type_strength_bg">#FFD6E8</color> <!-- Light Pink for Strength -->
-        <color name="tag_type_strength_text">#DB2777</color> <!-- Dark Pink for Strength -->
-        <color name="tag_type_flexibility_bg">#D1FAE5</color> <!-- Light Mint for Flexibility -->
-        <color name="tag_type_flexibility_text">#059669</color> <!-- Dark Mint for Flexibility -->
-        <color name="tag_type_balance_bg">#E0E7FF</color> <!-- Light Lavender for Balance -->
-        <color name="tag_type_balance_text">#4338CA</color> <!-- Dark Lavender for Balance -->
-        <color name="tag_type_endurance_bg">#FFE4E6</color> <!-- Light Coral for Endurance -->
-        <color name="tag_type_endurance_text">#DB2777</color> <!-- Dark Coral for Endurance -->
+        <!-- Neutral Colors -->
+        <color name="black">#000000</color> <!-- Black for text or icons -->
+        <color name="white">#FFFFFF</color> <!-- White for text or icons -->
 
-        <!-- Equipment -->
-        <color name="tag_equipment_no_equipment_bg">#E0F2FE</color> <!-- Light Blue for No Equipment -->
-        <color name="tag_equipment_no_equipment_text">#1E3A8A</color> <!-- Darker Blue for No Equipment -->
-        <color name="tag_equipment_dumbbells_bg">#FCE7F3</color> <!-- Light Pink for Dumbbells -->
-        <color name="tag_equipment_dumbbells_text">#BE185D</color> <!-- Dark Pink for Dumbbells -->
-        <color name="tag_equipment_resistance_bands_bg">#FEF3C7</color> <!-- Light Yellow for Resistance Bands -->
-        <color name="tag_equipment_resistance_bands_text">#D97706</color> <!-- Dark Yellow for Resistance Bands -->
+        <!-- Grey Colors for contrast -->
+        <color name="grey_800">#424242</color> <!-- Dark grey for background contrasts -->
+        <color name="grey_200">#E0E0E0</color> <!-- Light grey for subtle accents or borders -->
 
+        <!-- Dark Background Color for Night Mode -->
+        <color name="dark_background">#121212</color> <!-- Dark background for dark mode -->
 </resources>

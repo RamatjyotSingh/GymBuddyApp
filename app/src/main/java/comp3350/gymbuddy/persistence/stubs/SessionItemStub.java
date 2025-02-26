@@ -12,7 +12,7 @@ import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.objects.TimeBasedSessionItem;
 import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
-import comp3350.gymbuddy.persistence.ISessionItemPersistence;
+import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 
 public class SessionItemStub implements ISessionItemPersistence {
     private static final int MIN_REPS = 1;

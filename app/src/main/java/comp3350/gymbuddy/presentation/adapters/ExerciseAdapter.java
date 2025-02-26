@@ -78,7 +78,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         List<Tag> tags = exercise.getTags();
         for (int i = 0; i < Math.min(tags.size(), 2); i++) {
             Tag tag = tags.get(i);
-            Chip chip = new Chip(context);;
+            Chip chip = new Chip(context);
 
             setTagStyle(tag, chip);
 

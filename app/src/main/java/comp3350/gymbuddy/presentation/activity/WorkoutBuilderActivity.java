@@ -62,7 +62,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
         // Reset selected exercise & UI
         selectedExercise = null;
-        btnSelectExercise.setText("Select Exercise");
+        btnSelectExercise.setText(R.string.select_exercise);
 
         // Open ExerciseListActivity to select an exercise
         btnSelectExercise.setOnClickListener(v -> {
@@ -103,7 +103,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
             adapter.addWorkoutItem(newItem);
 
             selectedExercise = null;
-            btnSelectExercise.setText("Select Exercise");
+            btnSelectExercise.setText(R.string.select_exercise);
             edtSets.setText("");
             edtReps.setText("");
             edtWeight.setText("");

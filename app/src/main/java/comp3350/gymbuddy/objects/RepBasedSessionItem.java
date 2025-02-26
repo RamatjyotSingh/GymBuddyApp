@@ -1,8 +1,8 @@
 package comp3350.gymbuddy.objects;
 
 public class RepBasedSessionItem extends SessionItem {
-    private double weight;
-    private int reps;
+    private final double weight;
+    private final int reps;
 
     public RepBasedSessionItem(WorkoutItem associatedWorkoutItem, double weight, int reps) {
         super(associatedWorkoutItem);

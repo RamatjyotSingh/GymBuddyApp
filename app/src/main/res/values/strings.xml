@@ -13,30 +13,8 @@
     <string name="search_hint">Search Exercises…</string>
     <string name="default_string">Default String</string>
     <string name="view_more">view more</string>
+    <string name="select_exercise">Select Exercise</string>
 
     <!-- Exercise Names   -->
-
-        <!-- Muscle Groups -->
-        <string name="tag_muscle_upper_body">Upper Body</string>
-        <string name="tag_muscle_lower_body">Lower Body</string>
-        <string name="tag_muscle_core">Core</string>
-        <string name="tag_muscle_full_body">Full Body</string>
-
-        <!-- Difficulty Levels -->
-        <string name="tag_difficulty_beginner">Beginner</string>
-        <string name="tag_difficulty_intermediate">Intermediate</string>
-        <string name="tag_difficulty_advanced">Advanced</string>
-
-        <!-- Exercise Types -->
-        <string name="tag_type_cardio">Cardio</string>
-        <string name="tag_type_strength">Strength</string>
-        <string name="tag_type_flexibility">Flexibility</string>
-        <string name="tag_type_balance">Balance</string>
-        <string name="tag_type_endurance">Endurance</string>
-
-        <!-- Equipment -->
-        <string name="tag_equipment_no_equipment">No Equipment</string>
-        <string name="tag_equipment_dumbbells">Dumbbells</string>
-        <string name="tag_equipment_resistance_bands">Resistance Bands</string>
 
 </resources>

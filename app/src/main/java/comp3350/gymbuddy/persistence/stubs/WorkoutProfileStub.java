@@ -6,11 +6,11 @@ import java.util.List;
 
 import comp3350.gymbuddy.logic.AccessWorkoutItems;
 import comp3350.gymbuddy.objects.WorkoutProfile;
-import comp3350.gymbuddy.persistence.IWorkoutProfilePersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
 
 
 public class WorkoutProfileStub implements IWorkoutProfilePersistence {
-    private List<WorkoutProfile> profiles;
+    private final List<WorkoutProfile> profiles;
 
     public WorkoutProfileStub(){
         profiles = new ArrayList<>();

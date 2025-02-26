@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 
 import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.persistence.IExercisePersistence;
+import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
 
 public class AccessExercisesTest {
     private AccessExercises accessExercises;

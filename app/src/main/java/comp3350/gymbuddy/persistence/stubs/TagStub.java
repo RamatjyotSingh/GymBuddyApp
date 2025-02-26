@@ -8,7 +8,7 @@ import java.util.Map;
 
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.objects.Tag.TagType;
-import comp3350.gymbuddy.persistence.ITagPersistence;
+import comp3350.gymbuddy.persistence.interfaces.ITagPersistence;
 
 public class TagStub implements ITagPersistence {
     private final Map<String, Tag> tags;
