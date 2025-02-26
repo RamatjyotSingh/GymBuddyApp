@@ -5,7 +5,7 @@ import java.util.List;
 
 import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.WorkoutProfile;
-import comp3350.gymbuddy.persistence.IWorkoutProfilePersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
 
 public class AccessWorkoutProfiles extends Access{
     public AccessWorkoutProfiles(){

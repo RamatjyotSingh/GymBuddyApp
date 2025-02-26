@@ -15,7 +15,7 @@ import comp3350.gymbuddy.logic.AccessSessionItems;
 import comp3350.gymbuddy.objects.RepBasedSessionItem;
 import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
-import comp3350.gymbuddy.persistence.ISessionItemPersistence;
+import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 
 public class AccessSessionItemsTest {
     private AccessSessionItems accessSessionItems;

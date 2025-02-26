@@ -5,7 +5,7 @@ import java.util.List;
 
 import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.SessionItem;
-import comp3350.gymbuddy.persistence.ISessionItemPersistence;
+import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 
 public class AccessSessionItems extends Access {
     public AccessSessionItems(){
