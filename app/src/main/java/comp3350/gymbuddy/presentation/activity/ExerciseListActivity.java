@@ -27,7 +27,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         // Initialize the exercise list and adapter
         AccessExercises accessExercises = new AccessExercises();
-        List<Exercise> exerciseList = accessExercises.getAllExercises();
+        List<Exercise> exerciseList = accessExercises.getAll();
 
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, exerciseList, this::openExerciseDetail);
         recyclerView.setAdapter(exerciseAdapter);
