@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class WorkoutSession {
+    public static final long MAX_SESSION_LENGTH = 1000 * 60 * 60 * 2; //2hrs in milliseconds
     private final long startTime;
     private final long endTime;
     private final List<SessionItem> sessionItems;
