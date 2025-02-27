@@ -2,6 +2,7 @@ package comp3350.gymbuddy.presentation.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.gymbuddy.application.DatabaseManager;
 import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
@@ -37,6 +39,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initializeDatabase();
         setContentView(R.layout.activity_workout_builder);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerWorkoutItems);
@@ -131,4 +134,11 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
             }
         }
     }
+
+    //this method helps to initialize the db
+    private void initializeDatabase() {
+        Context context = getApplicationContext();
+        DatabaseManager.init(context);
+    }
+
 }
