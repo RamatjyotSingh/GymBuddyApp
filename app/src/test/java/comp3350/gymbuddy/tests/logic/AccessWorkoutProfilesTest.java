@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
 import comp3350.gymbuddy.objects.WorkoutProfile;
-import comp3350.gymbuddy.persistence.IWorkoutProfilePersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
 
 public class AccessWorkoutProfilesTest {
     private AccessWorkoutProfiles accessWorkoutProfiles;
