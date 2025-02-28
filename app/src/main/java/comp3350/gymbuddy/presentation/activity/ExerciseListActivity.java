@@ -3,10 +3,7 @@ package comp3350.gymbuddy.presentation.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -15,15 +12,11 @@ import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.presentation.adapters.ExerciseAdapter;
 
-public class ExerciseListActivity extends AppCompatActivity {
+public class ExerciseListActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exercise_list);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewExercises);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize the exercise list and adapter
         AccessExercises accessExercises = new AccessExercises();
@@ -31,7 +24,6 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, exerciseList, this::openExerciseDetail);
         recyclerView.setAdapter(exerciseAdapter);
-        SearchView searchView = findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -45,6 +37,7 @@ public class ExerciseListActivity extends AppCompatActivity {
                 return false;
             }
         });
+        searchView.setQueryHint(getString(R.string.exercise_list_search_hint));
     }
 
     private void openExerciseDetail(Exercise exercise) {

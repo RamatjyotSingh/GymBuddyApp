@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
@@ -87,9 +86,6 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
             holder.exerciseTags.addView(chip);
         }
 
-
-
-
         holder.viewMoreButton.setOnClickListener(v -> clickListener.onExerciseClick(exercise));
         holder.itemView.setOnClickListener(v -> {
             AddExerciseBottomSheetFragment bottomSheetFragment = new AddExerciseBottomSheetFragment(exercise);
@@ -148,8 +144,6 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         TextView tvMoreTags;
         ChipGroup exerciseTags;
 
-
-
         public ExerciseViewHolder(@NonNull View itemView) {
             super(itemView);
             exerciseName = itemView.findViewById(R.id.exerciseName);
@@ -170,8 +164,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
             Log.e( "loadImageFromAssets: ", Objects.requireNonNull(e.getMessage()));
         }
     }
+
     public void filter(String query) {
-        // send filter request down to DB layer
         List<Exercise> filteredList = new ArrayList<>();
 
         if (query.isEmpty()) {

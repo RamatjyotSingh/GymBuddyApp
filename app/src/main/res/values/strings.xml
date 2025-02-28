@@ -10,7 +10,8 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="search_hint">Search Exercises…</string>
+    <string name="exercise_list_search_hint">Search Exercises…</string>
+    <string name="workout_log_search_hint">Search Workouts…</string>
     <string name="default_string">Default String</string>
     <string name="view_more">view more</string>
     <string name="select_exercise">Select Exercise</string>

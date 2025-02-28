@@ -14,18 +14,18 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/txtExerciseName"
+            android:id="@+id/txtDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exercise Name"
-            android:textStyle="bold"
-            android:textSize="18sp" />
+            android:text="@string/default_string"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txtWorkoutDetails"
+            android:id="@+id/txtDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sets x Reps | Weight | Time"
+            android:text="@string/default_string"
             android:textSize="14sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
