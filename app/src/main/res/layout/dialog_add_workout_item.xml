@@ -12,11 +12,20 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnSelectExercise"
+        <TextView
+            android:id="@+id/selectedExercise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Exercise" />
+            android:text="No Selection"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="8dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <EditText
             android:id="@+id/edtSets"
@@ -36,15 +45,15 @@
             android:id="@+id/edtWeight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Weight (kg, optional)"
+            android:hint="Weight (lbs)"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/edtTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Time (seconds, optional)"
-            android:inputType="number" />
+            android:hint="Time (sec)"
+            android:inputType="numberDecimal" />
 
         <Button
             android:id="@+id/btnAddWorkoutItem"
