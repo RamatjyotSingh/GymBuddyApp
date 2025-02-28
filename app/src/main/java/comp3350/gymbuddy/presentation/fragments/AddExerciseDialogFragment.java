@@ -26,6 +26,9 @@ public class AddExerciseDialogFragment extends DialogFragment {
     private Exercise selectedExercise;
     private FormValidator formValidator;
 
+    /**
+     * Creates a new instance of the dialog with the selected exercise ID.
+     */
     public static AddExerciseDialogFragment newInstance(int selectedExerciseId) {
         var dialog = new AddExerciseDialogFragment();
         Bundle args = new Bundle();
@@ -42,6 +45,7 @@ public class AddExerciseDialogFragment extends DialogFragment {
         binding = DialogAddWorkoutItemBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        // Set up button click listener
         binding.btnAddWorkoutItem.setOnClickListener(this::onClickBtnAddWorkoutItem);
 
         return view;
@@ -54,7 +58,7 @@ public class AddExerciseDialogFragment extends DialogFragment {
         if (getArguments() != null) {
             int exerciseId = getArguments().getInt(ARG_SELECTED_EXERCISE, -1);
 
-            // Retrieve the object we picked from exercise list
+            // Retrieve the selected exercise from storage
             var accessExercises = new AccessExercises();
             selectedExercise = accessExercises.getExerciseByID(exerciseId);
 
@@ -66,78 +70,96 @@ public class AddExerciseDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null; // Needed to prevent memory leaks.
+        binding = null; // Prevent memory leaks by clearing the binding reference
     }
 
+    /**
+     * Updates the UI based on the selected exercise type.
+     */
     private void updateViews() {
         if (selectedExercise != null) {
-            // Update header text in the dialog.
+            // Set exercise name as the dialog header
             binding.selectedExercise.setText(selectedExercise.getName());
 
-            // Dynamically show or hide views based on the type of exercise.
+            // Adjust visible input fields based on exercise type
             if (selectedExercise.isTimeBased()) {
-                // Only show time.
                 binding.edtReps.setVisibility(View.GONE);
                 binding.edtWeight.setVisibility(View.GONE);
                 binding.edtTime.setVisibility(View.VISIBLE);
             } else {
-                // Show reps.
                 binding.edtReps.setVisibility(View.VISIBLE);
                 binding.edtTime.setVisibility(View.GONE);
 
-                // Show weight if applicable.
+                // Show weight input field only if required by the exercise
                 binding.edtWeight.setVisibility(selectedExercise.hasWeight() ? View.VISIBLE : View.GONE);
             }
         }
     }
 
+    /**
+     * Initializes form validation for user input fields.
+     */
     private void initializeFormValidator() {
         formValidator = new FormValidator(requireView());
 
-        // Set up the constraints for the form.
+        // Ensure sets field is a valid integer greater than 0
         formValidator.addEditText(R.id.edtSets).validInt().greaterThan(0);
+
         if (selectedExercise.isTimeBased()) {
-            // Make sure time is appropriate.
+            // Validate time field for time-based exercises
             formValidator.addEditText(R.id.edtTime).validDouble().greaterThan(0.0);
         } else {
-            // Make sure reps & weight are appropriate.
+            // Validate reps for rep-based exercises
             formValidator.addEditText(R.id.edtReps).validInt().greaterThan(0);
+
+            // Validate weight if applicable
             if (selectedExercise.hasWeight()) {
                 formValidator.addEditText(R.id.edtWeight).validDouble();
             }
         }
     }
 
+    /**
+     * Creates a WorkoutItem based on user input and returns it in a Bundle.
+     * Returns null if validation fails.
+     */
     private @Nullable Bundle createResult() {
         WorkoutItem workoutItem = null;
 
-        // Ensure all input is valid.
+        // Ensure all input is valid before proceeding
         if (formValidator.validateAll()) {
-            // Extract field data and construct workout item.
             int sets = formValidator.getInt(R.id.edtSets);
+
             if (selectedExercise.isTimeBased()) {
+                // Create a time-based workout item
                 double time = formValidator.getDouble(R.id.edtTime);
                 workoutItem = new TimeBasedWorkoutItem(selectedExercise, sets, time);
             } else {
+                // Create a rep-based workout item
                 int reps = formValidator.getInt(R.id.edtReps);
                 double weight = 0.0;
+
                 if (selectedExercise.hasWeight()) {
-                    weight = formValidator.getDouble(R.id.edtTime);
+                    weight = formValidator.getDouble(R.id.edtWeight);
                 }
+
                 workoutItem = new RepBasedWorkoutItem(selectedExercise, sets, reps, weight);
             }
         }
 
-        // Bundle the DSO for transit.
+        // Convert the workout item to a Bundle for passing back
         var dsoBundler = new DSOBundler();
         return dsoBundler.bundleWorkoutItem(workoutItem);
     }
 
+    /**
+     * Handles the add button click event, validates input, and returns result.
+     */
     private void onClickBtnAddWorkoutItem(View view) {
-        // Create a result to pass to WorkoutBuilderActivity.
         Bundle result = createResult();
 
         if (result != null) {
+            // Send result back to WorkoutBuilderActivity
             getParentFragmentManager().setFragmentResult("workout_item", result);
             dismiss();
         }
