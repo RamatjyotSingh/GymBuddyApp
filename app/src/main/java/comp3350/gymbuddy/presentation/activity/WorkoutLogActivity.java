@@ -6,7 +6,7 @@ import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.logic.AccessWorkoutSessions;
 import comp3350.gymbuddy.presentation.adapters.WorkoutLogAdapter;
 
-public class WorkoutLogActivity extends ListActivity {
+public class WorkoutLogActivity extends SearchableListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceBundle){

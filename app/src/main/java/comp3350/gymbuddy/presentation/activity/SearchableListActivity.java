@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import comp3350.gymbuddy.R;
 
-public abstract class ListActivity extends AppCompatActivity {
+public abstract class SearchableListActivity extends AppCompatActivity {
     protected SearchView searchView;
     protected RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedBundleInstance){
         super.onCreate(savedBundleInstance);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_searchable_list);
 
         searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerViewList);

@@ -12,7 +12,7 @@ import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.presentation.adapters.ExerciseAdapter;
 
-public class ExerciseListActivity extends ListActivity {
+public class ExerciseListActivity extends SearchableListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
