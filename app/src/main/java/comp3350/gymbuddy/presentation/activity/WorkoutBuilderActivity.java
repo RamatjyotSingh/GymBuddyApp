@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding;
 import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
 import comp3350.gymbuddy.objects.Exercise;
@@ -37,6 +38,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
     private List<WorkoutItem> workoutItems;
 
     private Exercise selectedExercise;
+    private FormValidator formValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +56,23 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
         adapter = new WorkoutAdapter(workoutItems);
         binding.recyclerWorkoutItems.setAdapter(adapter);
+
+        initializeFormValidator();
+    }
+
+    private void initializeFormValidator() {
+        formValidator = new FormValidator(this);
+
+        // Set up the constraints for the form.
+        formValidator.addEditText(R.id.edtWorkoutName).notEmpty();
     }
 
     private @Nullable WorkoutProfile createWorkoutProfile() {
         WorkoutProfile result = null;
 
-        var formValidator = new FormValidator();
-
-        String name = formValidator.nextString(binding.edtWorkoutName, "");
-
-        if (formValidator.getValid()) {
+        if (formValidator.validateAll()) {
             if (workoutItems.size() > 0) {
+                String name = formValidator.getString(R.id.edtWorkoutName);
                 result = new WorkoutProfile(name, "drawable/ic_default_workout.xml", workoutItems);
             } else {
                 Toast.makeText(this, "Workout must have an exercise.", Toast.LENGTH_LONG).show();
