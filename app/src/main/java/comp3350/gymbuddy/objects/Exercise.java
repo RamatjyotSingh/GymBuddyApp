@@ -11,14 +11,14 @@ public class Exercise {
     private final boolean isTimeBased;
     private final boolean hasWeight;
 
-    public Exercise(int id, String name, List<Tag> tags, List<String> instructions, String imagePath) {
+    public Exercise(int id, String name, List<Tag> tags, List<String> instructions, String imagePath, boolean isTimeBased, boolean hasWeight) {
         this.id = id;
         this.name = name;
         this.tags = tags;
         this.instructions = instructions;
         this.imagePath = imagePath;
-        this.isTimeBased = false;
-        this.hasWeight = false;
+        this.isTimeBased = isTimeBased;
+        this.hasWeight = hasWeight;
     }
 
     public int getID(){
