@@ -62,8 +62,8 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
         public WorkoutViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtExerciseName = itemView.findViewById(R.id.txtDate);
-            txtWorkoutDetails = itemView.findViewById(R.id.txtDuration);
+            txtExerciseName = itemView.findViewById(R.id.txtExerciseName);
+            txtWorkoutDetails = itemView.findViewById(R.id.txtWorkoutDetails);
         }
     }
 
