@@ -17,6 +17,6 @@
     <string name="select_exercise">Select Exercise</string>
     <string name="todo">TODO</string>
 
-    <!-- Exercise Names   -->
+    <string name="date_format">MMM dd yyyy</string>
 
 </resources>

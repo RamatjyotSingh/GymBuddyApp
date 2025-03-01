@@ -1,19 +1,20 @@
 package comp3350.gymbuddy.objects;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class WorkoutSession {
     public static final long MAX_SESSION_LENGTH = 1000 * 60 * 60 * 2; //2hrs in milliseconds
-    private final Date date;
     private final long startTime;
     private final long endTime;
     private final List<SessionItem> sessionItems;
     private final WorkoutProfile profile;
 
-    public WorkoutSession(Date date, long startTime, long endTime, List<SessionItem> sessionItems, WorkoutProfile profile) {
-        this.date = date;
+    public WorkoutSession(long startTime, long endTime, List<SessionItem> sessionItems, WorkoutProfile profile) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.sessionItems = sessionItems;
@@ -21,7 +22,11 @@ public class WorkoutSession {
     }
 
     public String getDate(){
-        return this.date.toString();
+        ZonedDateTime dateTime = Instant.ofEpochMilli(this.startTime).atZone(ZoneId.systemDefault());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+        return dateTime.format(formatter);
     }
 
     public long getStartTime() {
