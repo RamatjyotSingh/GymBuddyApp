@@ -18,6 +18,11 @@ public class ExerciseListActivity extends SearchableListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setSearchView(R.layout.fragment_workout_log_search_bar); // can be changed to a different search bar fragment
+
+        SearchView searchView = findViewById(R.id.searchView);
+        searchView.setQueryHint(getString(R.string.workout_log_search_hint));
+
         // Initialize the exercise list and adapter
         AccessExercises accessExercises = new AccessExercises();
         List<Exercise> exerciseList = accessExercises.getAll();
@@ -37,6 +42,7 @@ public class ExerciseListActivity extends SearchableListActivity {
                 return false;
             }
         });
+
         searchView.setQueryHint(getString(R.string.exercise_list_search_hint));
     }
 
