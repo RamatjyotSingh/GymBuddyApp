@@ -18,7 +18,7 @@ public class WorkoutProfileHSQLDB implements IWorkoutProfilePersistence {
     @Override
     public List<WorkoutProfile> getAll() {
         List<WorkoutProfile> workoutProfiles = new ArrayList<>();
-        String query = "SELECT id, name, iconPath FROM WORKOUTPROFILE"; // Assuming the columns in your table
+        String query = "SELECT id, name, iconPath FROM WORKOUTPROFILE";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -36,8 +36,8 @@ public class WorkoutProfileHSQLDB implements IWorkoutProfilePersistence {
                 workoutProfiles.add(profile);
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
         }
 
         return workoutProfiles;

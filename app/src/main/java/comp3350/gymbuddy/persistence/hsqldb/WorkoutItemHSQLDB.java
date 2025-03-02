@@ -53,8 +53,8 @@ public class WorkoutItemHSQLDB implements IWorkoutItemPersistence {
                     workoutItems.add(new TimeBasedWorkoutItem(exercise, sets, time));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
         }
         return workoutItems;
     }

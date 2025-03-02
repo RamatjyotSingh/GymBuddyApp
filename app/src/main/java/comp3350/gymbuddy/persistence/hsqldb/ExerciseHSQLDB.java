@@ -19,7 +19,7 @@ public class ExerciseHSQLDB implements IExercisePersistence {
     private List<Tag> getTagsForExercise(int exerciseID) throws SQLException {
         List<Tag> tags = new ArrayList<>();
         String query = "SELECT t.TAG_NAME, t.TAG_TYPE, t.TEXT_COLOR, t.BG_COLOR " +
-                "FROM LINKS_TO lt " +
+                "FROM EXERCISE_TAGS lt " +
                 "JOIN TAGS t ON lt.TAG_ID = t.TAG_ID " +
                 "WHERE lt.EXERCISE_ID = ?";
 
@@ -74,8 +74,8 @@ public class ExerciseHSQLDB implements IExercisePersistence {
 
                 exercises.add(new Exercise(exerciseID, name, tags, instructions,imagePath));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+                throw new PersistenceException(e);
         }
         return exercises;
     }
@@ -83,9 +83,11 @@ public class ExerciseHSQLDB implements IExercisePersistence {
     @Override
     public Exercise getExerciseByName(String name) {
         String query = "SELECT * FROM EXERCISE WHERE NAME = ?";
+        Exercise exercise=null;
 
 
-             try(PreparedStatement ps = connection.prepareStatement(query)) {
+
+        try(PreparedStatement ps = connection.prepareStatement(query)) {
 
             ps.setString(1, name);
             try (ResultSet rs = ps.executeQuery()) {
@@ -99,18 +101,19 @@ public class ExerciseHSQLDB implements IExercisePersistence {
 
 
 
-                    return new Exercise(exerciseID, name, tags, instructions,imagePath);
+                    exercise= new Exercise(exerciseID, name, tags, instructions,imagePath);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+                 throw new PersistenceException(e);
         }
-        return null;
+        return exercise;
     }
 
     @Override
     public Exercise getExerciseByID(int id) {
         String query = "SELECT * FROM EXERCISE WHERE EXERCISE_ID = ?";
+        Exercise exercise=null;
 
 
         try(PreparedStatement ps = connection.prepareStatement(query)) {
@@ -125,12 +128,12 @@ public class ExerciseHSQLDB implements IExercisePersistence {
                     List<Tag> tags = getTagsForExercise(id);
                     ArrayList<String> instructions = getInstructionsForExercise(id);
 
-                    return new Exercise(id, name, tags, instructions,imagePath);
+                    exercise= new Exercise(id, name, tags, instructions,imagePath);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
         }
-        return null;
+        return exercise;
     }
 }

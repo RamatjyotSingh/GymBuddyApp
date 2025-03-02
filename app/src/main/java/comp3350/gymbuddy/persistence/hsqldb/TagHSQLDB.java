@@ -18,6 +18,7 @@ public class TagHSQLDB implements ITagPersistence {
 
     public Tag getTagByName(String name) {
         String query = "SELECT TAG_TYPE, TEXT_COLOR, BG_COLOR FROM TAGS WHERE TAG_NAME = ?";
+        Tag tag=null;
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, name);
@@ -28,13 +29,13 @@ public class TagHSQLDB implements ITagPersistence {
                     String bgColor = rs.getString("BG_COLOR");
 
                     TagType type = TagType.valueOf(typeStr); // Convert string to enum
-                    return new Tag(type, name, textColor, bgColor);
+                    tag= new Tag(type, name, textColor, bgColor);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
         }
-        return null; // Return null if no tag is found
+        return tag; // Return null if no tag is found
     }
 
     @Override
@@ -53,8 +54,8 @@ public class TagHSQLDB implements ITagPersistence {
                 TagType type = TagType.valueOf(typeStr);
                 tagList.add(new Tag(type, name, textColor, bgColor));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
         }
 
         return tagList;
@@ -65,7 +66,7 @@ public class TagHSQLDB implements ITagPersistence {
         List<Tag> tagList = new ArrayList<>();
         String query = "SELECT T.TAG_NAME, T.TAG_TYPE, T.TEXT_COLOR, T.BG_COLOR " +
                 "FROM TAGS T " +
-                "JOIN LINKS_TO lt ON T.TAG_ID = lt.TAG_ID " +
+                "JOIN EXERCISE_TAGS lt ON T.TAG_ID = lt.TAG_ID " +
                 "WHERE lt.EXERCISE_ID = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -81,8 +82,8 @@ public class TagHSQLDB implements ITagPersistence {
                     tagList.add(new Tag(type, name, textColor, bgColor));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
         }
 
         Collections.shuffle(tagList);  // Shuffle the list to randomize
