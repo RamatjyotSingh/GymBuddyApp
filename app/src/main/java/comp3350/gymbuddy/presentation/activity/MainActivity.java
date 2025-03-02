@@ -18,6 +18,7 @@ import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
+import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
 import comp3350.gymbuddy.persistence.stubs.WorkoutProfileStub;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -61,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
         // Highlight the active menu item
         bottomNavigationView.setSelectedItemId(R.id.home);
 
-        // Initialize stub
-        IWorkoutProfilePersistence workoutProfilePersistence = new WorkoutProfileStub();
+        // Initialize AccessWorkoutProfiles
+        AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
+
+        // Fetch data from persistence
+        List<WorkoutProfile> workoutProfiles = accessWorkoutProfiles.getAll();
 
         // Initialize RecyclerView
         recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
-
-        // Fetch data from stub
-        List<WorkoutProfile> workoutProfiles = workoutProfilePersistence.getAll();
 
         // Set up adapter
         workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
