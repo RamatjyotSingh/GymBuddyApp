@@ -3,7 +3,10 @@ package comp3350.gymbuddy.presentation.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -12,20 +15,22 @@ import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.presentation.adapters.ExerciseAdapter;
 
-public class ExerciseListActivity extends SearchableListActivity {
+public class ExerciseListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_exercise_list);
 
-        setSearchView(R.layout.fragment_workout_log_search_bar); // can be changed to a different search bar fragment
-
-        SearchView searchView = findViewById(R.id.searchView);
+        SearchView searchView = findViewById(R.id.exerciseListSearchView);
         searchView.setQueryHint(getString(R.string.workout_log_search_hint));
 
         // Initialize the exercise list and adapter
         AccessExercises accessExercises = new AccessExercises();
         List<Exercise> exerciseList = accessExercises.getAll();
+
+        RecyclerView recyclerView = findViewById(R.id.exerciseListRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, exerciseList, this::openExerciseDetail);
         recyclerView.setAdapter(exerciseAdapter);

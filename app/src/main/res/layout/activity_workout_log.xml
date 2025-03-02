@@ -7,19 +7,35 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/listContainer"
+        android:id="@+id/workoutLogContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/workoutLogSearchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+
+            android:layout_marginTop="4dp"
+            android:background="@drawable/search_view_bg"
+            app:iconifiedByDefault="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.842"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:queryHint="@string/exercise_list_search_hint" />
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listRecyclerView"
+            android:id="@+id/workoutLogRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_marginTop="68dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/workoutLogSearchView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
