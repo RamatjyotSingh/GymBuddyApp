@@ -1,5 +1,6 @@
 package comp3350.gymbuddy.presentation.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.logic.AccessWorkoutSessions;
+import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.presentation.adapters.WorkoutLogAdapter;
 
 public class WorkoutLogActivity extends AppCompatActivity {
@@ -26,7 +28,13 @@ public class WorkoutLogActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         AccessWorkoutSessions accessWorkoutSessions = new AccessWorkoutSessions();
-        WorkoutLogAdapter logAdapter = new WorkoutLogAdapter(accessWorkoutSessions.getAll());
+        WorkoutLogAdapter logAdapter = new WorkoutLogAdapter(accessWorkoutSessions.getAll(), this::openWorkoutLogDetail);
         recyclerView.setAdapter(logAdapter);
+    }
+
+    private void openWorkoutLogDetail(WorkoutSession workoutSession){
+        Intent intent = new Intent(this, WorkoutLogDetailActivity.class);
+        intent.putExtra("workoutSessionId", workoutSession.getID());
+        startActivity(intent);
     }
 }

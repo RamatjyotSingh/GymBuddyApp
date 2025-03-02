@@ -4,8 +4,8 @@ public class RepBasedSessionItem extends SessionItem {
     private final double weight;
     private final int reps;
 
-    public RepBasedSessionItem(WorkoutItem associatedWorkoutItem, double weight, int reps) {
-        super(associatedWorkoutItem);
+    public RepBasedSessionItem(int id, WorkoutItem associatedWorkoutItem, double weight, int reps) {
+        super(id, associatedWorkoutItem);
         this.weight = weight;
         this.reps = reps;
     }
