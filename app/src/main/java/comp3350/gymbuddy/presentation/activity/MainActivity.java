@@ -17,6 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
+import comp3350.gymbuddy.databinding.ActivityMainBinding;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
 import comp3350.gymbuddy.persistence.stubs.WorkoutProfileStub;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -25,25 +26,30 @@ import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private RecyclerView recyclerViewWorkouts;
+    private ActivityMainBinding binding; // View Binding
     private WorkoutProfileAdapter workoutProfileAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        // Initialize View Binding
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        // Access views using binding
+        BottomNavigationView bottomNavigationView = binding.bottomNavigationView;
+        RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
+
+        // Set up BottomNavigationView
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            // get the id of the clicked item
             int id = item.getItemId();
 
             if (id == R.id.home) {
-                // already on the home screen, do nothing
+                // Already on the home screen, do nothing
                 return true;
             } else if (id == R.id.build_workouts) {
-                // Nnvigate to WorkoutBuilderActivity
+                // Navigate to WorkoutBuilderActivity
                 Intent workoutIntent = new Intent(MainActivity.this, WorkoutBuilderActivity.class);
                 startActivity(workoutIntent);
                 return true;
@@ -51,22 +57,30 @@ public class MainActivity extends AppCompatActivity {
 
             return false;
         });
-        // highlight the active menu item
+
+        // Highlight the active menu item
         bottomNavigationView.setSelectedItemId(R.id.home);
 
-        // initialize stub
+        // Initialize stub
         IWorkoutProfilePersistence workoutProfilePersistence = new WorkoutProfileStub();
 
-        // initialize RecyclerView
-        recyclerViewWorkouts = findViewById(R.id.recyclerViewWorkouts);
+        // Initialize RecyclerView
         recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
 
-        // fetch data from stub
+        // Fetch data from stub
         List<WorkoutProfile> workoutProfiles = workoutProfilePersistence.getAll();
 
-        // set up adapter
+        // Set up adapter
         workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
         recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Reset the selected item in the BottomNavigationView
+        binding.bottomNavigationView.setSelectedItemId(R.id.home);
     }
 
     @Override

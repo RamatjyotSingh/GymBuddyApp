@@ -70,14 +70,4 @@
         android:src="@android:drawable/ic_input_add"
         android:onClick="onClickFAB" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/nav_bar_border"
-        app:itemIconSize="70dp"
-        app:itemTextColor="@android:color/black"
-        app:menu="@menu/nav_bar" />
-
 </LinearLayout>

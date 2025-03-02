@@ -5,7 +5,6 @@
     android:id="@+id/constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:fitsSystemWindows="true">
 
 
@@ -24,6 +23,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewWorkouts"
+        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/item_workout" />
