@@ -12,8 +12,8 @@ public class ExerciseStub implements IExercisePersistence {
     private static int id_counter = 0;
     private final List<Exercise> exercises;
 
-    private Exercise createExercise(String name, List<Tag> tags, ArrayList<String> instructions, String imagePath) {
-        return new Exercise(id_counter++, name, tags, instructions, imagePath);
+    private Exercise createExercise(String name, List<Tag> tags, ArrayList<String> instructions, String imagePath, boolean isTimeBased, boolean hasWeight) {
+        return new Exercise(id_counter++, name, tags, instructions, imagePath, isTimeBased, hasWeight);
     }
 
     public ExerciseStub() {
@@ -25,7 +25,9 @@ public class ExerciseStub implements IExercisePersistence {
                         "Start in a plank position.",
                         "Lower your body until your chest nearly touches the floor.",
                         "Push back up to the starting position.")),
-                "push_up.png"
+                "push_up.png",
+                false,
+                false
         ));
 
         exercises.add(createExercise("Squat",
@@ -34,7 +36,9 @@ public class ExerciseStub implements IExercisePersistence {
                         "Stand with feet shoulder-width apart.",
                         "Lower your body by bending your knees until your thighs are parallel to the floor.",
                         "Push back up to the starting position.")),
-                "squat.png"
+                "squat.png",
+                false,
+                true
         ));
 
         exercises.add(createExercise("Plank",
@@ -43,7 +47,9 @@ public class ExerciseStub implements IExercisePersistence {
                         "Hold a push-up position with your arms straight.",
                         "Keep your body in a straight line from head to heels.",
                         "Engage your core and hold the position.")),
-                "plank.png"
+                "plank.png",
+                true,
+                false
         ));
 
         exercises.add(createExercise("Pull-Up",
@@ -52,7 +58,9 @@ public class ExerciseStub implements IExercisePersistence {
                         "Grip a pull-up bar with palms facing away.",
                         "Pull yourself up until your chin clears the bar.",
                         "Lower yourself back down to the starting position.")),
-                "pull-up.png"
+                "pull-up.png",
+                false,
+                false
         ));
 
         exercises.add(createExercise("Lunges",
@@ -61,7 +69,9 @@ public class ExerciseStub implements IExercisePersistence {
                         "Step forward with one leg.",
                         "Lower your hips until both knees are bent at 90-degree angles.",
                         "Push back up to the starting position and repeat with the other leg.")),
-                "lunges.png"
+                "lunges.png",
+                false,
+                false
         ));
 
         // Add more exercises similarly
