@@ -12,6 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +51,10 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Inflate the layout using view binding
         binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
+        setContentView(binding.getRoot());
 
         // Set up the RecyclerView with a LinearLayoutManager for displaying workout items
         binding.recyclerWorkoutItems.setLayoutManager(new LinearLayoutManager(this));
@@ -69,6 +72,31 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
         // Initialize form validation logic
         initializeFormValidator();
+
+        // Set up FAB click listener
+        binding.fabAddItem.setOnClickListener(this::onClickFAB);
+
+        // Set up bottom navigation
+        BottomNavigationView bottomNavigationView = binding.bottomNavigationView;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId(); // get the id of the clicked item
+
+            if (id == R.id.build_workouts) {
+                // already on the build workout screen so do nothing
+                return true;
+            } else if (id == R.id.home) {
+                // navigate to home page
+                Intent homeIntent = new Intent(WorkoutBuilderActivity.this, MainActivity.class);
+                homeIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(homeIntent);
+                return true;
+            }
+
+            return false; // default case
+        });
+
+        // Highlight the active menu item
+        bottomNavigationView.setSelectedItemId(R.id.build_workouts);
     }
 
     /**

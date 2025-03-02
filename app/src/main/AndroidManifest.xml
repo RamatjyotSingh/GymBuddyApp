@@ -12,12 +12,15 @@
         android:theme="@style/Theme.GymBuddy"
         >
 
-<!--        <activity-->
-<!--            android:name="comp3350.gymbuddy.presentation.activity.MainActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.GymBuddy.NoActionBar"-->
-<!--            >-->
-<!--        </activity>-->
+        <activity
+            android:name="comp3350.gymbuddy.presentation.activity.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.GymBuddy.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="comp3350.gymbuddy.presentation.activity.WorkoutBuilderActivity"
@@ -25,11 +28,7 @@
             android:theme="@style/Theme.GymBuddy.NoActionBar"
             android:configChanges="orientation|screenSize"
            >
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
 
-                        <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
         </activity>
 
         <activity android:name=".presentation.activity.ExerciseListActivity"

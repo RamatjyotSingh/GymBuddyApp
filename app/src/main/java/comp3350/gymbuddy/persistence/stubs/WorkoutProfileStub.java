@@ -17,6 +17,9 @@ public class WorkoutProfileStub implements IWorkoutProfilePersistence {
 
         AccessWorkoutItems accessWorkoutItems = new AccessWorkoutItems();
         profiles.add(new WorkoutProfile("Profile 1", null, accessWorkoutItems.getAll()));
+        profiles.add(new WorkoutProfile("Profile 2", null, accessWorkoutItems.getAll()));
+        profiles.add(new WorkoutProfile("Profile 3", null, accessWorkoutItems.getAll()));
+        profiles.add(new WorkoutProfile("Profile 4", null, accessWorkoutItems.getAll()));
     }
 
     public List<WorkoutProfile> getAll(){
