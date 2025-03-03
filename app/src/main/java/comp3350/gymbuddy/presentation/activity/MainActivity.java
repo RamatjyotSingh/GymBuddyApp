@@ -2,41 +2,86 @@ package comp3350.gymbuddy.presentation.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
+import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
+import comp3350.gymbuddy.persistence.stubs.WorkoutProfileStub;
+import comp3350.gymbuddy.objects.WorkoutProfile;
+import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+    private ActivityMainBinding binding; // View Binding
+    private WorkoutProfileAdapter workoutProfileAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialize View Binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), WorkoutBuilderActivity.class);
-                startActivity(intent);
+        // Access views using binding
+        BottomNavigationView bottomNavigationView = binding.bottomNavigationView;
+        RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
+
+        // Set up BottomNavigationView
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.home) {
+                // Already on the home screen, do nothing
+                return true;
+            } else if (id == R.id.build_workouts) {
+                // Navigate to WorkoutBuilderActivity
+                Intent workoutIntent = new Intent(MainActivity.this, WorkoutBuilderActivity.class);
+                startActivity(workoutIntent);
+                return true;
             }
+
+            return false;
         });
 
-        ConstraintLayout constraint = binding.constraintLayout;
+        // Highlight the active menu item
+        bottomNavigationView.setSelectedItemId(R.id.home);
+
+        // Initialize AccessWorkoutProfiles
+        AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
+
+        // Fetch data from persistence
+        List<WorkoutProfile> workoutProfiles = accessWorkoutProfiles.getAll();
+
+        // Initialize RecyclerView
+        recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up adapter
+        workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
+        recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Reset the selected item in the BottomNavigationView
+        binding.bottomNavigationView.setSelectedItemId(R.id.home);
     }
 
     @Override
