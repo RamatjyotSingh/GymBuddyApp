@@ -42,4 +42,48 @@ public class WorkoutProfileHSQLDB implements IWorkoutProfilePersistence {
 
         return workoutProfiles;
     }
+
+    @Override
+    public void insertWorkoutProfile(WorkoutProfile profile) {
+        String query = "INSERT INTO WORKOUTPROFILE (name, iconPath) VALUES (?, ?)";
+
+        try (PreparedStatement st = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            st.setString(1, profile.getName());
+            st.setString(2, profile.getIconPath());
+            st.executeUpdate();
+
+            // Retrieve the generated ID and assign it to the WorkoutProfile object
+            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    profile.setId(generatedKeys.getInt(1)); // Assign the auto-generated ID
+                }
+            }
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
+        }
+    }
+
+    @Override
+    public WorkoutProfile getWorkoutProfileById(int profileId) {
+        String query = "SELECT id, name, iconPath FROM WORKOUTPROFILE WHERE id = ?";
+
+        try (PreparedStatement st = connection.prepareStatement(query)) {
+            st.setInt(1, profileId);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    String iconPath = rs.getString("iconPath");
+
+                    // Create WorkoutProfile object
+                    return new WorkoutProfile(id, name, iconPath, new ArrayList<>()); // Empty workoutItems for now
+                }
+            }
+        } catch (final SQLException e) {
+            throw new PersistenceException(e);
+        }
+
+        return null; // No profile found
+    }
+
 }

@@ -25,11 +25,11 @@ INSERT INTO PUBLIC.TAGS VALUES (15, 'Resistance Bands', 'EQUIPMENT', '#D97706', 
 
 
 -- Insert sample exercises
-INSERT INTO PUBLIC.EXERCISE VALUES (1,'Push-Up','push_up.png');
-INSERT INTO PUBLIC.EXERCISE VALUES (2,'Squat','squat.png');
-INSERT INTO PUBLIC.EXERCISE VALUES (3,'Plank','plank.png');
-INSERT INTO PUBLIC.EXERCISE VALUES (4,'Pull-up','pull-up.png');
-INSERT INTO PUBLIC.EXERCISE VALUES (5,'Lunges','lunges.png');
+INSERT INTO PUBLIC.EXERCISE VALUES (1,'Push-Up','push_up.png', FALSE, FALSE);
+INSERT INTO PUBLIC.EXERCISE VALUES (2,'Squat','squat.png', FALSE, TRUE);
+INSERT INTO PUBLIC.EXERCISE VALUES (3,'Plank','plank.png', TRUE, FALSE);
+INSERT INTO PUBLIC.EXERCISE VALUES (4,'Pull-up','pull-up.png', FALSE, FALSE);
+INSERT INTO PUBLIC.EXERCISE VALUES (5,'Lunges','lunges.png', FALSE, FALSE);
 
 -- Insert sample instructions
 INSERT INTO PUBLIC.INSTRUCTION VALUES (1, 1, 1, 'Start in a plank position.');

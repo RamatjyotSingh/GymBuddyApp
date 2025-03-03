@@ -67,12 +67,14 @@ public class ExerciseHSQLDB implements IExercisePersistence {
                 int exerciseID = rs.getInt("EXERCISE_ID");
                 String name = rs.getString("NAME");
                 String imagePath= rs.getNString("IMAGE_PATH");
+                boolean isTimeBased = rs.getBoolean("IS_TIME_BASED");
+                boolean hasWeight = rs.getBoolean("HAS_WEIGHT");
 
                 // Fetch related tags and instructions
                 List<Tag> tags = getTagsForExercise(exerciseID);
                 ArrayList<String> instructions = getInstructionsForExercise(exerciseID);
 
-                exercises.add(new Exercise(exerciseID, name, tags, instructions,imagePath));
+                exercises.add(new Exercise(exerciseID, name, tags, instructions,imagePath,isTimeBased,hasWeight));
             }
         } catch (final SQLException e) {
                 throw new PersistenceException(e);
@@ -94,6 +96,8 @@ public class ExerciseHSQLDB implements IExercisePersistence {
                 if (rs.next()) {
                     int exerciseID = rs.getInt("EXERCISE_ID");
                     String imagePath= rs.getNString("IMAGE_PATH");
+                    boolean isTimeBased = rs.getBoolean("IS_TIME_BASED");
+                    boolean hasWeight = rs.getBoolean("HAS_WEIGHT");
 
                     // Fetch related tags and instructions
                     List<Tag> tags = getTagsForExercise(exerciseID);
@@ -101,7 +105,7 @@ public class ExerciseHSQLDB implements IExercisePersistence {
 
 
 
-                    exercise= new Exercise(exerciseID, name, tags, instructions,imagePath);
+                    exercise= new Exercise(exerciseID, name, tags, instructions,imagePath,isTimeBased,hasWeight);
                 }
             }
         } catch (final SQLException e) {
@@ -123,12 +127,14 @@ public class ExerciseHSQLDB implements IExercisePersistence {
                 if (rs.next()) {
                     String name = rs.getString("NAME");
                     String imagePath= rs.getNString("IMAGE_PATH");
+                    boolean isTimeBased = rs.getBoolean("IS_TIME_BASED");
+                    boolean hasWeight = rs.getBoolean("HAS_WEIGHT");
 
                     // Fetch related tags and instructions
                     List<Tag> tags = getTagsForExercise(id);
                     ArrayList<String> instructions = getInstructionsForExercise(id);
 
-                    exercise= new Exercise(id, name, tags, instructions,imagePath);
+                    exercise= new Exercise(id, name, tags, instructions,imagePath,isTimeBased,hasWeight);
                 }
             }
         } catch (final SQLException e) {

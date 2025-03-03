@@ -15,10 +15,12 @@ import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionPersistence;
 
 public class WorkoutSessionStub implements IWorkoutSessionPersistence {
     private static final long MAX_SESSION_LENGTH = 1000 * 60 * 60 * 2; // 2 hours
-    final private List<WorkoutSession> sessions;
+    private final List<WorkoutSession> sessions;
+    private int nextId; // Simulated ID counter
 
     public WorkoutSessionStub(){
         sessions = new ArrayList<>();
+        nextId = 1; // Start session ID
 
         AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
         AccessSessionItems accessSessionItems = new AccessSessionItems();
@@ -28,9 +30,19 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
         Date now = new Date();
         Random rand = new Random();
 
-        sessions.add(new WorkoutSession(now.getTime(), now.getTime() + (rand.nextLong() % WorkoutSession.MAX_SESSION_LENGTH), sessionItems, profiles.get(0)));
+        if (!profiles.isEmpty()) {
+            sessions.add(new WorkoutSession(now.getTime(), now.getTime() + (rand.nextLong() % WorkoutSession.MAX_SESSION_LENGTH), sessionItems, profiles.get(0)));
+        }
     }
 
+    @Override
+    public void insertWorkoutSession(WorkoutSession session) {
+        if (session != null) {
+            sessions.add(session);
+        }
+    }
+
+    @Override
     public List<WorkoutSession> getAll(){
         return Collections.unmodifiableList(sessions);
     }

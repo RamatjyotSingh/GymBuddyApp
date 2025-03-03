@@ -1,6 +1,6 @@
 package comp3350.gymbuddy.objects;
 
-public class WorkoutItem {
+public abstract class WorkoutItem {
     private final Exercise exercise;
     private final int sets;
 

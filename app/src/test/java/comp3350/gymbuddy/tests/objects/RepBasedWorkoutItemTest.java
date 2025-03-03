@@ -12,7 +12,7 @@ public class RepBasedWorkoutItemTest {
     public void testRepBasedWorkoutItem(){
         RepBasedWorkoutItem item;
 
-        Exercise exercise = new Exercise(0, null, null, null, null);
+        Exercise exercise = new Exercise(0, null, null, null, null,false,false);
 
         item = new RepBasedWorkoutItem(exercise, 100, 10, 100);
         assertNotNull(item);

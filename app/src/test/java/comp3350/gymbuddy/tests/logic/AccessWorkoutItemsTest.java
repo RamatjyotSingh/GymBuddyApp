@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.logic.AccessWorkoutItems;
+import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
-import comp3350.gymbuddy.persistence.IWorkoutItemPersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutItemPersistence;
 
 public class AccessWorkoutItemsTest {
     private AccessWorkoutItems accessWorkoutItems;
@@ -29,11 +31,11 @@ public class AccessWorkoutItemsTest {
     public void testGetAllWorkoutItems(){
         final List<WorkoutItem> workoutItemList = new ArrayList<>();
         final List<WorkoutItem> resultList;
+        Exercise mockExercise = mock(Exercise.class);
 
-        final WorkoutItem workoutItem = new WorkoutItem(null, 10);
+        final WorkoutItem workoutItem = new RepBasedWorkoutItem(mockExercise, 3, 12, 50.0);
         workoutItemList.add(workoutItem);
         when(workoutItemPersistence.getAll()).thenReturn(workoutItemList);
-
         resultList = accessWorkoutItems.getAll();
         assertNotNull(resultList);
         assertFalse(resultList.isEmpty());

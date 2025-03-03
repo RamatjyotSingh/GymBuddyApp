@@ -18,7 +18,7 @@ public class ExerciseTest {
         List<Tag> tagList = List.of(new Tag(Tag.TagType.MUSCLE_GROUP,"Chest", "#000","#fff"));
         List<String> instructions = List.of("Placeholder");
 
-        exercise = new Exercise(0, "Push-up", tagList, instructions, "path");
+        exercise = new Exercise(0, "Push-up", tagList, instructions, "path",false, false);
         assertNotNull(exercise);
         assertEquals(0, exercise.getID());
         assertEquals("Push-up", exercise.getName());

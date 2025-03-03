@@ -1,39 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".presentation.activity.WorkoutBuilderActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".presentation.activity.WorkoutBuilderActivity">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerWorkoutItems"
+        <!-- Workout Icon Selection -->
+        <ImageView
+            android:id="@+id/imgWorkoutIcon"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:src="@drawable/ic_default_workout"
+            android:contentDescription="Workout Icon"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:paddingEnd="12dp"
+            android:paddingStart="0dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Workout Name Input -->
+        <EditText
+            android:id="@+id/edtWorkoutName"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:padding="16dp"
-            android:scrollbars="vertical"
-            app:layout_constraintBottom_toTopOf="@id/fabAddItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddItem"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:contentDescription="@string/todo"
-            android:src="@android:drawable/ic_input_add"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.515"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+            android:layout_weight="1"
+            android:hint="New Workout"
+            android:textSize="24sp"
+            android:padding="10dp"
+            android:background="@android:drawable/editbox_background" />
+
+    </LinearLayout>
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/btnSaveWorkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="Save"
+        android:onClick="onClickSave" />
+
+    <!-- RecyclerView for Workout Items -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerWorkoutItems"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="8dp" />
+
+    <!-- Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"
+        android:onClick="onClickFAB" />
+
+</LinearLayout>
