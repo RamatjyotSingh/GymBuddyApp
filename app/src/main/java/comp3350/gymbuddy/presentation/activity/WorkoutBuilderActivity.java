@@ -13,7 +13,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import comp3350.gymbuddy.application.DatabaseManager;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +55,6 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initializeDatabase();
         // Inflate the layout using view binding
         binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
@@ -167,10 +170,5 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         }
     }
 
-    //this method helps to initialize the db
-    private void initializeDatabase() {
-        Context context = getApplicationContext();
-        DatabaseManager.init(context);
-    }
 
 }

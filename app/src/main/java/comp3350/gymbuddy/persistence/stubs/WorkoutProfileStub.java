@@ -17,7 +17,12 @@ public class WorkoutProfileStub implements IWorkoutProfilePersistence {
         nextId = 1; // Start ID count
 
         AccessWorkoutItems accessWorkoutItems = new AccessWorkoutItems();
-        profiles.add(new WorkoutProfile(nextId++, "Profile 1", null, accessWorkoutItems.getAll())); // Assign an ID
+
+        // Assign unique IDs while adding multiple profiles
+        profiles.add(new WorkoutProfile(nextId++, "Profile 1", null, accessWorkoutItems.getAll()));
+        profiles.add(new WorkoutProfile(nextId++, "Profile 2", null, accessWorkoutItems.getAll()));
+        profiles.add(new WorkoutProfile(nextId++, "Profile 3", null, accessWorkoutItems.getAll()));
+        profiles.add(new WorkoutProfile(nextId++, "Profile 4", null, accessWorkoutItems.getAll()));
     }
 
     @Override

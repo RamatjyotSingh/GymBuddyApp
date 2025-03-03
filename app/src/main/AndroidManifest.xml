@@ -11,32 +11,40 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GymBuddy"
         >
-<!--        <activity-->
-<!--            android:name="comp3350.gymbuddy.presentation.activity.MainActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.GymBuddy.NoActionBar"-->
-<!--            >-->
 
-<!--            -->
+        <activity
+            android:name="comp3350.gymbuddy.presentation.activity.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.GymBuddy.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-<!--        </activity>-->
         <activity
             android:name="comp3350.gymbuddy.presentation.activity.WorkoutBuilderActivity"
             android:exported="true"
             android:theme="@style/Theme.GymBuddy.NoActionBar"
             android:configChanges="orientation|screenSize"
            >
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
 
-                        <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
         </activity>
+
         <activity android:name=".presentation.activity.ExerciseListActivity"
             android:configChanges="orientation|screenSize"
             />
+
         <activity android:name=".presentation.activity.ExerciseDetailActivity" android:configChanges="orientation|screenSize"
             />
+
+        <activity
+            android:name="comp3350.gymbuddy.presentation.activity.WorkoutLogActivity"
+            android:exported="true"
+            android:theme="@style/Theme.GymBuddy.NoActionBar"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
 
             </application>
 

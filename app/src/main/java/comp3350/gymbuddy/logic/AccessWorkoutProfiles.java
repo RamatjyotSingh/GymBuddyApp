@@ -20,4 +20,16 @@ public class AccessWorkoutProfiles extends Access{
         this();
         this.persistence = workoutProfilePersistence;
     }
+
+    public void insertWorkoutProfile(WorkoutProfile profile) {
+        if (this.persistence instanceof IWorkoutProfilePersistence && profile != null) {
+            ((IWorkoutProfilePersistence) this.persistence).insertWorkoutProfile(profile);
+        }
+    }
+
+    public WorkoutProfile getWorkoutProfileById(int profileId) {
+        return (this.persistence instanceof IWorkoutProfilePersistence)
+                ? ((IWorkoutProfilePersistence) this.persistence).getWorkoutProfileById(profileId)
+                : null;
+    }
 }

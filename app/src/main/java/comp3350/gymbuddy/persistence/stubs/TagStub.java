@@ -51,9 +51,6 @@ public class TagStub implements ITagPersistence {
         return tagList;
     }
 
-
-
-
     @Override
     public List<Tag> getTagsByExerciseID(int ExerciseID) {
 

@@ -22,16 +22,18 @@ public class ExerciseListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_list);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewExercises);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        SearchView searchView = findViewById(R.id.exerciseListSearchView);
+        searchView.setQueryHint(getString(R.string.workout_log_search_hint));
 
         // Initialize the exercise list and adapter
         AccessExercises accessExercises = new AccessExercises();
         List<Exercise> exerciseList = accessExercises.getAll();
 
+        RecyclerView recyclerView = findViewById(R.id.exerciseListRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, exerciseList, this::openExerciseDetail);
         recyclerView.setAdapter(exerciseAdapter);
-        SearchView searchView = findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -45,6 +47,8 @@ public class ExerciseListActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        searchView.setQueryHint(getString(R.string.exercise_list_search_hint));
     }
 
     private void openExerciseDetail(Exercise exercise) {

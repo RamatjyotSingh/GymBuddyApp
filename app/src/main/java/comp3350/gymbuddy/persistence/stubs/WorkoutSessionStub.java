@@ -30,8 +30,10 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
         Date now = new Date();
         Random rand = new Random();
 
+        // Ensure profiles exist and prevent negative session duration
         if (!profiles.isEmpty()) {
-            sessions.add(new WorkoutSession(now.getTime(), now.getTime() + (rand.nextLong() % WorkoutSession.MAX_SESSION_LENGTH), sessionItems, profiles.get(0)));
+            long duration = Math.abs(rand.nextLong()) % WorkoutSession.MAX_SESSION_LENGTH;
+            sessions.add(new WorkoutSession(now.getTime(), now.getTime() + duration, sessionItems, profiles.get(0)));
         }
     }
 
