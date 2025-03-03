@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.objects;
 
+import androidx.annotation.NonNull;
+
 public abstract class SessionItem {
     private final WorkoutItem associatedWorkoutItem;
 
@@ -8,4 +10,7 @@ public abstract class SessionItem {
     }
 
     public WorkoutItem getAssociatedWorkoutItem(){ return this.associatedWorkoutItem; }
+
+    @NonNull
+    public abstract String toString();
 }

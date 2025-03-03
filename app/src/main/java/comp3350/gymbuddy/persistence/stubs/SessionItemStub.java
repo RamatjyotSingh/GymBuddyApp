@@ -25,6 +25,7 @@ public class SessionItemStub implements ISessionItemPersistence {
     private final Map<Integer, List<SessionItem>> sessionIdMap;
     private int nextId; // Simulated session item ID counter
 
+
     public SessionItemStub() {
         sessionItems = new ArrayList<>();
         sessionIdMap = new HashMap<>();

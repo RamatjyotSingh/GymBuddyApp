@@ -46,6 +46,14 @@
             >
         </activity>
 
+        <activity
+            android:name="comp3350.gymbuddy.presentation.activity.WorkoutLogDetailActivity"
+            android:exported="true"
+            android:theme="@style/Theme.GymBuddy.NoActionBar"
+            android:configChanges="orientation|screenSize"
+            >
+        </activity>
+
             </application>
 
         </manifest>

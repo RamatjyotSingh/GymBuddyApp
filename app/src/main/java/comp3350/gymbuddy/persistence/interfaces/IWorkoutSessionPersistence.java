@@ -8,4 +8,5 @@ public interface IWorkoutSessionPersistence extends IPersistence{
     void insertWorkoutSession(WorkoutSession session);
 
     List<WorkoutSession> getAll();
+    WorkoutSession getByStartTime(long startTime);
 }

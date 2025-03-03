@@ -22,6 +22,8 @@ public class AccessWorkoutSessions extends Access{
         return this.workoutSessionPersistence.getAll();
     }
 
+    public WorkoutSession getByStartTime(long startTime) { return ((IWorkoutSessionPersistence)persistence).getByStartTime(startTime); }
+
 
     public void insertWorkoutSession(WorkoutSession session) {
     if (this.workoutSessionPersistence != null && session != null) {

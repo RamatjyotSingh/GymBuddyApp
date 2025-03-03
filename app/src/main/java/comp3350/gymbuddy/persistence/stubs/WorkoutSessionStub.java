@@ -14,13 +14,10 @@ import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionPersistence;
 
 public class WorkoutSessionStub implements IWorkoutSessionPersistence {
-    private static final long MAX_SESSION_LENGTH = 1000 * 60 * 60 * 2; // 2 hours
-    private final List<WorkoutSession> sessions;
-    private int nextId; // Simulated ID counter
+    final private List<WorkoutSession> sessions;
 
     public WorkoutSessionStub(){
         sessions = new ArrayList<>();
-        nextId = 1; // Start session ID
 
         AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
         AccessSessionItems accessSessionItems = new AccessSessionItems();
@@ -47,5 +44,17 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
     @Override
     public List<WorkoutSession> getAll(){
         return Collections.unmodifiableList(sessions);
+    }
+
+    public WorkoutSession getByStartTime(long startTime){
+        WorkoutSession result = null;
+
+        for(var i : sessions){
+            if(i.getStartTime() == startTime){
+                result = i;
+            }
+        }
+
+        return result;
     }
 }
