@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IWorkoutSessionPersistence extends IPersistence{
     List<WorkoutSession> getAll();
+    WorkoutSession getByStartTime(long startTime);
 }

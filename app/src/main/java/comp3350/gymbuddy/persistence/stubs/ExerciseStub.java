@@ -9,11 +9,11 @@ import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
 
 public class ExerciseStub implements IExercisePersistence {
-    private static int id_counter = 0;
+    private static int idCounter = 0;
     private final List<Exercise> exercises;
 
     private Exercise createExercise(String name, List<Tag> tags, ArrayList<String> instructions, String imagePath, boolean isTimeBased, boolean hasWeight) {
-        return new Exercise(id_counter++, name, tags, instructions, imagePath, isTimeBased, hasWeight);
+        return new Exercise(idCounter++, name, tags, instructions, imagePath, isTimeBased, hasWeight);
     }
 
     public ExerciseStub() {
@@ -74,7 +74,60 @@ public class ExerciseStub implements IExercisePersistence {
                 false
         ));
 
-        // Add more exercises similarly
+        exercises.add(createExercise("Deadlift",
+                getTags(),
+                new ArrayList<>(List.of(
+                        "Stand with feet hip-width apart and grip the barbell.",
+                        "Keep your back straight and lift the barbell by extending your hips and knees.",
+                        "Lower the barbell back to the floor in a controlled motion.")),
+                "deadlift.png",
+                false,
+                true
+        ));
+
+        exercises.add(createExercise("Dumbbell Shoulder Press",
+                getTags(),
+                new ArrayList<>(List.of(
+                        "Hold a dumbbell in each hand at shoulder height.",
+                        "Press the dumbbells overhead until your arms are fully extended.",
+                        "Lower the dumbbells back to the starting position.")),
+                "dumbbell-shoulder-press.png",
+                false,
+                true
+        ));
+
+        exercises.add(createExercise("Bicep Curls",
+                getTags(),
+                new ArrayList<>(List.of(
+                        "Hold a dumbbell in each hand with palms facing forward.",
+                        "Curl the dumbbells towards your shoulders.",
+                        "Lower them back to the starting position.")),
+                "bicep-curls.png",
+                false,
+                true
+        ));
+
+        exercises.add(createExercise("Triceps Dips",
+                getTags(),
+                new ArrayList<>(List.of(
+                        "Place your hands on a stable surface behind you.",
+                        "Lower your body by bending your elbows.",
+                        "Push yourself back up to the starting position.")),
+                "tricep-dips.png",
+                false,
+                false
+        ));
+
+        exercises.add(createExercise("Bent-over Rows",
+                getTags(),
+                new ArrayList<>(List.of(
+                        "Hold a barbell or dumbbells with a slight bend in your knees.",
+                        "Bend at the waist and pull the weight towards your torso.",
+                        "Lower the weight back down in a controlled motion.")),
+                "bent-over-rows.png",
+                false,
+                true
+        ));
     }
 
     private List<Tag> getTags() {
@@ -90,7 +143,7 @@ public class ExerciseStub implements IExercisePersistence {
     @Override
     public Exercise getExerciseByName(String name) {
         for (var exercise : exercises) {
-            if (exercise.getName().equals(name)) {
+            if (exercise.getName().equalsIgnoreCase(name)) {
                 return exercise;
             }
         }

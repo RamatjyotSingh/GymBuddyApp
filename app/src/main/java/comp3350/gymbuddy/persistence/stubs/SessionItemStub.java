@@ -21,6 +21,7 @@ public class SessionItemStub implements ISessionItemPersistence {
     private static final double MAX_TIME = 60.0;
     private final List<SessionItem> sessionItems;
 
+
     public SessionItemStub() {
         sessionItems = new ArrayList<>();
 
