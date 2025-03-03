@@ -3,6 +3,7 @@ package comp3350.gymbuddy.application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -13,10 +14,11 @@ public class ConfigManager {
     public ConfigManager(Context context, String fileName) {
         try {
             AssetManager assetManager = context.getAssets();
-            InputStream inputStream = assetManager.open(fileName);
+            InputStream inputStream = assetManager.open("configs/" + fileName);
             properties.load(inputStream);
-        } catch (Exception e) {
-            Log.e(TAG, "Error loading config: " + e.getMessage());
+            inputStream.close();
+        } catch (IOException e) {
+            Log.e(TAG, "ERROR: Failed to load config file: " + fileName + " - " + e.getMessage());
         }
     }
 

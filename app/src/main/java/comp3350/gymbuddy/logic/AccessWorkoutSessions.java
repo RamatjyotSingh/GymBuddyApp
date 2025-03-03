@@ -7,18 +7,27 @@ import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionPersistence;
 
 public class AccessWorkoutSessions extends Access{
+    private IWorkoutSessionPersistence workoutSessionPersistence;
+
     public AccessWorkoutSessions(){
-        persistence = Services.getWorkoutSessionPersistence();
+        workoutSessionPersistence = Services.getWorkoutSessionPersistence();
     }
 
     public AccessWorkoutSessions(IWorkoutSessionPersistence workoutSessionPersistence){
         this();
-        this.persistence = workoutSessionPersistence;
+        this.workoutSessionPersistence = workoutSessionPersistence;
     }
 
     public List<WorkoutSession> getAll(){
-        return this.persistence.getAll();
+        return this.workoutSessionPersistence.getAll();
     }
 
     public WorkoutSession getByStartTime(long startTime) { return ((IWorkoutSessionPersistence)persistence).getByStartTime(startTime); }
+
+
+    public void insertWorkoutSession(WorkoutSession session) {
+    if (this.workoutSessionPersistence != null && session != null) {
+        this.workoutSessionPersistence.insertWorkoutSession(session);
+    }
+}
 }

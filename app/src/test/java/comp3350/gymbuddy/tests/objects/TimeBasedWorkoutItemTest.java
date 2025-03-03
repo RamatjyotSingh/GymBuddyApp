@@ -12,7 +12,7 @@ public class TimeBasedWorkoutItemTest {
     public void testTimeBasedWorkoutItem(){
         TimeBasedWorkoutItem item;
 
-        Exercise exercise = new Exercise(0, null, null, null, null);
+        Exercise exercise = new Exercise(0, null, null, null, null,false,false);
 
         item = new TimeBasedWorkoutItem(exercise, 100, 100);
         assertNotNull(item);

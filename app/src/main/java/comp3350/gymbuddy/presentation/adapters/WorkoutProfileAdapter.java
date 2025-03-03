@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Locale;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -35,8 +36,7 @@ public class WorkoutProfileAdapter extends RecyclerView.Adapter<WorkoutProfileAd
 
         // display the number of exercises in the workout
         int exerciseCount = profile.getWorkoutItems().size();
-        holder.txtWorkoutDetails.setText(exerciseCount + " exercises");
-    }
+        holder.txtWorkoutDetails.setText(String.format(Locale.getDefault(), "%d exercises", exerciseCount));    }
 
     @Override
     public int getItemCount() {

@@ -27,9 +27,21 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
         Date now = new Date();
         Random rand = new Random();
 
-        sessions.add(new WorkoutSession(now.getTime(), now.getTime() + (Math.abs(rand.nextLong()) % WorkoutSession.MAX_SESSION_LENGTH), sessionItems, profiles.get(0)));
+        // Ensure profiles exist and prevent negative session duration
+        if (!profiles.isEmpty()) {
+            long duration = Math.abs(rand.nextLong()) % WorkoutSession.MAX_SESSION_LENGTH;
+            sessions.add(new WorkoutSession(now.getTime(), now.getTime() + duration, sessionItems, profiles.get(0)));
+        }
     }
 
+    @Override
+    public void insertWorkoutSession(WorkoutSession session) {
+        if (session != null) {
+            sessions.add(session);
+        }
+    }
+
+    @Override
     public List<WorkoutSession> getAll(){
         return Collections.unmodifiableList(sessions);
     }

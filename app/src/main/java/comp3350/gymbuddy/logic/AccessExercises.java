@@ -7,28 +7,29 @@ import comp3350.gymbuddy.application.Services;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
 
-public class AccessExercises extends Access{
+public class AccessExercises extends Access {
+    private final IExercisePersistence exercisePersistence;
+
     public AccessExercises() {
-        persistence = Services.getExercisePersistence();
+        exercisePersistence = Services.getExercisePersistence();
+        this.persistence = exercisePersistence;
     }
 
-    public AccessExercises(final IExercisePersistence exercisePersistence){
-        this();
+    public AccessExercises(IExercisePersistence exercisePersistence) {
+        this.exercisePersistence = exercisePersistence;
         this.persistence = exercisePersistence;
     }
 
     @Override
-    public List<Exercise> getAll(){
-        return Collections.unmodifiableList(persistence.getAll());
+    public List<Exercise> getAll() {
+        return Collections.unmodifiableList(exercisePersistence.getAll());
     }
 
-    public Exercise getExerciseByID(int id){
-        Exercise result = null;
+    public Exercise getExerciseByID(int id) {
+        return exercisePersistence.getExerciseByID(id);
+    }
 
-        if(persistence instanceof IExercisePersistence){
-            result = ((IExercisePersistence)persistence).getExerciseByID(id);
-        }
-
-        return result;
+    public Exercise getExerciseByName(String name) {
+        return exercisePersistence.getExerciseByName(name);
     }
 }

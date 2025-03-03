@@ -30,7 +30,7 @@ public class AccessExercisesTest {
         final List<Exercise> exerciseList = new ArrayList<>();
         final List<Exercise> resultList;
 
-        final Exercise exercise = new Exercise(0, "Push-up", null, null, null);
+        final Exercise exercise = new Exercise(0, "Push-up", null, null, null,false,false);
         exerciseList.add(exercise);
 
         // define the behaviour of the mock inside the logic object when this method is called with these arguments
@@ -49,7 +49,7 @@ public class AccessExercisesTest {
     public void testGetExerciseByID(){
         final Exercise result;
 
-        when(exercisePersistence.getExerciseByID(0)).thenReturn(new Exercise(0,"Push-up", null, null, null));
+        when(exercisePersistence.getExerciseByID(0)).thenReturn(new Exercise(0,"Push-up", null, null, null, false,false));
 
         result = accessExercises.getExerciseByID(0);
         assertNotNull(result);

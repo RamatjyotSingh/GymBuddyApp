@@ -6,4 +6,8 @@ import comp3350.gymbuddy.objects.WorkoutProfile;
 
 public interface IWorkoutProfilePersistence extends IPersistence{
     List<WorkoutProfile> getAll();
+    void insertWorkoutProfile(WorkoutProfile profile);
+
+    WorkoutProfile getWorkoutProfileById(int profileId);
+
 }
