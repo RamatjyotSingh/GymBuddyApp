@@ -81,4 +81,31 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionPersistence {
 
         return workoutSessions;
     }
+
+    @Override
+    public WorkoutSession getByStartTime(long startTime) {
+        WorkoutSession result = null;
+        String query = "SELECT id, startTime, endTime, profileId FROM WORKOUTSESSION WHERE startTime = ?";
+
+        try (PreparedStatement st = connection.prepareStatement(query)) {
+            st.setLong(1, startTime);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    long endTime = rs.getLong("endTime");
+                    int profileId = rs.getInt("profileId");
+
+                    WorkoutProfile profile = workoutProfilePersistence.getWorkoutProfileById(profileId);
+                    if (profile != null) {
+                        List<SessionItem> sessionItems = sessionItemPersistence.getSessionItemsBySessionId(id);
+                        result = new WorkoutSession(startTime, endTime, sessionItems, profile);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error retrieving workout session by start time", e);
+        }
+
+        return result;
+    }
 }
