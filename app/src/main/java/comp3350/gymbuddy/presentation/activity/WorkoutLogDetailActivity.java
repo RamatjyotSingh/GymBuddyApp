@@ -23,11 +23,13 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
         super.onCreate(savedInstanceBundle);
         setContentView(R.layout.activity_workout_log_detail);
 
+        // get associated workout session from intent object
         AccessWorkoutSessions accessWorkoutSessions = new AccessWorkoutSessions();
         WorkoutSession session = accessWorkoutSessions.getByID(getIntent().getIntExtra("workoutSessionID", 0));
 
         addSessionItems(session);
 
+        // set main text views
         TextView sessionDate = findViewById(R.id.txtSessionDate);
         TextView sessionProfile = findViewById(R.id.txtSessionProfile);
 
@@ -43,8 +45,7 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
             View newView = layoutInflater.inflate(R.layout.item_workout_session_profile_item, null);
             Exercise associatedExercise = item.getAssociatedWorkoutItem().getExercise();
 
-            newView.setId(item.getID()); // set the ID for on click actions
-
+            // set text views on list element
             TextView exerciseName = newView.findViewById(R.id.sessionItemExerciseName);
             exerciseName.setText(associatedExercise.getName());
 
@@ -62,7 +63,7 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
             }
             exerciseInfo.setText(infoString);
 
-            // set margins so the list elements aren't so close together
+            // set margins on the list elements so they aren't so close together
             CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
             params.setMargins(8, 8, 8, 8);
 
