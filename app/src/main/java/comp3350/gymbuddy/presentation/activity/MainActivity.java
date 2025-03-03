@@ -54,8 +54,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent workoutIntent = new Intent(MainActivity.this, WorkoutBuilderActivity.class);
                 startActivity(workoutIntent);
                 return true;
+            } else if (id == R.id.workout_log) {
+                // Navigate to WorkoutLogActivity
+                Intent workoutIntent = new Intent(MainActivity.this, WorkoutLogActivity.class);
+                startActivity(workoutIntent);
+                return true;
             }
-
             return false;
         });
 

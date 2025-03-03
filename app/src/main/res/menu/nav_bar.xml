@@ -9,5 +9,9 @@
         android:id="@+id/build_workouts"
         android:icon="@drawable/baseline_construction_24"
         android:title="Build Workout" />
+    <item
+        android:id="@+id/workout_log"
+        android:icon="@drawable/ic_default_workout"
+        android:title="Workout Log" />
 
 </menu>
