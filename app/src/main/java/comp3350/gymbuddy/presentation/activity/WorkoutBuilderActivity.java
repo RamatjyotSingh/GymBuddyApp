@@ -3,6 +3,7 @@ package comp3350.gymbuddy.presentation.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,9 +42,6 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
     private List<WorkoutItem> workoutItems;
 
-    // The exercise selected from the exercise list.
-    private Exercise selectedExercise;
-
     // Form validator to ensure workout name is provided
     private FormValidator formValidator;
 
@@ -63,7 +61,8 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
         // Initialize the workout items list
         workoutItems = new ArrayList<>();
-        selectedExercise = null;
+        // The exercise selected from the exercise list.
+        Exercise selectedExercise = null;
 
         // Set up the adapter for the RecyclerView
         adapter = new WorkoutAdapter(workoutItems);
@@ -92,7 +91,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         WorkoutProfile result = null;
 
         if (formValidator.validateAll()) {
-            if (workoutItems.size() > 0) {
+            if (!workoutItems.isEmpty()) {
                 // Retrieve the validated workout name
                 String name = formValidator.getString(R.id.edtWorkoutName);
                 // Create a workout profile with a default icon
@@ -106,19 +105,36 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         return result;
     }
 
-    /**
-     * Handles the save button click event.
-     * If the workout profile is valid, it saves the profile to the database.
-     */
-    public void onClickSave(View v) {
-        WorkoutProfile profile = createWorkoutProfile();
+ /**
+  * Handles the save button click event.
+  * If the workout profile is valid, it saves the profile and its items to the database
+  * and navigates to the WorkoutLogActivity.
+  */
+ public void onClickSave(View v) {
+     WorkoutProfile profile = createWorkoutProfile();
 
-        if (profile != null) {
-            // Save the profile to the database.
-            var accessWorkoutProfiles = new AccessWorkoutProfiles();
-            // accessWorkoutProfiles.addProfile(profile); // TODO: Implement database saving logic
-        }
-    }
+     if (profile != null) {
+
+         try {
+             // Save the profile to the database
+             AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
+             accessWorkoutProfiles.insertWorkoutProfile(profile);
+
+             // Show success message
+             Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
+
+             // Navigate to the WorkoutLogActivity to show all workout logs
+             Intent intent = new Intent(this, WorkoutLogActivity.class);
+             startActivity(intent);
+
+             // Close this activity
+             finish();
+         } catch (Exception e) {
+             Log.e("WorkoutBuilder", "onClickSave: " + e.getMessage());
+             throw new RuntimeException(e);
+         }
+     }
+ }
 
     /**
      * Handles the Floating Action Button (FAB) click event.

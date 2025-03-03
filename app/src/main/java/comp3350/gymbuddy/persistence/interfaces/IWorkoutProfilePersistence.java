@@ -9,4 +9,5 @@ public interface IWorkoutProfilePersistence extends IPersistence{
     void insertWorkoutProfile(WorkoutProfile profile);
 
     WorkoutProfile getWorkoutProfileById(int profileId);
+
 }
