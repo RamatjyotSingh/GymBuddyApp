@@ -14,7 +14,6 @@ import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionPersistence;
 
 public class WorkoutSessionStub implements IWorkoutSessionPersistence {
-    private static final long MAX_SESSION_LENGTH = 1000 * 60 * 60 * 2; // 2 hours
     final private List<WorkoutSession> sessions;
 
     public WorkoutSessionStub(){
