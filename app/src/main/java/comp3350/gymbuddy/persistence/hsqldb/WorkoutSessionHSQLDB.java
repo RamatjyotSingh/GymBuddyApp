@@ -9,7 +9,6 @@ import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class WorkoutSessionHSQLDB implements IWorkoutSessionPersistence {
@@ -18,19 +17,19 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionPersistence {
     private final ISessionItemPersistence sessionItemPersistence;
     private final IWorkoutProfilePersistence workoutProfilePersistence;
 
-    public WorkoutSessionHSQLDB(final Connection connection, ISessionItemPersistence sessionItemPersistence,IWorkoutProfilePersistence workoutProfilePersistence) {
+    public WorkoutSessionHSQLDB(final Connection connection, ISessionItemPersistence sessionItemPersistence, IWorkoutProfilePersistence workoutProfilePersistence) {
         this.connection = connection;
         this.sessionItemPersistence = sessionItemPersistence; // Use SessionItemHSQLDB
-        this.workoutProfilePersistence=workoutProfilePersistence;
+        this.workoutProfilePersistence = workoutProfilePersistence;
     }
 
     @Override
     public void insertWorkoutSession(WorkoutSession session) {
-        String query = "INSERT INTO WORKOUTSESSION (timestamp, duration, profileId) VALUES (?, ?, ?)";
+        String query = "INSERT INTO WORKOUTSESSION (startTime, endTime, profileId) VALUES (?, ?, ?)";
 
         try (PreparedStatement st = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             st.setLong(1, session.getStartTime());  // Start time in milliseconds
-            st.setFloat(2, session.getDuration());  // Duration in seconds
+            st.setLong(2, session.getEndTime());  // End time in milliseconds
             st.setInt(3, session.getWorkoutProfile().getId()); // Foreign key: profileId
 
             st.executeUpdate();
@@ -39,11 +38,11 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionPersistence {
             try (ResultSet generatedKeys = st.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int sessionId = generatedKeys.getInt(1); // Get auto-generated session ID
-                    insertSessionItems(sessionId, session); // Pass session to insert session items
+                    insertSessionItems(sessionId, session); // Insert session items
                 }
             }
         } catch (SQLException e) {
-            throw new PersistenceException(e);
+            throw new PersistenceException("Error inserting workout session", e);
         }
     }
 
@@ -54,15 +53,15 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionPersistence {
     @Override
     public List<WorkoutSession> getAll() {
         List<WorkoutSession> workoutSessions = new ArrayList<>();
-        String query = "SELECT id, timestamp, duration, profileId FROM WORKOUTSESSION";
+        String query = "SELECT id, startTime, endTime, profileId FROM WORKOUTSESSION";
 
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(query)) {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
-                long startTime = rs.getLong("timestamp");
-                float duration = rs.getFloat("duration");
+                long startTime = rs.getLong("startTime");
+                long endTime = rs.getLong("endTime");
                 int profileId = rs.getInt("profileId");
 
                 // Fetch associated WorkoutProfile
@@ -73,14 +72,13 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionPersistence {
                 List<SessionItem> sessionItems = sessionItemPersistence.getSessionItemsBySessionId(id);
 
                 // Create the WorkoutSession object
-                WorkoutSession session = new WorkoutSession(startTime, startTime + (long) (duration * 1000), sessionItems, profile);
+                WorkoutSession session = new WorkoutSession(startTime, endTime, sessionItems, profile);
                 workoutSessions.add(session);
             }
         } catch (final SQLException e) {
-            throw new PersistenceException(e);
+            throw new PersistenceException("Error retrieving workout sessions", e);
         }
 
         return workoutSessions;
     }
-
 }

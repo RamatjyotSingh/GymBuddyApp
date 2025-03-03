@@ -37,6 +37,10 @@ public class WorkoutSession {
         return (float)(this.endTime - this.startTime);
     }
 
+    public long getEndTime() {
+        return this.endTime;
+    }
+
     public String getDurationString(){
         float duration = getDuration();
         duration /= 60000; // convert to minutes
