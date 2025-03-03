@@ -16,8 +16,8 @@ import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
 import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
-import comp3350.gymbuddy.presentation.util.DSOBundler;
-import comp3350.gymbuddy.presentation.util.FormValidator;
+import comp3350.gymbuddy.presentation.utils.DSOBundler;
+import comp3350.gymbuddy.presentation.utils.FormValidator;
 
 public class AddExerciseDialogFragment extends DialogFragment {
     private static String ARG_SELECTED_EXERCISE = "selected_exercise";

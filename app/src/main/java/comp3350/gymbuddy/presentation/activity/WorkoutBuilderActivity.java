@@ -26,12 +26,10 @@ import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.presentation.adapters.WorkoutAdapter;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseDialogFragment;
-import comp3350.gymbuddy.presentation.util.DSOBundler;
-import comp3350.gymbuddy.presentation.util.FormValidator;
+import comp3350.gymbuddy.presentation.utils.DSOBundler;
+import comp3350.gymbuddy.presentation.utils.FormValidator;
 
-public class WorkoutBuilderActivity extends AppCompatActivity {
-    // View binding for accessing UI elements efficiently
-    private ActivityWorkoutBuilderBinding binding;
+public class WorkoutBuilderActivity extends BaseActivity {
 
 
     // Launcher for starting the ExerciseListActivity and handling its result
@@ -49,7 +47,8 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Inflate the layout using view binding
-        binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
+        // View binding for accessing UI elements efficiently
+        comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
@@ -70,6 +69,8 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
         // Initialize form validation logic
         initializeFormValidator();
+        setupBottomNavigation(binding.bottomNavigationView);
+
     }
 
     /**

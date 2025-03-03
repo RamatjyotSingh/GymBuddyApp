@@ -1,11 +1,10 @@
-package comp3350.gymbuddy.presentation.util;
+package comp3350.gymbuddy.presentation.utils;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
 import comp3350.gymbuddy.logic.AccessExercises;
-import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
 import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;

@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.presentation.util;
+package comp3350.gymbuddy.presentation.utils;
 
 import android.app.Activity;
 import android.view.View;
