@@ -3,8 +3,8 @@ package comp3350.gymbuddy.objects;
 public class TimeBasedSessionItem extends SessionItem {
     private final double time;
 
-    public TimeBasedSessionItem(int id, WorkoutItem associatedWorkoutItem, double time) {
-        super(id, associatedWorkoutItem);
+    public TimeBasedSessionItem(WorkoutItem associatedWorkoutItem, double time) {
+        super(associatedWorkoutItem);
         this.time = time;
     }
 

@@ -15,7 +15,6 @@ import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 
 public class SessionItemStub implements ISessionItemPersistence {
-    private static int idCounter = 0;
     private static final int MIN_REPS = 1;
     private static final int MAX_REPS = 18;
     private static final double MIN_TIME = 5.0;
@@ -41,11 +40,11 @@ public class SessionItemStub implements ISessionItemPersistence {
                 if (item instanceof RepBasedWorkoutItem) {
                     // Generate a random number of repetitions.
                     int numReps = randNum.nextInt(MAX_REPS - MIN_REPS) + MIN_REPS;
-                    sessionItem = new RepBasedSessionItem(idCounter++, item, 0.0, numReps);
+                    sessionItem = new RepBasedSessionItem(item, 0.0, numReps);
                 } else if (item instanceof TimeBasedWorkoutItem) {
                     // Generate a random time.
                     double time = randNum.nextDouble() * (MAX_TIME - MIN_TIME) + MIN_TIME;
-                    sessionItem = new TimeBasedSessionItem(idCounter++, item, time);
+                    sessionItem = new TimeBasedSessionItem(item, time);
                 }
 
                 if (sessionItem != null) {
