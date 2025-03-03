@@ -18,12 +18,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
-import comp3350.gymbuddy.application.DatabaseManager;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
 import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
-import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
-import comp3350.gymbuddy.persistence.stubs.WorkoutProfileStub;
 import comp3350.gymbuddy.objects.WorkoutProfile;
+import comp3350.gymbuddy.persistence.database.DatabaseManager;
 import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -103,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
 
     //this method helps to initialize the db
     private void initializeDatabase() {
-        Context context = getApplicationContext();
-        DatabaseManager.init(context);
+        DatabaseManager.getInstance(this);
     }
 }

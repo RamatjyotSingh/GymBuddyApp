@@ -22,6 +22,7 @@ public class AccessWorkoutSessions extends Access{
         return this.workoutSessionPersistence.getAll();
     }
 
+
     public void insertWorkoutSession(WorkoutSession session) {
     if (this.workoutSessionPersistence != null && session != null) {
         this.workoutSessionPersistence.insertWorkoutSession(session);

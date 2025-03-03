@@ -13,7 +13,7 @@ import comp3350.gymbuddy.application.ConfigManager;
 public class DatabaseManager {
     private static final String TAG = "DatabaseManager";
     private static DatabaseManager instance;
-    private Connection connection;
+    private  Connection connection;
 
     // Private constructor to initialize the database connection
     private DatabaseManager(Context context) {
@@ -42,7 +42,7 @@ public class DatabaseManager {
     }
 
     // Method to get the database connection
-    public Connection getConnection() {
+    public  Connection getConnection() {
         return connection;
     }
 
