@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.objects;
 
+import androidx.annotation.NonNull;
+
 public class TimeBasedSessionItem extends SessionItem {
     private final double time;
 
@@ -9,4 +11,9 @@ public class TimeBasedSessionItem extends SessionItem {
     }
 
     public double getTime(){ return this.time; }
+
+    @NonNull
+    public String toString(){
+        return getTime() + " sec";
+    }
 }

@@ -46,7 +46,7 @@ public class WorkoutLogAdapter extends RecyclerView.Adapter<WorkoutLogAdapter.Wo
         holder.duration.setText(session.getDurationString());
         holder.profile.setText(session.getWorkoutProfile().getName());
 
-        holder.container.setOnClickListener(v -> clickListener.openWorkoutLogDetail(workoutSessions.get(position)));
+        holder.container.setOnClickListener(v -> clickListener.openWorkoutLogDetail(session));
     }
 
     @Override

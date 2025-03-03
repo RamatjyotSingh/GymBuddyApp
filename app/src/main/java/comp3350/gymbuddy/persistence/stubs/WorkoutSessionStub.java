@@ -34,12 +34,12 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
         return Collections.unmodifiableList(sessions);
     }
 
-    public WorkoutSession getWorkoutSessionByID(int id){
+    public WorkoutSession getByStartTime(long startTime){
         WorkoutSession result = null;
 
-        for(var s : sessions){
-            if(s.getID() == id){
-                result = s;
+        for(var i : sessions){
+            if(i.getStartTime() == startTime){
+                result = i;
             }
         }
 
