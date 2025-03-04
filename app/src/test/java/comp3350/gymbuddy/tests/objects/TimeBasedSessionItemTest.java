@@ -5,8 +5,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.TimeBasedSessionItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
+import comp3350.gymbuddy.objects.SessionItem;
 
 public class TimeBasedSessionItemTest {
     @Test
@@ -18,7 +18,7 @@ public class TimeBasedSessionItemTest {
         WorkoutItem associatedItem = new WorkoutItem(mockExercise, 3, 60.0);
 
         // Create a TimeBasedSessionItem
-        TimeBasedSessionItem item = new TimeBasedSessionItem(associatedItem, 100.0);
+        SessionItem item = new SessionItem(associatedItem, 100.0);
 
         // Assertions
         assertNotNull(item);

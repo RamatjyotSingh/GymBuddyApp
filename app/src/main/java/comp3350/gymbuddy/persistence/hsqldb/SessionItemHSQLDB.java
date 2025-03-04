@@ -1,8 +1,6 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
-import comp3350.gymbuddy.objects.RepBasedSessionItem;
 import comp3350.gymbuddy.objects.SessionItem;
-import comp3350.gymbuddy.objects.TimeBasedSessionItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutItemPersistence;
@@ -23,25 +21,14 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
 
     @Override
     public void insertSessionItem(int workoutSessionId, SessionItem sessionItem) {
-        try {
-            if (sessionItem instanceof RepBasedSessionItem) {
-                String query = "INSERT INTO SESSION_ITEM_REP (workoutSessionId, workoutItemId, reps, weight) VALUES (?, ?, ?, ?)";
-                try (PreparedStatement st = connection.prepareStatement(query)) {
-                    st.setInt(1, workoutSessionId);
-                    st.setInt(2, sessionItem.getAssociatedWorkoutItem().getExercise().getID()); // References WORKOUT_ITEMS
-                    st.setInt(3, ((RepBasedSessionItem) sessionItem).getReps());
-                    st.setDouble(4, ((RepBasedSessionItem) sessionItem).getWeight());
-                    st.executeUpdate();
-                }
-            } else if (sessionItem instanceof TimeBasedSessionItem) {
-                String query = "INSERT INTO SESSION_ITEM_TIME (workoutSessionId, workoutItemId, time) VALUES (?, ?, ?)";
-                try (PreparedStatement st = connection.prepareStatement(query)) {
-                    st.setInt(1, workoutSessionId);
-                    st.setInt(2, sessionItem.getAssociatedWorkoutItem().getExercise().getID()); // References WORKOUT_ITEMS
-                    st.setDouble(3, ((TimeBasedSessionItem) sessionItem).getTime());
-                    st.executeUpdate();
-                }
-            }
+        String query = "INSERT INTO SESSION_ITEMS (workoutSessionId, workoutItemId, reps, weight, time) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement st = connection.prepareStatement(query)) {
+            st.setInt(1, workoutSessionId);
+            st.setInt(2, sessionItem.getAssociatedWorkoutItem().getExercise().getID()); // References WORKOUT_ITEMS
+            st.setInt(3, sessionItem.getReps());
+            st.setDouble(4, sessionItem.getWeight());
+            st.setDouble(5, sessionItem.getTime());
+            st.executeUpdate();
         } catch (SQLException e) {
             throw new PersistenceException("Error inserting session item", e);
         }
@@ -51,26 +38,15 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
     public List<SessionItem> getAll() {
         List<SessionItem> sessionItems = new ArrayList<>();
 
-        // Get all rep-based session items
-        String repQuery = "SELECT id, workoutItemId, reps, weight FROM SESSION_ITEM_REP";
+        // Get all session items
+        String query = "SELECT id, workoutItemId, reps, weight, time FROM SESSION_ITEMS";
         try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery(repQuery)) {
+             ResultSet rs = st.executeQuery(query)) {
             while (rs.next()) {
-                sessionItems.add(constructRepBasedSessionItem(rs));
+                sessionItems.add(constructSessionItem(rs));
             }
         } catch (SQLException e) {
             throw new PersistenceException("Error retrieving rep-based session items", e);
-        }
-
-        // Get all time-based session items
-        String timeQuery = "SELECT id, workoutItemId, time FROM SESSION_ITEM_TIME";
-        try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery(timeQuery)) {
-            while (rs.next()) {
-                sessionItems.add(constructTimeBasedSessionItem(rs));
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Error retrieving time-based session items", e);
         }
 
         return sessionItems;
@@ -79,29 +55,16 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
     @Override
     public SessionItem getSessionItemById(int sessionItemId) {
         // Check rep-based session items
-        String repQuery = "SELECT id, workoutItemId, reps, weight FROM SESSION_ITEM_REP WHERE id = ?";
+        String repQuery = "SELECT id, workoutItemId, reps, weight, time FROM SESSION_ITEMS WHERE id = ?";
         try (PreparedStatement st = connection.prepareStatement(repQuery)) {
             st.setInt(1, sessionItemId);
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
-                    return constructRepBasedSessionItem(rs);
+                    return constructSessionItem(rs);
                 }
             }
         } catch (SQLException e) {
             throw new PersistenceException("Error retrieving rep-based session item", e);
-        }
-
-        // Check time-based session items
-        String timeQuery = "SELECT id, workoutItemId, time FROM SESSION_ITEM_TIME WHERE id = ?";
-        try (PreparedStatement st = connection.prepareStatement(timeQuery)) {
-            st.setInt(1, sessionItemId);
-            try (ResultSet rs = st.executeQuery()) {
-                if (rs.next()) {
-                    return constructTimeBasedSessionItem(rs);
-                }
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Error retrieving time-based session item", e);
         }
 
         return null; // Return null if no session item is found
@@ -112,54 +75,31 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
         List<SessionItem> sessionItems = new ArrayList<>();
 
         // Get rep-based session items
-        String repQuery = "SELECT id, workoutItemId, reps, weight FROM SESSION_ITEM_REP WHERE workoutSessionId = ?";
+        String repQuery = "SELECT id, workoutItemId, reps, weight, time FROM SESSION_ITEMS WHERE workoutSessionId = ?";
         try (PreparedStatement st = connection.prepareStatement(repQuery)) {
             st.setInt(1, sessionId);
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
-                    sessionItems.add(constructRepBasedSessionItem(rs));
+                    sessionItems.add(constructSessionItem(rs));
                 }
             }
         } catch (SQLException e) {
             throw new PersistenceException("Error retrieving rep-based session items for session ID: " + sessionId, e);
         }
 
-        // Get time-based session items
-        String timeQuery = "SELECT id, workoutItemId, time FROM SESSION_ITEM_TIME WHERE workoutSessionId = ?";
-        try (PreparedStatement st = connection.prepareStatement(timeQuery)) {
-            st.setInt(1, sessionId);
-            try (ResultSet rs = st.executeQuery()) {
-                while (rs.next()) {
-                    sessionItems.add(constructTimeBasedSessionItem(rs));
-                }
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Error retrieving time-based session items for session ID: " + sessionId, e);
-        }
-
         return sessionItems;
     }
 
-    private SessionItem constructRepBasedSessionItem(ResultSet rs) throws SQLException {
+    private SessionItem constructSessionItem(ResultSet rs) throws SQLException {
         int workoutItemId = rs.getInt("workoutItemId");
         int reps = rs.getInt("reps");
         double weight = rs.getDouble("weight");
-
-        // Fetch associated WorkoutItem from WORKOUT_ITEMS
-        WorkoutItem workoutItem = workoutItemPersistence.getWorkoutItemById(workoutItemId);
-        if (workoutItem == null) return null;
-
-        return new RepBasedSessionItem(workoutItem, weight, reps);
-    }
-
-    private SessionItem constructTimeBasedSessionItem(ResultSet rs) throws SQLException {
-        int workoutItemId = rs.getInt("workoutItemId");
         double time = rs.getDouble("time");
 
         // Fetch associated WorkoutItem from WORKOUT_ITEMS
         WorkoutItem workoutItem = workoutItemPersistence.getWorkoutItemById(workoutItemId);
         if (workoutItem == null) return null;
 
-        return new TimeBasedSessionItem(workoutItem, time);
+        return new SessionItem(workoutItem, reps, weight, time);
     }
 }
