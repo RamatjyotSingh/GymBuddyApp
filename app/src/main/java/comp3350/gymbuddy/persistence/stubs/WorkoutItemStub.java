@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import comp3350.gymbuddy.application.Services;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
-import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutItemPersistence;
 
@@ -20,21 +18,21 @@ public class WorkoutItemStub implements IWorkoutItemPersistence {
 
         int mockProfileId = 1; // Fake profile ID since stubs don't have a real database
 
-        workoutItems.add(new RepBasedWorkoutItem(
+        workoutItems.add(new WorkoutItem(
                 Services.getExercisePersistence().getExerciseByName("Push-Up"),
                 4,
                 12,
                 0.0));
         profileIds.add(mockProfileId);
 
-        workoutItems.add(new RepBasedWorkoutItem(
+        workoutItems.add(new WorkoutItem(
                 Services.getExercisePersistence().getExerciseByName("Squat"),
                 4,
                 10,
                 0.0));
         profileIds.add(mockProfileId);
 
-        workoutItems.add(new RepBasedWorkoutItem(
+        workoutItems.add(new WorkoutItem(
                 Services.getExercisePersistence().getExerciseByName("Pull-Up"),
                 3,
                 8,

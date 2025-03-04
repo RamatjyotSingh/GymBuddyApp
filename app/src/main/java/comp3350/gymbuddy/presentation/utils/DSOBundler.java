@@ -5,13 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import comp3350.gymbuddy.logic.AccessExercises;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
-import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 public class DSOBundler {
-
-    public DSOBundler() {}
-
     /**
      * Converts a WorkoutItem into a Bundle for easy storage and transfer.
      *
@@ -29,17 +24,15 @@ public class DSOBundler {
             result.putInt("sets", workoutItem.getSets());
 
             // Store additional properties based on workout item type
-            if (workoutItem instanceof RepBasedWorkoutItem) {
-                var repBasedWorkoutItem = (RepBasedWorkoutItem) workoutItem;
-                result.putInt("reps", repBasedWorkoutItem.getReps());
+            if (workoutItem.isTimeBased()) {
+                result.putDouble("time", workoutItem.getTime());
+            } else {
+                result.putInt("reps", workoutItem.getReps());
 
                 // Only store weight if the exercise involves weights
                 if (workoutItem.getExercise().hasWeight()) {
-                    result.putDouble("weight", repBasedWorkoutItem.getWeight());
+                    result.putDouble("weight", workoutItem.getWeight());
                 }
-            } else if (workoutItem instanceof TimeBasedWorkoutItem) {
-                var timeBasedWorkoutItem = (TimeBasedWorkoutItem) workoutItem;
-                result.putDouble("time", timeBasedWorkoutItem.getTime());
             }
         }
 
@@ -67,14 +60,7 @@ public class DSOBundler {
             var accessExercises = new AccessExercises();
             var exercise = accessExercises.getExerciseByID(exerciseId);
 
-            // Ensure valid data before creating a WorkoutItem
-            if (sets > 0 && exercise != null) {
-                if (reps > 0) {
-                    result = new RepBasedWorkoutItem(exercise, sets, reps, weight);
-                } else if (time > 0.0) {
-                    result = new TimeBasedWorkoutItem(exercise, sets, time);
-                }
-            }
+            result = new WorkoutItem(exercise, sets, reps, weight, time);
         }
 
         return result;

@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
-import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 
@@ -21,7 +19,7 @@ public class WorkoutProfileTest {
 
         // Use a concrete subclass (RepBasedWorkoutItem)
         List<WorkoutItem> itemList = new ArrayList<>();
-        itemList.add(new RepBasedWorkoutItem(mockExercise, 3, 12, 50.0));
+        itemList.add(new WorkoutItem(mockExercise, 3, 12, 50.0));
 
         // Create the WorkoutProfile
         WorkoutProfile profile = new WorkoutProfile("Profile 1", "path", itemList);

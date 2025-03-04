@@ -13,8 +13,7 @@ public class RepBasedSessionItemTest {
     public void testRepBasedSessionItem(){
         RepBasedSessionItem item;
 
-        WorkoutItem associatedItem = new WorkoutItem(null, 0) {
-        };
+        WorkoutItem associatedItem = new WorkoutItem(null, 0, 30.0);
 
         item = new RepBasedSessionItem(associatedItem, 100, 10);
         assertNotNull(item);

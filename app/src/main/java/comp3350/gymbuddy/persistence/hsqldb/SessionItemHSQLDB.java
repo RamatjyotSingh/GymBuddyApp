@@ -28,7 +28,7 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
                 String query = "INSERT INTO SESSION_ITEM_REP (workoutSessionId, workoutItemId, reps, weight) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement st = connection.prepareStatement(query)) {
                     st.setInt(1, workoutSessionId);
-                    st.setInt(2, sessionItem.getAssociatedWorkoutItem().getExercise().getID()); // References WORKOUTITEMS_REP
+                    st.setInt(2, sessionItem.getAssociatedWorkoutItem().getExercise().getID()); // References WORKOUT_ITEMS
                     st.setInt(3, ((RepBasedSessionItem) sessionItem).getReps());
                     st.setDouble(4, ((RepBasedSessionItem) sessionItem).getWeight());
                     st.executeUpdate();
@@ -37,7 +37,7 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
                 String query = "INSERT INTO SESSION_ITEM_TIME (workoutSessionId, workoutItemId, time) VALUES (?, ?, ?)";
                 try (PreparedStatement st = connection.prepareStatement(query)) {
                     st.setInt(1, workoutSessionId);
-                    st.setInt(2, sessionItem.getAssociatedWorkoutItem().getExercise().getID()); // References WORKOUTITEMS_TIME
+                    st.setInt(2, sessionItem.getAssociatedWorkoutItem().getExercise().getID()); // References WORKOUT_ITEMS
                     st.setDouble(3, ((TimeBasedSessionItem) sessionItem).getTime());
                     st.executeUpdate();
                 }
@@ -145,7 +145,7 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
         int reps = rs.getInt("reps");
         double weight = rs.getDouble("weight");
 
-        // Fetch associated WorkoutItem from WORKOUTITEMS_REP
+        // Fetch associated WorkoutItem from WORKOUT_ITEMS
         WorkoutItem workoutItem = workoutItemPersistence.getWorkoutItemById(workoutItemId);
         if (workoutItem == null) return null;
 
@@ -156,7 +156,7 @@ public class SessionItemHSQLDB implements ISessionItemPersistence {
         int workoutItemId = rs.getInt("workoutItemId");
         double time = rs.getDouble("time");
 
-        // Fetch associated WorkoutItem from WORKOUTITEMS_TIME
+        // Fetch associated WorkoutItem from WORKOUT_ITEMS
         WorkoutItem workoutItem = workoutItemPersistence.getWorkoutItemById(workoutItemId);
         if (workoutItem == null) return null;
 

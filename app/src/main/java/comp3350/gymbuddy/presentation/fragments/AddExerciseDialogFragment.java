@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.DialogAddWorkoutItemBinding;
 import comp3350.gymbuddy.logic.AccessExercises;
 import comp3350.gymbuddy.logic.InputValidator;
@@ -18,13 +17,11 @@ import comp3350.gymbuddy.logic.exception.InvalidSetsException;
 import comp3350.gymbuddy.logic.exception.InvalidTimeException;
 import comp3350.gymbuddy.logic.exception.InvalidWeightException;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
-import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.presentation.utils.DSOBundler;
 
 public class AddExerciseDialogFragment extends DialogFragment {
-    private static String ARG_SELECTED_EXERCISE = "selected_exercise";
+    private static final String ARG_SELECTED_EXERCISE = "selected_exercise";
     private DialogAddWorkoutItemBinding binding;
     private Exercise selectedExercise;
 
@@ -145,9 +142,11 @@ public class AddExerciseDialogFragment extends DialogFragment {
             DSOBundler bundler = new DSOBundler();
             Bundle result = bundler.bundleWorkoutItem(workoutItem);
 
-            // Send result back to WorkoutBuilderActivity
-            getParentFragmentManager().setFragmentResult("workout_item", result);
-            dismiss();
+            if (result != null) {
+                // Send result back to WorkoutBuilderActivity
+                getParentFragmentManager().setFragmentResult("workout_item", result);
+                dismiss();
+            }
         }
     }
 }
