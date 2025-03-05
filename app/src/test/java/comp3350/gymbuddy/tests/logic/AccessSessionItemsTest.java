@@ -13,10 +13,8 @@ import java.util.List;
 
 import comp3350.gymbuddy.logic.AccessSessionItems;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.RepBasedSessionItem;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
-import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
+import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 
 public class AccessSessionItemsTest {
@@ -38,10 +36,10 @@ public class AccessSessionItemsTest {
         Exercise mockExercise = mock(Exercise.class);
 
         // Use a concrete subclass (RepBasedWorkoutItem)
-        WorkoutItem workoutItem = new RepBasedWorkoutItem(mockExercise, 3, 12, 50.0);
+        WorkoutItem workoutItem = new WorkoutItem(mockExercise, 3, 12, 50.0);
 
         // Now use this in the SessionItem
-        RepBasedSessionItem item = new RepBasedSessionItem(workoutItem, 100, 15);
+        SessionItem item = new SessionItem(workoutItem, 100, 15);
         sessionItemList.add(item);
 
         // Define mock behavior

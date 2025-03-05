@@ -5,9 +5,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.TimeBasedSessionItem;
-import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
+import comp3350.gymbuddy.objects.SessionItem;
 
 public class TimeBasedSessionItemTest {
     @Test
@@ -15,11 +14,11 @@ public class TimeBasedSessionItemTest {
         // Mock an Exercise object to avoid null pointer errors
         Exercise mockExercise = new Exercise(0, "Plank", null, null, null, true, false);
 
-        // Use a concrete subclass (TimeBasedWorkoutItem)
-        WorkoutItem associatedItem = new TimeBasedWorkoutItem(mockExercise, 3, 60.0);
+        // Use a concrete subclass
+        WorkoutItem associatedItem = new WorkoutItem(mockExercise, 3, 60.0);
 
         // Create a TimeBasedSessionItem
-        TimeBasedSessionItem item = new TimeBasedSessionItem(associatedItem, 100.0);
+        SessionItem item = new SessionItem(associatedItem, 100.0);
 
         // Assertions
         assertNotNull(item);

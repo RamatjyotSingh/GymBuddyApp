@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
-import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
@@ -34,19 +32,16 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         WorkoutItem item = workoutItems.get(position);
         holder.txtExerciseName.setText(item.getExercise().getName());
 
-        String details = "";
+        String details;
 
-        if (item instanceof RepBasedWorkoutItem) {
-            var repItem = (RepBasedWorkoutItem)item;
-            details = repItem.getSets() + " sets x " + repItem.getReps() + " reps";
+        if (item.isTimeBased()) {
+            details = item.getTime() + " sec";
+        } else {
+            details = item.getSets() + " sets x " + item.getReps() + " reps";
 
-            if (repItem.getWeight() > 0) {
-                details += " | " + repItem.getWeight() + " kg";
+            if (item.getWeight() > 0.0) {
+                details += " | " + item.getWeight() + " kg";
             }
-        }
-        else if (item instanceof TimeBasedWorkoutItem) {
-            var timeItem = (TimeBasedWorkoutItem)item;
-            details = timeItem.getTime() + " sec";
         }
 
         holder.txtWorkoutDetails.setText(details);

@@ -5,16 +5,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
+import comp3350.gymbuddy.objects.WorkoutItem;
 
 public class RepBasedWorkoutItemTest {
     @Test
-    public void testRepBasedWorkoutItem(){
-        RepBasedWorkoutItem item;
-
+    public void testRepBasedWorkoutItem() {
         Exercise exercise = new Exercise(0, null, null, null, null,false,false);
 
-        item = new RepBasedWorkoutItem(exercise, 100, 10, 100);
+        WorkoutItem item = new WorkoutItem(exercise, 100, 10, 100);
         assertNotNull(item);
         assertEquals(exercise, item.getExercise());
         assertEquals(100, item.getSets());

@@ -8,11 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import comp3350.gymbuddy.logic.AccessWorkoutItems;
-import comp3350.gymbuddy.objects.RepBasedSessionItem;
-import comp3350.gymbuddy.objects.RepBasedWorkoutItem;
 import comp3350.gymbuddy.objects.SessionItem;
-import comp3350.gymbuddy.objects.TimeBasedSessionItem;
-import comp3350.gymbuddy.objects.TimeBasedWorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
 
@@ -46,14 +42,14 @@ public class SessionItemStub implements ISessionItemPersistence {
             for (int i = 0; i < numSets; i++) {
                 SessionItem sessionItem = null;
 
-                if (item instanceof RepBasedWorkoutItem) {
-                    // Generate a random number of repetitions.
-                    int numReps = randNum.nextInt(MAX_REPS - MIN_REPS + 1) + MIN_REPS;
-                    sessionItem = new RepBasedSessionItem(item, 0.0, numReps);
-                } else if (item instanceof TimeBasedWorkoutItem) {
+                if (item.isTimeBased()) {
                     // Generate a random time.
                     double time = randNum.nextDouble() * (MAX_TIME - MIN_TIME) + MIN_TIME;
-                    sessionItem = new TimeBasedSessionItem(item, time);
+                    sessionItem = new SessionItem(item, time);
+                } else {
+                    // Generate a random number of repetitions.
+                    int numReps = randNum.nextInt(MAX_REPS - MIN_REPS + 1) + MIN_REPS;
+                    sessionItem = new SessionItem(item, numReps, 0.0);
                 }
 
                 if (sessionItem != null) {

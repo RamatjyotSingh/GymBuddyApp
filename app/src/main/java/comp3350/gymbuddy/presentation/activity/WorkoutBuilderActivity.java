@@ -11,9 +11,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +19,19 @@ import java.util.List;
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding;
 import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
-import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.logic.InputValidator;
+import comp3350.gymbuddy.logic.exception.InvalidInputException;
+import comp3350.gymbuddy.logic.exception.InvalidNameException;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.presentation.adapters.WorkoutAdapter;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseDialogFragment;
 import comp3350.gymbuddy.presentation.utils.DSOBundler;
-import comp3350.gymbuddy.presentation.utils.FormValidator;
 
 public class WorkoutBuilderActivity extends BaseActivity {
 
+    // View binding for accessing UI elements efficiently
+    private ActivityWorkoutBuilderBinding binding;
 
     // Launcher for starting the ExerciseListActivity and handling its result
     private final ActivityResultLauncher<Intent> exerciseListLauncher = registerForActivityResult(
@@ -39,18 +40,14 @@ public class WorkoutBuilderActivity extends BaseActivity {
     private WorkoutAdapter adapter;
 
     private List<WorkoutItem> workoutItems;
-
-    // Form validator to ensure workout name is provided
-    private FormValidator formValidator;
+    private String selectedIconPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Inflate the layout using view binding
-        // View binding for accessing UI elements efficiently
-        comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
+        binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Set up the RecyclerView with a LinearLayoutManager for displaying workout items
         binding.recyclerWorkoutItems.setLayoutManager(new LinearLayoutManager(this));
@@ -60,50 +57,40 @@ public class WorkoutBuilderActivity extends BaseActivity {
 
         // Initialize the workout items list
         workoutItems = new ArrayList<>();
-        // The exercise selected from the exercise list.
-        Exercise selectedExercise = null;
+
+        // Initialize icon with default path
+        selectedIconPath = getString(R.string.default_workout_icon_path);
 
         // Set up the adapter for the RecyclerView
         adapter = new WorkoutAdapter(workoutItems);
         binding.recyclerWorkoutItems.setAdapter(adapter);
 
-        // Initialize form validation logic
-        initializeFormValidator();
         setupBottomNavigation(binding.bottomNavigationView);
-
-    }
-
-    /**
-     * Initializes form validation rules.
-     * Ensures the workout name is not empty before saving.
-     */
-    private void initializeFormValidator() {
-        formValidator = new FormValidator(this);
-        formValidator.addEditText(R.id.edtWorkoutName).notEmpty();
     }
 
     /**
      * Creates a WorkoutProfile instance if all validation rules pass.
-     * Ensures that at least one exercise is included before proceeding.
      *
      * @return A valid WorkoutProfile instance or null if validation fails.
      */
-    private @Nullable WorkoutProfile createWorkoutProfile() {
-        WorkoutProfile result = null;
+    private @Nullable WorkoutProfile generateWorkoutProfile() {
+        WorkoutProfile workoutProfile = null;
 
-        if (formValidator.validateAll()) {
-            if (!workoutItems.isEmpty()) {
-                // Retrieve the validated workout name
-                String name = formValidator.getString(R.id.edtWorkoutName);
-                // Create a workout profile with a default icon
-                result = new WorkoutProfile(name, "drawable/ic_default_workout.xml", workoutItems);
-            } else {
-                // Notify the user that at least one exercise is required
-                Toast.makeText(this, "Workout must have an exercise.", Toast.LENGTH_LONG).show();
-            }
+        // Ensure all input is valid before proceeding
+        try {
+            String name = binding.edtWorkoutName.getText().toString();
+
+            var inputValidator = new InputValidator();
+            workoutProfile = inputValidator.newWorkoutProfile(name, selectedIconPath, workoutItems);
+
+            // Report invalid input.
+        } catch (InvalidNameException e) {
+            binding.edtWorkoutName.setError(e.getMessage());
+        } catch (InvalidInputException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        return result;
+        return workoutProfile;
     }
 
  /**
@@ -112,7 +99,7 @@ public class WorkoutBuilderActivity extends BaseActivity {
   * and navigates to the WorkoutLogActivity.
   */
  public void onClickSave(View v) {
-     WorkoutProfile profile = createWorkoutProfile();
+     WorkoutProfile profile = generateWorkoutProfile();
 
      if (profile != null) {
 
@@ -123,10 +110,6 @@ public class WorkoutBuilderActivity extends BaseActivity {
 
              // Show success message
              Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
-
-             // Navigate to the WorkoutLogActivity to show all workout logs
-             Intent intent = new Intent(this, WorkoutLogActivity.class);
-             startActivity(intent);
 
              // Close this activity
              finish();
