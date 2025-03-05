@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import comp3350.gymbuddy.logic.AccessWorkoutItems;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
 
@@ -16,13 +15,13 @@ public class WorkoutProfileStub implements IWorkoutProfilePersistence {
         profiles = new ArrayList<>();
         nextId = 1; // Start ID count
 
-        AccessWorkoutItems accessWorkoutItems = new AccessWorkoutItems();
+        var workoutItemStub = new WorkoutItemStub();
 
         // Assign unique IDs while adding multiple profiles
-        profiles.add(new WorkoutProfile(nextId++, "Profile 1", null, accessWorkoutItems.getAll()));
-        profiles.add(new WorkoutProfile(nextId++, "Profile 2", null, accessWorkoutItems.getAll()));
-        profiles.add(new WorkoutProfile(nextId++, "Profile 3", null, accessWorkoutItems.getAll()));
-        profiles.add(new WorkoutProfile(nextId++, "Profile 4", null, accessWorkoutItems.getAll()));
+        profiles.add(new WorkoutProfile(nextId++, "Profile 1", null, workoutItemStub.getAll()));
+        profiles.add(new WorkoutProfile(nextId++, "Profile 2", null, workoutItemStub.getAll()));
+        profiles.add(new WorkoutProfile(nextId++, "Profile 3", null, workoutItemStub.getAll()));
+        profiles.add(new WorkoutProfile(nextId++, "Profile 4", null, workoutItemStub.getAll()));
     }
 
     @Override

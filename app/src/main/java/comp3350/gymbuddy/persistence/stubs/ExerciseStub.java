@@ -6,6 +6,7 @@ import java.util.List;
 
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
+import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
 
 public class ExerciseStub implements IExercisePersistence {
@@ -25,7 +26,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Start in a plank position.",
                         "Lower your body until your chest nearly touches the floor.",
                         "Push back up to the starting position.")),
-                "push_up.png",
+                "images/push_up.png",
                 false,
                 false
         ));
@@ -36,7 +37,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Stand with feet shoulder-width apart.",
                         "Lower your body by bending your knees until your thighs are parallel to the floor.",
                         "Push back up to the starting position.")),
-                "squat.png",
+                "images/squat.png",
                 false,
                 true
         ));
@@ -47,7 +48,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Hold a push-up position with your arms straight.",
                         "Keep your body in a straight line from head to heels.",
                         "Engage your core and hold the position.")),
-                "plank.png",
+                "images/plank.png",
                 true,
                 false
         ));
@@ -58,7 +59,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Grip a pull-up bar with palms facing away.",
                         "Pull yourself up until your chin clears the bar.",
                         "Lower yourself back down to the starting position.")),
-                "pull-up.png",
+                "images/pull-up.png",
                 false,
                 false
         ));
@@ -69,7 +70,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Step forward with one leg.",
                         "Lower your hips until both knees are bent at 90-degree angles.",
                         "Push back up to the starting position and repeat with the other leg.")),
-                "lunges.png",
+                "images/lunges.png",
                 false,
                 false
         ));
@@ -80,7 +81,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Stand with feet hip-width apart and grip the barbell.",
                         "Keep your back straight and lift the barbell by extending your hips and knees.",
                         "Lower the barbell back to the floor in a controlled motion.")),
-                "deadlift.png",
+                "images/deadlift.png",
                 false,
                 true
         ));
@@ -91,7 +92,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Hold a dumbbell in each hand at shoulder height.",
                         "Press the dumbbells overhead until your arms are fully extended.",
                         "Lower the dumbbells back to the starting position.")),
-                "dumbbell-shoulder-press.png",
+                "images/dumbbell-shoulder-press.png",
                 false,
                 true
         ));
@@ -102,7 +103,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Hold a dumbbell in each hand with palms facing forward.",
                         "Curl the dumbbells towards your shoulders.",
                         "Lower them back to the starting position.")),
-                "bicep-curls.png",
+                "images/bicep-curls.png",
                 false,
                 true
         ));
@@ -113,7 +114,7 @@ public class ExerciseStub implements IExercisePersistence {
                         "Place your hands on a stable surface behind you.",
                         "Lower your body by bending your elbows.",
                         "Push yourself back up to the starting position.")),
-                "tricep-dips.png",
+                "images/tricep-dips.png",
                 false,
                 false
         ));
@@ -124,15 +125,14 @@ public class ExerciseStub implements IExercisePersistence {
                         "Hold a barbell or dumbbells with a slight bend in your knees.",
                         "Bend at the waist and pull the weight towards your torso.",
                         "Lower the weight back down in a controlled motion.")),
-                "bent-over-rows.png",
+                "images/bent-over-rows.png",
                 false,
                 true
         ));
     }
 
     private List<Tag> getTags() {
-        TagStub tagStub = new TagStub();
-        return tagStub.getTagsByExerciseID(1); // Just return all tags for now, or use logic to pick random ones
+        return (new TagStub()).getTagsByExerciseID(1);
     }
 
     @Override

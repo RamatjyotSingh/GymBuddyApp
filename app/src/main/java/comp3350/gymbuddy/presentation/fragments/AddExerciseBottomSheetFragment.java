@@ -42,14 +42,7 @@ public class AddExerciseBottomSheetFragment extends BottomSheetDialogFragment {
         textViewExerciseName.setText(exercise.getName());
 
         btnAddExercise.setOnClickListener(v -> {
-            // Send exercise data back to the previous activity (WorkoutBuilderActivity)
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("exerciseID", exercise.getID());
 
-            // Set the result and close the BottomSheet
-            requireActivity().setResult(Activity.RESULT_OK, resultIntent);
-            requireActivity().finish();
-            dismiss();
         });
 
         btnCancel.setOnClickListener(v -> dismiss());

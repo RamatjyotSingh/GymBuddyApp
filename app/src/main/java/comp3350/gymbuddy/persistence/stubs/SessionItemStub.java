@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
 
-import comp3350.gymbuddy.logic.AccessWorkoutItems;
 import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
@@ -27,8 +26,8 @@ public class SessionItemStub implements ISessionItemPersistence {
         sessionIdMap = new HashMap<>();
         nextId = 1; // Start ID counter
 
-        AccessWorkoutItems accessWorkoutItems = new AccessWorkoutItems();
-        List<WorkoutItem> items = accessWorkoutItems.getAll();
+        var workoutItemStub = new WorkoutItemStub();
+        List<WorkoutItem> items = workoutItemStub.getAll();
 
         // Create random number generator.
         Random randNum = new Random();

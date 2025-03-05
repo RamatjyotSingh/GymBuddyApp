@@ -11,7 +11,7 @@ import androidx.cardview.widget.CardView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogDetailBinding;
-import comp3350.gymbuddy.logic.AccessWorkoutSessions;
+import comp3350.gymbuddy.logic.services.WorkoutSessionService;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.objects.WorkoutSession;
@@ -27,8 +27,8 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
 
 
         // get associated workout session from intent object
-        AccessWorkoutSessions accessWorkoutSessions = new AccessWorkoutSessions();
-        WorkoutSession session = accessWorkoutSessions.getByStartTime(getIntent().getLongExtra("workoutSessionStartTime", 0));
+        WorkoutSessionService workoutSessionService = new WorkoutSessionService();
+        WorkoutSession session = workoutSessionService.getByStartTime(getIntent().getLongExtra("workoutSessionStartTime", 0));
 
         addSessionItems(session);
 

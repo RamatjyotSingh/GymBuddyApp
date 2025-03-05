@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Date;
 import java.util.Random;
 
-import comp3350.gymbuddy.logic.AccessSessionItems;
-import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
+import comp3350.gymbuddy.logic.services.WorkoutProfileService;
 import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
@@ -19,11 +18,11 @@ public class WorkoutSessionStub implements IWorkoutSessionPersistence {
     public WorkoutSessionStub(){
         sessions = new ArrayList<>();
 
-        AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
-        AccessSessionItems accessSessionItems = new AccessSessionItems();
+        var workoutProfileStub = new WorkoutProfileStub();
+        var sessionItemStub = new SessionItemStub();
 
-        List<WorkoutProfile> profiles = accessWorkoutProfiles.getAll();
-        List<SessionItem> sessionItems = accessSessionItems.getAll();
+        List<WorkoutProfile> profiles = workoutProfileStub.getAll();
+        List<SessionItem> sessionItems = sessionItemStub.getAll();
         Date now = new Date();
         Random rand = new Random();
 

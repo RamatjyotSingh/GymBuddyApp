@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import comp3350.gymbuddy.logic.AccessExercises;
+import comp3350.gymbuddy.logic.services.ExerciseService;
 import comp3350.gymbuddy.objects.WorkoutItem;
 public class DSOBundler {
     /**
@@ -57,7 +57,7 @@ public class DSOBundler {
             double time = bundle.getDouble("time", 0.0);
 
             // Retrieve the exercise object using the exercise ID
-            var accessExercises = new AccessExercises();
+            var accessExercises = new ExerciseService();
             var exercise = accessExercises.getExerciseByID(exerciseId);
 
             result = new WorkoutItem(exercise, sets, reps, weight, time);

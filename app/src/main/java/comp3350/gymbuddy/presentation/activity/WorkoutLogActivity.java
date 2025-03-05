@@ -10,7 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogBinding;
-import comp3350.gymbuddy.logic.AccessWorkoutSessions;
+import comp3350.gymbuddy.logic.services.WorkoutSessionService;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.presentation.adapters.WorkoutLogAdapter;
 
@@ -26,8 +26,8 @@ public class WorkoutLogActivity extends BaseActivity {
 
         binding.workoutLogRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        AccessWorkoutSessions accessWorkoutSessions = new AccessWorkoutSessions();
-        WorkoutLogAdapter logAdapter = new WorkoutLogAdapter(accessWorkoutSessions.getAll(), this::openWorkoutLogDetail);
+        WorkoutSessionService workoutSessionService = new WorkoutSessionService();
+        WorkoutLogAdapter logAdapter = new WorkoutLogAdapter(workoutSessionService.getAll(), this::openWorkoutLogDetail);
         binding.workoutLogRecyclerView.setAdapter(logAdapter);
 
         // Access views using binding

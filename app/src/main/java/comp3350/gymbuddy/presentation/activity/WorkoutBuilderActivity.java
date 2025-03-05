@@ -3,7 +3,6 @@ package comp3350.gymbuddy.presentation.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,7 +17,7 @@ import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding;
-import comp3350.gymbuddy.logic.AccessWorkoutProfiles;
+import comp3350.gymbuddy.logic.services.WorkoutProfileService;
 import comp3350.gymbuddy.logic.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidInputException;
 import comp3350.gymbuddy.logic.exception.InvalidNameException;
@@ -102,21 +101,15 @@ public class WorkoutBuilderActivity extends BaseActivity {
      WorkoutProfile profile = generateWorkoutProfile();
 
      if (profile != null) {
+         // Save the profile to the database
+         WorkoutProfileService workoutProfileService = new WorkoutProfileService();
+         workoutProfileService.insertWorkoutProfile(profile);
 
-         try {
-             // Save the profile to the database
-             AccessWorkoutProfiles accessWorkoutProfiles = new AccessWorkoutProfiles();
-             accessWorkoutProfiles.insertWorkoutProfile(profile);
+         // Show success message
+         Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
 
-             // Show success message
-             Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
-
-             // Close this activity
-             finish();
-         } catch (Exception e) {
-             Log.e("WorkoutBuilder", "onClickSave: " + e.getMessage());
-             throw new RuntimeException(e);
-         }
+         // Close this activity
+         finish();
      }
  }
 

@@ -32,9 +32,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import comp3350.gymbuddy.R;
-import comp3350.gymbuddy.logic.AccessExercises;
+import comp3350.gymbuddy.logic.services.ExerciseService;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
+import comp3350.gymbuddy.presentation.utils.AssetLoader;
 
 public class ExerciseDetailActivity extends AppCompatActivity {
 
@@ -57,15 +58,14 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        AccessExercises accessExercises = new AccessExercises();
+        ExerciseService exerciseService = new ExerciseService();
         int exerciseID = intent.getIntExtra("exerciseID", 0);
-        Exercise exercise = accessExercises.getExerciseByID(exerciseID);
+        Exercise exercise = exerciseService.getExerciseByID(exerciseID);
 
         exerciseTitle.setText(exercise.getName());
-        Log.d("ExerciseDetailActivity", "Exercise image: " + exercise.getImagePath());
-        if(exercise.getImagePath() != null){
-            loadImage(exercise.getImagePath(), exerciseImage);
-        }
+
+        var assetLoader = new AssetLoader();
+        exerciseImage.setImageBitmap(assetLoader.loadImage(this, exercise.getImagePath()));
 
         setInstructions(exercise.getInstructions(), exerciseInstructions);
 
@@ -78,14 +78,9 @@ public class ExerciseDetailActivity extends AppCompatActivity {
             chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(tagList.get(i).getBgColor())));
             chip.setTextColor(ColorStateList.valueOf(Color.parseColor(tagList.get(i).getTextColor())));
 
-
-
             tagContainer.addView(chip);
         }
-
-
     }
-
 
     private void setInstructions(List<String> instructions, LinearLayout exerciseInstructions) {
         exerciseInstructions.removeAllViews(); // Clear previous instructions
@@ -128,45 +123,5 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         instructionParams.setMargins(16, 8, 16, 8);
         instruction.setLayoutParams(instructionParams);
         return instruction;
-    }
-
-    private void loadImage(String imagePath, ShapeableImageView imageView) {
-        if (imagePath.startsWith("http")) {
-            loadImageFromURL(imagePath, imageView);
-        } else {
-            loadImageFromAssets(imagePath, imageView);
-        }
-    }
-
-    private void loadImageFromURL(String imageUrl, ShapeableImageView imageView) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        executorService.execute(() -> {
-            try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream inputStream = connection.getInputStream();
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                handler.post(() -> imageView.setImageBitmap(bitmap));
-                inputStream.close();
-            } catch (Exception e) {
-                Log.e("loadImageFromURL", "Error: " + e.getMessage());
-            }
-        });
-    }
-
-    private void loadImageFromAssets(String imagePath, ShapeableImageView imageView) {
-        String path = "images/" + imagePath;
-        try {
-            InputStream inputStream = getAssets().open(path);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            imageView.setImageBitmap(bitmap);
-            inputStream.close();
-        } catch (IOException e) {
-            Log.e("loadImageFromAssets: ", Objects.requireNonNull(e.getMessage()));
-        }
     }
 }

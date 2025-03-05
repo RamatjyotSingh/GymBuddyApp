@@ -11,19 +11,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import comp3350.gymbuddy.logic.AccessExercises;
+import comp3350.gymbuddy.logic.services.ExerciseService;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
 
-public class AccessExercisesTest {
-    private AccessExercises accessExercises;
+public class ExerciseServiceTest {
+    private ExerciseService exerciseService;
     private IExercisePersistence exercisePersistence;
 
     @Before
     public void setup() {
         // Initialize before each test
         exercisePersistence = mock(IExercisePersistence.class);
-        accessExercises = new AccessExercises(exercisePersistence);
+        exerciseService = new ExerciseService(exercisePersistence);
     }
 
     @Test public void testGetAllExercises(){
@@ -36,7 +36,7 @@ public class AccessExercisesTest {
         // define the behaviour of the mock inside the logic object when this method is called with these arguments
         when(exercisePersistence.getAll()).thenReturn(exerciseList);
 
-        resultList = accessExercises.getAll();
+        resultList = exerciseService.getAll();
         assertNotNull(resultList);
         assertFalse(resultList.isEmpty());
         assertEquals(1, resultList.size());
@@ -51,7 +51,7 @@ public class AccessExercisesTest {
 
         when(exercisePersistence.getExerciseByID(0)).thenReturn(new Exercise(0,"Push-up", null, null, null, false,false));
 
-        result = accessExercises.getExerciseByID(0);
+        result = exerciseService.getExerciseByID(0);
         assertNotNull(result);
         assertTrue(result.getName().equalsIgnoreCase("Push-up"));
 

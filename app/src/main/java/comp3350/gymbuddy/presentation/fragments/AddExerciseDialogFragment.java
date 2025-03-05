@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import comp3350.gymbuddy.databinding.DialogAddWorkoutItemBinding;
-import comp3350.gymbuddy.logic.AccessExercises;
+import comp3350.gymbuddy.logic.services.ExerciseService;
 import comp3350.gymbuddy.logic.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;
 import comp3350.gymbuddy.logic.exception.InvalidSetsException;
@@ -58,7 +58,7 @@ public class AddExerciseDialogFragment extends DialogFragment {
             int exerciseId = getArguments().getInt(ARG_SELECTED_EXERCISE, -1);
 
             // Retrieve the selected exercise from storage
-            var accessExercises = new AccessExercises();
+            var accessExercises = new ExerciseService();
             selectedExercise = accessExercises.getExerciseByID(exerciseId);
 
             updateViews();
