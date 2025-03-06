@@ -33,9 +33,9 @@ public class PersistenceManager {
     public static synchronized IExerciseDB getExerciseDB(boolean forProduction) {
         if (exerciseDB == null) {
             if (forProduction) {
-                exerciseDB = new ExerciseStub();
-            } else {
                 exerciseDB = new ExerciseHSQLDB();
+            } else {
+                exerciseDB = new ExerciseStub();
             }
         }
         return exerciseDB;
@@ -43,11 +43,11 @@ public class PersistenceManager {
 
     @NonNull
     public static synchronized IWorkoutSessionDB getWorkoutSessionDB(boolean forProduction) {
-        if (exerciseDB == null) {
+        if (workoutSessionDB == null) {
             if (forProduction) {
-                workoutSessionDB = new WorkoutSessionStub();
-            } else {
                 workoutSessionDB = new WorkoutSessionHSQLDB();
+            } else {
+                workoutSessionDB = new WorkoutSessionStub();
             }
         }
         return workoutSessionDB;
