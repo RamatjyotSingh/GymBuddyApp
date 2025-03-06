@@ -90,7 +90,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     private List<WorkoutItem> getWorkoutItemsBySessionId(int id) throws DBException {
         List<WorkoutItem> workoutItems = new ArrayList<>();
 
-        String query = "SELECT * FROM session_items WHERE profile_id = ?";
+        String query = "SELECT * FROM session_item WHERE profile_id = ?";
 
         try (Connection conn = HSQLDBHelper.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {

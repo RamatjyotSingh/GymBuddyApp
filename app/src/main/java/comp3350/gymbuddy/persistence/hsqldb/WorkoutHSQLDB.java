@@ -105,7 +105,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     private List<WorkoutItem> getWorkoutItemsByProfileId(int id) throws DBException {
         List<WorkoutItem> workoutItems = new ArrayList<>();
 
-        String query = "SELECT * FROM workout_items WHERE profile_id = ?";
+        String query = "SELECT * FROM workout_item WHERE profile_id = ?";
 
         try (Connection conn = HSQLDBHelper.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {

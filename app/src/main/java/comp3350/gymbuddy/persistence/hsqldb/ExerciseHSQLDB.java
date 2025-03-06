@@ -76,10 +76,10 @@ public class ExerciseHSQLDB implements IExerciseDB {
     @NonNull
     private Tag extractTag(ResultSet rs) throws SQLException {
         String name = rs.getString("tag_name");
-        String typeStr = rs.getString("tag_type");
+        int tagType = rs.getInt("tag_type");
         String textColor = rs.getString("text_color");
         String bgColor = rs.getString("background_color");
-        Tag.TagType type = Tag.TagType.valueOf(typeStr);
+        Tag.TagType type = Tag.TagType.values()[tagType];
 
         return new Tag(type, name, textColor, bgColor);
     }
@@ -88,10 +88,10 @@ public class ExerciseHSQLDB implements IExerciseDB {
     private List<Tag> getTagsByExerciseId(int exerciseID) throws DBException {
         List<Tag> tags = new ArrayList<>();
 
-        String query = "SELECT t.TAG_NAME, t.TAG_TYPE, t.TEXT_COLOR, t.BG_COLOR " +
-                "FROM EXERCISE_TAGS lt " +
-                "JOIN TAGS t ON lt.TAG_ID = t.TAG_ID " +
-                "WHERE lt.EXERCISE_ID = ?";
+        String query = "SELECT tag_name, tag_type, text_color, background_color " +
+                "FROM exercise_tag et " +
+                "JOIN tag t ON et.tag_id = t.tag_id " +
+                "WHERE et.exercise_id = ?";
 
         try (Connection conn = HSQLDBHelper.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
