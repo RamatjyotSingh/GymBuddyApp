@@ -5,16 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogDetailBinding;
-import comp3350.gymbuddy.logic.AccessWorkoutSessions;
+import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.SessionItem;
 import comp3350.gymbuddy.objects.WorkoutSession;
+import comp3350.gymbuddy.persistence.exception.DBException;
 
 public class WorkoutLogDetailActivity extends AppCompatActivity{
     private ActivityWorkoutLogDetailBinding binding;
@@ -25,43 +26,58 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
         binding = ActivityWorkoutLogDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Get the session ID passed from WorkoutLogActivity.
+        int id = getIntent().getIntExtra("workoutSessionId", 0);
 
-        // get associated workout session from intent object
-        AccessWorkoutSessions accessWorkoutSessions = new AccessWorkoutSessions();
-        WorkoutSession session = accessWorkoutSessions.getByStartTime(getIntent().getLongExtra("workoutSessionStartTime", 0));
+        // Get session details from persistence.
+        var workoutSessionManager = new WorkoutSessionManager(true);
+        WorkoutSession session = null;
+        try {
+            session = workoutSessionManager.getWorkoutSessionById(id);
+        } catch (DBException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
-        addSessionItems(session);
-
-        // set main text views
-        TextView sessionDate = binding.txtSessionDate;
-        TextView sessionProfile = binding.txtSessionProfile;
-
-        sessionDate.setText(session.getDate());
-        sessionProfile.setText(session.getWorkoutProfile().getName());
+        setWorkoutSession(session);
     }
 
-    private void addSessionItems(WorkoutSession workoutSession){
-        LayoutInflater layoutInflater = getLayoutInflater();
-        LinearLayout insertPoint = binding.workoutLogDetailLayout;
+    private void setWorkoutSession(WorkoutSession session) {
+        if (session != null) {
+            // Set session date & name.
+            binding.txtSessionDate.setText(session.getDate());
+            binding.txtSessionProfile.setText(session.getWorkoutProfile().getName());
 
-        for(SessionItem item : workoutSession.getSessionItems()){
-            View newView = layoutInflater.inflate(R.layout.item_workout_session_profile_item, null);
-            Exercise associatedExercise = item.getAssociatedWorkoutItem().getExercise();
+            // Update workout items.
+            addWorkoutItems(session);
+        }
+    }
 
-            // set text views on list element
-            TextView exerciseName = newView.findViewById(R.id.sessionItemExerciseName);
-            exerciseName.setText(associatedExercise.getName());
+    private void addWorkoutItems(WorkoutSession workoutSession) {
+        if (workoutSession != null) {
+            LayoutInflater layoutInflater = getLayoutInflater();
+            LinearLayout insertPoint = binding.workoutLogDetailLayout;
 
-            TextView exerciseInfo = newView.findViewById(R.id.sessionItemExerciseInfo);
-            exerciseInfo.setText(item.toString());
+            for (var item : workoutSession.getWorkoutItems()) {
+                View newView = layoutInflater.inflate(R.layout.item_workout_session_profile_item, binding.getRoot());
 
-            // set margins on the list elements so they aren't so close together
-            CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
-            params.setMargins(8, 8, 8, 8);
+                // Get the associated exercise.
+                Exercise exercise = item.getExercise();
 
-            newView.setLayoutParams(params);
+                // set text views on list element
+                TextView exerciseName = newView.findViewById(R.id.workoutItemExerciseName);
+                exerciseName.setText(exercise.getName());
 
-            insertPoint.addView(newView);
+                TextView exerciseInfo = newView.findViewById(R.id.workoutItemExerciseInfo);
+                exerciseInfo.setText(item.toString());
+
+                // set margins on the list elements so they aren't so close together
+                CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
+                params.setMargins(8, 8, 8, 8);
+
+                newView.setLayoutParams(params);
+
+                insertPoint.addView(newView);
+            }
         }
     }
 }

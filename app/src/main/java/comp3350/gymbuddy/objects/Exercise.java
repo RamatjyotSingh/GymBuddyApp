@@ -6,12 +6,12 @@ public class Exercise {
     private final int id;
     private final String name;
     private final List<Tag> tags;
-    private final List<String> instructions;
+    private final String instructions;
     private final String imagePath;
     private final boolean isTimeBased;
     private final boolean hasWeight;
 
-    public Exercise(int id, String name, List<Tag> tags, List<String> instructions, String imagePath, boolean isTimeBased, boolean hasWeight) {
+    public Exercise(int id, String name, List<Tag> tags, String instructions, String imagePath, boolean isTimeBased, boolean hasWeight) {
         this.id = id;
         this.name = name;
         this.tags = tags;
@@ -33,7 +33,7 @@ public class Exercise {
         return tags;
     }
 
-    public List<String> getInstructions() {
+    public String getInstructions() {
         return instructions;
     }
 

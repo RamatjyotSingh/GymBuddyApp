@@ -1,111 +1,110 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
-import comp3350.gymbuddy.objects.SessionItem;
+import androidx.annotation.NonNull;
+
+import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.interfaces.IWorkoutProfilePersistence;
-import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionPersistence;
-import comp3350.gymbuddy.persistence.interfaces.ISessionItemPersistence;
+import comp3350.gymbuddy.persistence.PersistenceManager;
+import comp3350.gymbuddy.persistence.exception.DBException;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutSessionHSQLDB implements IWorkoutSessionPersistence {
-
-    private final Connection connection;
-    private final ISessionItemPersistence sessionItemPersistence;
-    private final IWorkoutProfilePersistence workoutProfilePersistence;
-
-    public WorkoutSessionHSQLDB(final Connection connection, ISessionItemPersistence sessionItemPersistence, IWorkoutProfilePersistence workoutProfilePersistence) {
-        this.connection = connection;
-        this.sessionItemPersistence = sessionItemPersistence; // Use SessionItemHSQLDB
-        this.workoutProfilePersistence = workoutProfilePersistence;
-    }
-
+public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     @Override
-    public void insertWorkoutSession(WorkoutSession session) {
-        String query = "INSERT INTO WORKOUTSESSION (startTime, endTime, profileId) VALUES (?, ?, ?)";
-
-        try (PreparedStatement st = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            st.setLong(1, session.getStartTime());  // Start time in milliseconds
-            st.setLong(2, session.getEndTime());  // End time in milliseconds
-            st.setInt(3, session.getWorkoutProfile().getId()); // Foreign key: profileId
-
-            st.executeUpdate();
-
-            // Retrieve generated WorkoutSession ID
-            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int sessionId = generatedKeys.getInt(1); // Get auto-generated session ID
-                    insertSessionItems(sessionId, session); // Insert session items
-                }
-            }
-        } catch (SQLException e) {
-            throw new PersistenceException("Error inserting workout session", e);
-        }
-    }
-
-    private void insertSessionItems(int sessionId, WorkoutSession session) {
-        session.getSessionItems().forEach(sessionItem -> sessionItemPersistence.insertSessionItem(sessionId, sessionItem));
-    }
-
-    @Override
-    public List<WorkoutSession> getAll() {
+    @NonNull
+    public List<WorkoutSession> getAll() throws DBException {
         List<WorkoutSession> workoutSessions = new ArrayList<>();
-        String query = "SELECT id, startTime, endTime, profileId FROM WORKOUTSESSION";
 
-        try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery(query)) {
+        String query = "SELECT * FROM workout_session";
+
+        try (Connection conn = HSQLDBHelper.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                long startTime = rs.getLong("startTime");
-                long endTime = rs.getLong("endTime");
-                int profileId = rs.getInt("profileId");
-
-                // Fetch associated WorkoutProfile
-                WorkoutProfile profile = workoutProfilePersistence.getWorkoutProfileById(profileId);
-                if (profile == null) continue; // Skip if profile doesn't exist
-
-                // Fetch all session items related to this session
-                List<SessionItem> sessionItems = sessionItemPersistence.getSessionItemsBySessionId(id);
-
-                // Create the WorkoutSession object
-                WorkoutSession session = new WorkoutSession(startTime, endTime, sessionItems, profile);
-                workoutSessions.add(session);
+                workoutSessions.add(extractWorkoutSession(rs));
             }
-        } catch (final SQLException e) {
-            throw new PersistenceException("Error retrieving workout sessions", e);
+        } catch (SQLException e) {
+            throw new DBException("Failed to load workout sessions.");
         }
 
         return workoutSessions;
     }
 
     @Override
-    public WorkoutSession getByStartTime(long startTime) {
-        WorkoutSession result = null;
-        String query = "SELECT id, startTime, endTime, profileId FROM WORKOUTSESSION WHERE startTime = ?";
+    public WorkoutSession getWorkoutSessionByid(int id) throws DBException {
+        WorkoutSession workoutSession = null;
 
-        try (PreparedStatement st = connection.prepareStatement(query)) {
-            st.setLong(1, startTime);
-            try (ResultSet rs = st.executeQuery()) {
+        String query = "SELECT * FROM workout_session WHERE session_id = ?";
+
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    int id = rs.getInt("id");
-                    long endTime = rs.getLong("endTime");
-                    int profileId = rs.getInt("profileId");
-
-                    WorkoutProfile profile = workoutProfilePersistence.getWorkoutProfileById(profileId);
-                    if (profile != null) {
-                        List<SessionItem> sessionItems = sessionItemPersistence.getSessionItemsBySessionId(id);
-                        result = new WorkoutSession(startTime, endTime, sessionItems, profile);
-                    }
+                    workoutSession = extractWorkoutSession(rs);
                 }
             }
         } catch (SQLException e) {
-            throw new PersistenceException("Error retrieving workout session by start time", e);
+            throw new DBException("Failed to load workout session");
         }
 
-        return result;
+        return workoutSession;
+    }
+
+    @NonNull
+    private WorkoutSession extractWorkoutSession(ResultSet rs) throws SQLException {
+        int sessionId = rs.getInt("session_id");
+        long startTime = rs.getLong("start_time");
+        long endTime = rs.getLong("end_time");
+        int profileId = rs.getInt("profile_id");
+
+        // Fetch associated WorkoutProfile
+        WorkoutProfile profile = PersistenceManager.getWorkoutDB(true).getWorkoutProfileById(profileId);
+
+        // Fetch all session items related to this session
+        List<WorkoutItem> workoutItems = getWorkoutItemsBySessionId(sessionId);
+
+        return new WorkoutSession(sessionId, startTime, endTime, workoutItems, profile);
+    }
+
+    @NonNull
+    private WorkoutItem extractSessionItem(ResultSet rs) throws SQLException {
+        int exerciseId = rs.getInt("exercise_id");
+        int reps = rs.getInt("reps");
+        double weight = rs.getDouble("weight");
+        double time = rs.getDouble("duration");
+
+        Exercise exercise = PersistenceManager.getExerciseDB(true).getExerciseByID(exerciseId);
+
+        return new WorkoutItem(exercise, 1, reps, weight, time); // Each item represents only one set.
+    }
+
+    @NonNull
+    private List<WorkoutItem> getWorkoutItemsBySessionId(int id) throws DBException {
+        List<WorkoutItem> workoutItems = new ArrayList<>();
+
+        String query = "SELECT * FROM session_item WHERE profile_id = ?";
+
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    workoutItems.add(extractSessionItem(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DBException("Failed to load workout exercises.");
+        }
+
+        return workoutItems;
     }
 }

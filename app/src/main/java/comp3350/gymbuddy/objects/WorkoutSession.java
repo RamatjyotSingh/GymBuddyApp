@@ -8,16 +8,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class WorkoutSession {
-    public static final long MAX_SESSION_LENGTH = 1000 * 60 * 60 * 2; //2hrs in milliseconds
+    private final int id;
     private final long startTime;
     private final long endTime;
-    private final List<SessionItem> sessionItems;
+    private final List<WorkoutItem> workoutItems;
     private final WorkoutProfile profile;
 
-    public WorkoutSession(long startTime, long endTime, List<SessionItem> sessionItems, WorkoutProfile profile) {
+    public WorkoutSession(int id, long startTime, long endTime, List<WorkoutItem> workoutItems, WorkoutProfile profile) {
+        this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.sessionItems = sessionItems;
+        this.workoutItems = workoutItems;
         this.profile = profile;
     }
 
@@ -29,20 +30,20 @@ public class WorkoutSession {
         return dateTime.format(formatter);
     }
 
+    public int getId() {
+        return id;
+    }
+
     public long getStartTime() {
-        return this.startTime;
+        return startTime;
     }
 
-    public float getDuration() {
-        return (float)(this.endTime - this.startTime);
-    }
-
-    public long getEndTime() {
-        return this.endTime;
+    public double getDuration() {
+        return endTime - startTime;
     }
 
     public String getDurationString(){
-        float duration = getDuration();
+        double duration = getDuration();
         duration /= 60000; // convert to minutes
         int durationMin = (int)duration;
         int durationSec = (int)((duration - durationMin) * 60);
@@ -50,11 +51,11 @@ public class WorkoutSession {
         return durationMin + " min " + durationSec + " sec ";
     }
 
-    public List<SessionItem> getSessionItems() {
-        return Collections.unmodifiableList(this.sessionItems);
+    public List<WorkoutItem> getWorkoutItems() {
+        return Collections.unmodifiableList(this.workoutItems);
     }
 
     public WorkoutProfile getWorkoutProfile() {
-        return this.profile;
+        return profile;
     }
 }

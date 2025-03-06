@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class WorkoutProfile {
-    private int id;  // Added id field
+    private int id;
     private String name;
     private final String iconPath;
     private final List<WorkoutItem> workoutItems;

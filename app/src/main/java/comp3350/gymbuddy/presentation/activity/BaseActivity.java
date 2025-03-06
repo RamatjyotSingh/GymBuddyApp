@@ -1,26 +1,20 @@
 package comp3350.gymbuddy.presentation.activity;
 
-    import android.content.Intent;
-    import android.os.Bundle;
-    import android.util.Log;
-    import android.view.MenuItem;
+import android.content.Intent;
+import android.os.Bundle;
 
-    import androidx.annotation.Nullable;
-    import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
-    import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-    import comp3350.gymbuddy.R;
-    import comp3350.gymbuddy.persistence.database.DatabaseManager;
+import comp3350.gymbuddy.R;
 
-    public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
         protected BottomNavigationView bottomNavigationView;
-        private static final String TAG = "Navigation";
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            ensureDatabaseInitialized();
         }
 
         protected void setupBottomNavigation(BottomNavigationView navigationView) {
@@ -98,10 +92,6 @@ package comp3350.gymbuddy.presentation.activity;
                     finish();
                 }
             }
-        }
-
-        private void ensureDatabaseInitialized() {
-            DatabaseManager.getInstance(this);
         }
 
         @Override
