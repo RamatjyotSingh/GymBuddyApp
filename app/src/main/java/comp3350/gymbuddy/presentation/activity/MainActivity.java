@@ -2,17 +2,20 @@ package comp3350.gymbuddy.presentation.activity;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
-import comp3350.gymbuddy.logic.services.WorkoutProfileService;
+import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.objects.WorkoutProfile;
+import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 
 public class MainActivity extends BaseActivity {
@@ -30,11 +33,16 @@ public class MainActivity extends BaseActivity {
 
         RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
 
-        // Initialize WorkoutProfileService
-        WorkoutProfileService workoutProfileService = new WorkoutProfileService();
+        // Initialize WorkoutManager
+        WorkoutManager workoutManager = new WorkoutManager(true);
 
         // Fetch data from persistence
-        List<WorkoutProfile> workoutProfiles = workoutProfileService.getAll();
+        List<WorkoutProfile> workoutProfiles = new ArrayList<>();
+        try {
+            workoutProfiles = workoutManager.getAll();
+        } catch (DBException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
         // Initialize RecyclerView
         recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));

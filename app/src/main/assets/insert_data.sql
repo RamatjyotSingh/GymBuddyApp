@@ -1,5 +1,61 @@
+-- Insert sample exercises
+INSERT INTO PUBLIC.EXERCISE VALUES (
+  1,
+  'Push-Up',
+  'Start in a plank position.' ||
+  '\nLower your body until your chest nearly touches the floor.' ||
+  '\nPush back up to the starting position.',
+  'push_up.png',
+  FALSE,
+  FALSE
+);
+
+INSERT INTO PUBLIC.EXERCISE VALUES (
+  2,
+  'Squat',
+  'Stand with feet shoulder-width apart.' ||
+  '\nLower your body by bending your knees until your thighs are parallel to the floor.' ||
+  '\nPush back up to the starting position.',
+  'squat.png',
+  FALSE,
+  TRUE
+);
+
+INSERT INTO PUBLIC.EXERCISE VALUES (
+  3,
+  'Plank',
+  'Hold a push-up position with your arms straight.' ||
+  '\nKeep your body in a straight line from head to heels.' ||
+  '\nEngage your core and hold the position.',
+  'plank.png',
+  TRUE,
+  FALSE
+);
+
+INSERT INTO PUBLIC.EXERCISE VALUES (
+  4,
+  'Pull-Up',
+  'Grip a pull-up bar with palms facing away.' ||
+  '\nPull yourself up until your chin clears the bar.' ||
+  '\nLower yourself back down to the starting position.',
+  'pull-up.png',
+  FALSE,
+  FALSE
+);
+
+INSERT INTO PUBLIC.EXERCISE VALUES (
+  5,
+  'Lunges',
+  'Step forward with one leg.' ||
+  '\nLower your hips until both knees are bent at 90-degree angles.' ||
+  '\nPush back up to the starting position and repeat with the other leg.',
+  'lunges.png',
+  FALSE,
+  FALSE
+);
+
+
 -- Insert sample tags
--- Muscle Groups
 -- Muscle Groups
 INSERT INTO PUBLIC.TAGS VALUES (1, 'Upper Body', 'MUSCLE_GROUP', '#1D4ED8', '#D1E8FF');
 INSERT INTO PUBLIC.TAGS VALUES (2, 'Lower Body', 'MUSCLE_GROUP', '#6B21A8', '#E9D8FD');
@@ -22,31 +78,6 @@ INSERT INTO PUBLIC.TAGS VALUES (12, 'Endurance', 'EXERCISE_TYPE', '#DB2777', '#F
 INSERT INTO PUBLIC.TAGS VALUES (13, 'No Equipment', 'EQUIPMENT', '#1E3A8A', '#E0F2FE');
 INSERT INTO PUBLIC.TAGS VALUES (14, 'Dumbbells', 'EQUIPMENT', '#BE185D', '#FCE7F3');
 INSERT INTO PUBLIC.TAGS VALUES (15, 'Resistance Bands', 'EQUIPMENT', '#D97706', '#FEF3C7');
-
-
--- Insert sample exercises
-INSERT INTO PUBLIC.EXERCISE VALUES (1,'Push-Up','push_up.png', FALSE, FALSE);
-INSERT INTO PUBLIC.EXERCISE VALUES (2,'Squat','squat.png', FALSE, TRUE);
-INSERT INTO PUBLIC.EXERCISE VALUES (3,'Plank','plank.png', TRUE, FALSE);
-INSERT INTO PUBLIC.EXERCISE VALUES (4,'Pull-up','pull-up.png', FALSE, FALSE);
-INSERT INTO PUBLIC.EXERCISE VALUES (5,'Lunges','lunges.png', FALSE, FALSE);
-
--- Insert sample instructions
-INSERT INTO PUBLIC.INSTRUCTION VALUES (1, 1, 1, 'Start in a plank position.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (2, 1, 2, 'Lower your body until your chest nearly touches the floor.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (3, 1, 3, 'Push back up to the starting position.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (4, 2, 1, 'Stand with feet shoulder-width apart.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (5, 2, 2, 'Lower your body by bending your knees until your thighs are parallel to the floor.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (6, 2, 3, 'Push back up to the starting position.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (7, 3, 1, 'Hold a push-up position with your arms straight.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (8, 3, 2, 'Keep your body in a straight line from head to heels.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (9, 3, 3, 'Engage your core and hold the position.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (10, 4, 1, 'Hold a push-up position with your arms straight.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (11, 4, 2, 'Keep your body in a straight line from head to heels.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (12, 4, 3, 'Engage your core and hold the position.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (13, 5, 1, 'Grip a pull-up bar with palms facing away.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (14, 5, 2, 'Pull yourself up until your chin clears the bar.');
-INSERT INTO PUBLIC.INSTRUCTION VALUES (15, 5, 3, 'Lower yourself back down to the starting position.');
 
 
 -- Insert links between exercises and tags

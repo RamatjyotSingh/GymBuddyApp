@@ -1,7 +1,6 @@
 package comp3350.gymbuddy.presentation.adapters;
 
 import android.content.res.ColorStateList;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.R;
-import comp3350.gymbuddy.presentation.utils.AssetLoader;
+import comp3350.gymbuddy.presentation.util.AssetLoader;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder> {
     private List<Exercise> exercises;
@@ -64,18 +63,16 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         // Maximum number of tags to be displayed at one time.
         static final int MAX_TAGS = 2;
 
-        private TextView exerciseName;
-        private ShapeableImageView exerciseImage;
-        private TextView viewMoreButton;
-        private TextView tvMoreTags;
-        private ChipGroup exerciseTags;
+        private final TextView exerciseName;
+        private final ShapeableImageView exerciseImage;
+        private final TextView viewMoreButton;
+        private final ChipGroup exerciseTags;
 
         public ExerciseViewHolder(@NonNull View itemView) {
             super(itemView);
             exerciseName = itemView.findViewById(R.id.exerciseName);
             exerciseImage = itemView.findViewById(R.id.exerciseImage);
             viewMoreButton = itemView.findViewById(R.id.exerciseViewMore);
-            tvMoreTags = itemView.findViewById(R.id.tvMoreTags);
             exerciseTags = itemView.findViewById(R.id.exerciseTags);
         }
 

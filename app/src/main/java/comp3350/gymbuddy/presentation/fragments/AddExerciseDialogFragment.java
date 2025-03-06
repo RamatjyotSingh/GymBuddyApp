@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import comp3350.gymbuddy.databinding.DialogAddWorkoutItemBinding;
-import comp3350.gymbuddy.logic.services.ExerciseService;
+import comp3350.gymbuddy.logic.managers.ExerciseManager;
 import comp3350.gymbuddy.logic.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;
 import comp3350.gymbuddy.logic.exception.InvalidSetsException;
@@ -18,7 +18,7 @@ import comp3350.gymbuddy.logic.exception.InvalidTimeException;
 import comp3350.gymbuddy.logic.exception.InvalidWeightException;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
-import comp3350.gymbuddy.presentation.utils.DSOBundler;
+import comp3350.gymbuddy.presentation.util.DSOBundler;
 
 public class AddExerciseDialogFragment extends DialogFragment {
     private static final String ARG_SELECTED_EXERCISE = "selected_exercise";
@@ -58,8 +58,8 @@ public class AddExerciseDialogFragment extends DialogFragment {
             int exerciseId = getArguments().getInt(ARG_SELECTED_EXERCISE, -1);
 
             // Retrieve the selected exercise from storage
-            var accessExercises = new ExerciseService();
-            selectedExercise = accessExercises.getExerciseByID(exerciseId);
+            var exerciseManager = new ExerciseManager(true);
+            selectedExercise = exerciseManager.getExerciseByID(exerciseId);
 
             updateViews();
         }
@@ -108,6 +108,7 @@ public class AddExerciseDialogFragment extends DialogFragment {
             String weight = binding.edtWeight.getText().toString();
             String time = binding.edtTime.getText().toString();
 
+            // Create the workout item.
             var inputValidator = new InputValidator();
             workoutItem = inputValidator.newWorkoutItem(
                     selectedExercise,

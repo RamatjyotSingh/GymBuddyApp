@@ -6,54 +6,79 @@ import java.util.List;
 import java.util.Date;
 import java.util.Random;
 
-import comp3350.gymbuddy.logic.services.WorkoutProfileService;
-import comp3350.gymbuddy.objects.SessionItem;
+import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionPersistence;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
+import comp3350.gymbuddy.persistence.util.WorkoutItemGenerator;
 
-public class WorkoutSessionStub implements IWorkoutSessionPersistence {
-    final private List<WorkoutSession> sessions;
+public class WorkoutSessionStub implements IWorkoutSessionDB {
 
-    public WorkoutSessionStub(){
+    // Constants for workout session generation.
+    private static final int NUM_SESSIONS = 4;
+    public static final int MIN_DURATION = 60; // 1 min
+    public static final int MAX_DURATION = 2 * 60 * 60; // 2hrs in sec
+
+    private final List<WorkoutSession> sessions;
+    private int nextId; // Simulated auto-incrementing ID
+
+    public WorkoutSessionStub() {
+        // Initialize workout session list.
         sessions = new ArrayList<>();
+        nextId = 0;
 
-        var workoutProfileStub = new WorkoutProfileStub();
-        var sessionItemStub = new SessionItemStub();
-
-        List<WorkoutProfile> profiles = workoutProfileStub.getAll();
-        List<SessionItem> sessionItems = sessionItemStub.getAll();
-        Date now = new Date();
-        Random rand = new Random();
-
-        // Ensure profiles exist and prevent negative session duration
-        if (!profiles.isEmpty()) {
-            long duration = Math.abs(rand.nextLong()) % WorkoutSession.MAX_SESSION_LENGTH;
-            sessions.add(new WorkoutSession(now.getTime(), now.getTime() + duration, sessionItems, profiles.get(0)));
+        for (int i = 0; i < NUM_SESSIONS; i++) {
+            sessions.add(createWorkoutSession());
         }
     }
 
     @Override
-    public void insertWorkoutSession(WorkoutSession session) {
-        if (session != null) {
-            sessions.add(session);
-        }
-    }
-
-    @Override
-    public List<WorkoutSession> getAll(){
+    public List<WorkoutSession> getAll() {
         return Collections.unmodifiableList(sessions);
     }
 
-    public WorkoutSession getByStartTime(long startTime){
+    @Override
+    public WorkoutSession getWorkoutSessionByid(int id) {
         WorkoutSession result = null;
 
-        for(var i : sessions){
-            if(i.getStartTime() == startTime){
-                result = i;
+        // Search for the ID in the list of sessions.
+        for (var session : sessions) {
+            if (session.getId() == id) {
+                result = session;
+                break;
             }
         }
 
         return result;
+    }
+
+    private WorkoutSession createWorkoutSession() {
+        int id = nextId;
+
+        // Get a workout item generator.
+        var workoutItemGenerator = new WorkoutItemGenerator(id);
+
+        // Get some mock data for profiles.
+        var workoutStub = new WorkoutStub();
+        List<WorkoutProfile> profiles = workoutStub.getAll();
+
+        // Generate random duration.
+        Random rand = new Random();
+        long duration = rand.nextInt(MAX_DURATION - MIN_DURATION) + MIN_DURATION;
+
+        // Get current time.
+        Date now = new Date();
+
+        // Determine the profile information.
+        long startTime = now.getTime();
+        long endTime = now.getTime() + duration;
+        List<WorkoutItem> workoutItems = workoutItemGenerator.generate();
+        WorkoutProfile profile = profiles.get(rand.nextInt(profiles.size()));
+
+        // Increment the ID counter.
+        nextId++;
+
+        // Return the new profile.
+        return new WorkoutSession(id, startTime, endTime, workoutItems, profile);
     }
 }

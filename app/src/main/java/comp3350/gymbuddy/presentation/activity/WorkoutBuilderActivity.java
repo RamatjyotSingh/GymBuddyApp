@@ -17,15 +17,16 @@ import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding;
-import comp3350.gymbuddy.logic.services.WorkoutProfileService;
+import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.logic.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidInputException;
 import comp3350.gymbuddy.logic.exception.InvalidNameException;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
-import comp3350.gymbuddy.presentation.adapters.WorkoutAdapter;
+import comp3350.gymbuddy.persistence.exception.DBException;
+import comp3350.gymbuddy.presentation.adapters.WorkoutItemAdapter;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseDialogFragment;
-import comp3350.gymbuddy.presentation.utils.DSOBundler;
+import comp3350.gymbuddy.presentation.util.DSOBundler;
 
 public class WorkoutBuilderActivity extends BaseActivity {
 
@@ -36,7 +37,7 @@ public class WorkoutBuilderActivity extends BaseActivity {
     private final ActivityResultLauncher<Intent> exerciseListLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), this::handleExerciseListActivityResult);
 
-    private WorkoutAdapter adapter;
+    private WorkoutItemAdapter adapter;
 
     private List<WorkoutItem> workoutItems;
     private String selectedIconPath;
@@ -61,7 +62,7 @@ public class WorkoutBuilderActivity extends BaseActivity {
         selectedIconPath = getString(R.string.default_workout_icon_path);
 
         // Set up the adapter for the RecyclerView
-        adapter = new WorkoutAdapter(workoutItems);
+        adapter = new WorkoutItemAdapter(workoutItems);
         binding.recyclerWorkoutItems.setAdapter(adapter);
 
         setupBottomNavigation(binding.bottomNavigationView);
@@ -102,14 +103,18 @@ public class WorkoutBuilderActivity extends BaseActivity {
 
      if (profile != null) {
          // Save the profile to the database
-         WorkoutProfileService workoutProfileService = new WorkoutProfileService();
-         workoutProfileService.insertWorkoutProfile(profile);
+         WorkoutManager workoutManager = new WorkoutManager(true);
+         try {
+             workoutManager.saveWorkout(profile);
 
-         // Show success message
-         Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
+             // Show success message
+             Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
 
-         // Close this activity
-         finish();
+             // Close this activity
+             finish();
+         } catch (DBException e) {
+             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+         }
      }
  }
 

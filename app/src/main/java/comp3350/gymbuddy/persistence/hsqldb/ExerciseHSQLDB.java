@@ -1,145 +1,111 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
-import java.sql.*;
+import androidx.annotation.NonNull;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
-import comp3350.gymbuddy.persistence.interfaces.IExercisePersistence;
+import comp3350.gymbuddy.persistence.exception.DBException;
+import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 
-public class ExerciseHSQLDB implements IExercisePersistence {
+public class ExerciseHSQLDB implements IExerciseDB {
+    @Override
+    @NonNull
+    public List<Exercise> getAll() throws DBException {
+        List<Exercise> exercises = new ArrayList<>();
 
-    private final Connection connection;
+        String query = "SELECT * FROM exercise";
 
-    public ExerciseHSQLDB(final Connection connection) {
-        this.connection= connection;
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                exercises.add(extractExercise(rs));
+            }
+        } catch (SQLException e) {
+            throw new DBException("Failed to load exercises.");
+        }
+
+        return exercises;
     }
 
-    private List<Tag> getTagsForExercise(int exerciseID) throws SQLException {
+    @Override
+    public Exercise getExerciseByID(int id) {
+        Exercise exercise = null;
+
+        String query = "SELECT * FROM exercise WHERE exercise_id = ?";
+
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    exercise = extractExercise(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DBException("Failed to load exercise.");
+        }
+
+        return exercise;
+    }
+
+    @NonNull
+    private Exercise extractExercise(ResultSet rs) throws SQLException {
+        int exerciseId = rs.getInt("exercise_id");
+        String name = rs.getString("name");
+        String instructions = rs.getString("instructions");
+        String imagePath = rs.getNString("image_path");
+        boolean isTimeBased = rs.getBoolean("is_time_based");
+        boolean hasWeight = rs.getBoolean("has_weight");
+
+        // Fetch related tags and instructions
+        List<Tag> tags = getTagsByExerciseId(exerciseId);
+
+        return new Exercise(exerciseId, name, tags, instructions, imagePath, isTimeBased, hasWeight);
+    }
+
+    @NonNull
+    private Tag extractTag(ResultSet rs) throws SQLException {
+        String name = rs.getString("tag_name");
+        String typeStr = rs.getString("tag_type");
+        String textColor = rs.getString("text_color");
+        String bgColor = rs.getString("background_color");
+        Tag.TagType type = Tag.TagType.valueOf(typeStr);
+
+        return new Tag(type, name, textColor, bgColor);
+    }
+
+    @NonNull
+    private List<Tag> getTagsByExerciseId(int exerciseID) throws DBException {
         List<Tag> tags = new ArrayList<>();
+
         String query = "SELECT t.TAG_NAME, t.TAG_TYPE, t.TEXT_COLOR, t.BG_COLOR " +
                 "FROM EXERCISE_TAGS lt " +
                 "JOIN TAGS t ON lt.TAG_ID = t.TAG_ID " +
                 "WHERE lt.EXERCISE_ID = ?";
 
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, exerciseID);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String name = rs.getString("TAG_NAME");
-                    String typeStr = rs.getString("TAG_TYPE");
-                    String textColor = rs.getString("TEXT_COLOR");
-                    String bgColor = rs.getString("BG_COLOR");
-                    Tag.TagType type = Tag.TagType.valueOf(typeStr);
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-                    tags.add(new Tag(type, name,textColor,bgColor));
+            stmt.setInt(1, exerciseID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    tags.add(extractTag(rs));
                 }
             }
+        } catch (SQLException e) {
+            throw new DBException("Failed to load exercise tags.");
         }
+
         return tags;
-    }
-
-    private ArrayList<String> getInstructionsForExercise(int exerciseID) throws SQLException {
-        ArrayList<String> instructions = new ArrayList<>();
-        String query = "SELECT TEXT FROM INSTRUCTION WHERE EXERCISE_ID = ?";
-
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setInt(1, exerciseID);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    instructions.add(rs.getString("TEXT"));
-                }
-            }
-        }
-        return instructions;
-    }
-
-    @Override
-    public List<Exercise> getAll() {
-        List<Exercise> exercises = new ArrayList<>();
-        String query = "SELECT * FROM EXERCISE";
-
-            try( Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery(query)) {
-
-            while (rs.next()) {
-                int exerciseID = rs.getInt("EXERCISE_ID");
-                String name = rs.getString("NAME");
-                String imagePath= rs.getNString("IMAGE_PATH");
-                boolean isTimeBased = rs.getBoolean("IS_TIME_BASED");
-                boolean hasWeight = rs.getBoolean("HAS_WEIGHT");
-
-                // Fetch related tags and instructions
-                List<Tag> tags = getTagsForExercise(exerciseID);
-                ArrayList<String> instructions = getInstructionsForExercise(exerciseID);
-
-                exercises.add(new Exercise(exerciseID, name, tags, instructions,imagePath,isTimeBased,hasWeight));
-            }
-        } catch (final SQLException e) {
-                throw new PersistenceException(e);
-        }
-        return exercises;
-    }
-
-    @Override
-    public Exercise getExerciseByName(String name) {
-        String query = "SELECT * FROM EXERCISE WHERE NAME = ?";
-        Exercise exercise=null;
-
-
-
-        try(PreparedStatement ps = connection.prepareStatement(query)) {
-
-            ps.setString(1, name);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int exerciseID = rs.getInt("EXERCISE_ID");
-                    String imagePath= rs.getNString("IMAGE_PATH");
-                    boolean isTimeBased = rs.getBoolean("IS_TIME_BASED");
-                    boolean hasWeight = rs.getBoolean("HAS_WEIGHT");
-
-                    // Fetch related tags and instructions
-                    List<Tag> tags = getTagsForExercise(exerciseID);
-                    ArrayList<String> instructions = getInstructionsForExercise(exerciseID);
-
-
-
-                    exercise= new Exercise(exerciseID, name, tags, instructions,imagePath,isTimeBased,hasWeight);
-                }
-            }
-        } catch (final SQLException e) {
-                 throw new PersistenceException(e);
-        }
-        return exercise;
-    }
-
-    @Override
-    public Exercise getExerciseByID(int id) {
-        String query = "SELECT * FROM EXERCISE WHERE EXERCISE_ID = ?";
-        Exercise exercise=null;
-
-
-        try(PreparedStatement ps = connection.prepareStatement(query)) {
-
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    String name = rs.getString("NAME");
-                    String imagePath= rs.getNString("IMAGE_PATH");
-                    boolean isTimeBased = rs.getBoolean("IS_TIME_BASED");
-                    boolean hasWeight = rs.getBoolean("HAS_WEIGHT");
-
-                    // Fetch related tags and instructions
-                    List<Tag> tags = getTagsForExercise(id);
-                    ArrayList<String> instructions = getInstructionsForExercise(id);
-
-                    exercise= new Exercise(id, name, tags, instructions,imagePath,isTimeBased,hasWeight);
-                }
-            }
-        } catch (final SQLException e) {
-            throw new PersistenceException(e);
-        }
-        return exercise;
     }
 }
