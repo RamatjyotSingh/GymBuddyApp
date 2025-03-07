@@ -26,7 +26,7 @@ public class ExerciseManager {
     public List<Exercise> search(String searchString) {
         List<Exercise> results = new ArrayList<>();
 
-        if (!searchString.isEmpty()) {
+        if (searchString != null && !searchString.isEmpty()) {
             for (var exercise : exerciseDB.getAll()) {
                 if (exercise.getName().toLowerCase().contains(searchString.toLowerCase())) {
                     results.add(exercise);

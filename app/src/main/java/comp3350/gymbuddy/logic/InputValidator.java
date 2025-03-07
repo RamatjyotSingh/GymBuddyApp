@@ -17,7 +17,10 @@ public class InputValidator {
         if (name.isEmpty()) {
             throw new InvalidNameException("Name must be provided.");
         }
-        if (workoutItems.isEmpty()) {
+        if (workoutItems == null) {
+            throw new InvalidInputException("Exercises must be provided.");
+        }
+        if(workoutItems.isEmpty()){
             throw new InvalidInputException("Exercises must be provided.");
         }
 
@@ -67,6 +70,9 @@ public class InputValidator {
                     weight = Double.parseDouble(weightField);
                 } catch (NumberFormatException e) {
                     throw new InvalidWeightException("Must be a valid number.");
+                }
+                if(weight < 0){
+                    throw new InvalidWeightException("Must be at least 0.");
                 }
             }
         }
