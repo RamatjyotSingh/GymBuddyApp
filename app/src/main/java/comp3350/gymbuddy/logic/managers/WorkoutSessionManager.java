@@ -1,8 +1,10 @@
 package comp3350.gymbuddy.logic.managers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
@@ -20,5 +22,22 @@ public class WorkoutSessionManager {
 
     public WorkoutSession getWorkoutSessionById(int id) {
         return workoutSessionDB.getWorkoutSessionByid(id);
+    }
+
+    public List<WorkoutSession> search(String searchString){
+        List<WorkoutSession> results = new ArrayList<>();
+
+        if (!searchString.isEmpty()) {
+            for (var session : workoutSessionDB.getAll()) {
+                if (session.getDate().toLowerCase().contains(searchString.toLowerCase())) {
+                    results.add(session);
+                }
+                else if(session.getWorkoutProfile().getName().toLowerCase().contains(searchString.toLowerCase())){
+                    results.add(session);
+                }
+            }
+        }
+
+        return results;
     }
 }

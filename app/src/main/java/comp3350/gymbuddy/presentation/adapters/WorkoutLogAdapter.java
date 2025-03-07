@@ -22,7 +22,7 @@ public class WorkoutLogAdapter extends RecyclerView.Adapter<WorkoutLogAdapter.Wo
         void openWorkoutLogDetail(WorkoutSession workoutSession);
     }
 
-    private final List<WorkoutSession> workoutSessions;
+    private List<WorkoutSession> workoutSessions;
     private final WorkoutLogOnClickListener clickListener;
 
     public WorkoutLogAdapter(List<WorkoutSession> workoutSessions, WorkoutLogOnClickListener clickListener){
@@ -52,6 +52,13 @@ public class WorkoutLogAdapter extends RecyclerView.Adapter<WorkoutLogAdapter.Wo
     @Override
     public int getItemCount() {
         return workoutSessions.size();
+    }
+
+
+    public void setWorkoutSessions(List<WorkoutSession> sessions){
+        int oldSize = workoutSessions.size();
+        workoutSessions = new ArrayList<>(sessions);
+        notifyItemRangeChanged(0, oldSize);
     }
 
 
