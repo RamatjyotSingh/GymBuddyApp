@@ -58,7 +58,8 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
             LinearLayout insertPoint = binding.workoutLogDetailLayout;
 
             for (var item : workoutSession.getWorkoutItems()) {
-                View newView = layoutInflater.inflate(R.layout.item_workout_session_profile_item, binding.getRoot());
+                // Get view without setting its root, in order to set layout parameters before insertion.
+                View newView = layoutInflater.inflate(R.layout.item_workout_session_profile_item, null);
 
                 // Get the associated exercise.
                 Exercise exercise = item.getExercise();

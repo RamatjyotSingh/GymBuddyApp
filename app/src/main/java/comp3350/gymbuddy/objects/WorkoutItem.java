@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.objects;
 
+import androidx.annotation.NonNull;
+
 public class WorkoutItem {
     private final Exercise exercise;
     private final int sets;
@@ -72,5 +74,19 @@ public class WorkoutItem {
 
     public boolean hasWeight() {
         return exercise.hasWeight();
+    }
+
+    @NonNull
+    public String toString(){
+        String result = "";
+
+        if(isTimeBased()){
+            result = "Time: " + this.time;
+        }
+        else{
+            result = "Reps: " + this.reps + ", Weight: " + this.weight;
+        }
+
+        return result;
     }
 }
