@@ -31,7 +31,7 @@ public class WorkoutLogActivity extends BaseActivity {
         binding.workoutLogRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Fetch data from persistence
-        WorkoutSessionManager workoutSessionManager = new WorkoutSessionManager(false);
+        WorkoutSessionManager workoutSessionManager = new WorkoutSessionManager(true);
         List<WorkoutSession> sessions = new ArrayList<>();
         try {
             sessions = workoutSessionManager.getAll();
