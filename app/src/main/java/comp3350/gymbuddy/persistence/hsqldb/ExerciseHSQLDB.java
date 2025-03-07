@@ -15,6 +15,8 @@ import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 
 public class ExerciseHSQLDB implements IExerciseDB {
+
+    
     @Override
     @NonNull
     public List<Exercise> getAll() throws DBException {

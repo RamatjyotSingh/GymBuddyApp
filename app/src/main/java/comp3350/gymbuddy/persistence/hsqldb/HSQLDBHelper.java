@@ -11,82 +11,185 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
-import comp3350.gymbuddy.GlobalApplication;
 import comp3350.gymbuddy.persistence.exception.DBException;
 
 /**
  * Provides connections to HSQLDB with project configurations set.
+ * Implemented as a singleton to ensure a single connection across the app.
  */
-public class HSQLDBHelper {
-    // HSQLDB configurations.
-    private static final String FILE_PATH = "gymbuddydb";
-    private static final String USER = "SA";
-    private static final String PASSWORD = "";
+public class HSQLDBHelper implements AutoCloseable {
+    // Singleton instance
+    private static HSQLDBHelper instance;
+    
+    // DB configuration
+    private String connectionString;
+    private String username;
+    private String password;
+    private Properties dbOptions;
+    
+    // Connection
+    private Connection connection;
+    
+    // Context reference
+    private final Context context;
+    
+    // Whether the database has been initialized
+    private boolean initialized = false;
 
-    // Whether the database has been initialized on this run yet.
-    private static boolean initialized = false;
+    // Private constructor for singleton
+    private HSQLDBHelper(Context context) {
+        // Use application context to avoid memory leaks
+        this.context = context.getApplicationContext();
+        loadConfiguration();
+    }
+    
+    /**
+     * Get singleton instance of HSQLDBHelper
+     * @param context The context used to access assets
+     * @return The singleton HSQLDBHelper instance
+     */
+    public static synchronized HSQLDBHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new HSQLDBHelper(context);
+        }
+        return instance;
+    }
+    
+    /**
+     * Reset the singleton instance (mainly for testing purposes)
+     */
+    public static synchronized void resetInstance() {
+        if (instance != null) {
+            instance.disconnect();
+            instance = null;
+        }
+    }
+    
+    private void loadConfiguration() {
+        try {
+            Properties props = new Properties();
+            InputStream is = context.getAssets().open("config.properties");
+            props.load(is);
+            is.close();
+            
+            // Load connection properties
+            connectionString = props.getProperty("db.connection_string", "jdbc:hsqldb:file:data/mydb;shutdown=true");
+            username = props.getProperty("db.username", "SA");
+            password = props.getProperty("db.password", "");
+            
+            // Load HSQLDB options
+            dbOptions = new Properties();
+            for (String key : props.stringPropertyNames()) {
+                if (key.startsWith("db.options.hsqldb.")) {
+                    String optionName = key.substring("db.options.hsqldb.".length());
+                    dbOptions.setProperty(optionName, props.getProperty(key));
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load database configuration", e);
+        }
+    }
 
-    private static void runScript(Context context, String filepath) throws DBException {
-        // Get a connection and open the file.
-        try (Connection conn = getConnectionDriver(context);
-             Statement stmt = conn.createStatement();
+    public void connect() throws DBException {
+        try {
+            // Only connect if not already connected
+            if (connection == null) {
+                // Load HSQLDB JDBC driver
+                Class.forName("org.hsqldb.jdbc.JDBCDriver");
+                
+                // Get appropriate filepath
+                File dbFile = new File(context.getFilesDir(), "mydb");
+                String dbPath = dbFile.getAbsolutePath();
+                
+                // Establish connection
+                String url = "jdbc:hsqldb:file:" + dbPath + ";shutdown=true";
+                connection = DriverManager.getConnection(url, username, password);
+                
+                // Set database options
+                if (dbOptions != null && !dbOptions.isEmpty()) {
+                    try (Statement stmt = connection.createStatement()) {
+                        for (String key : dbOptions.stringPropertyNames()) {
+                            String value = dbOptions.getProperty(key);
+                            stmt.execute("SET " + key + " " + value);
+                        }
+                    }
+                }
+                
+                // Initialize if needed
+                if (!initialized) {
+                    initializeDatabase();
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            throw new DBException("HSQLDB JDBC driver not found"+e.getMessage());
+        } catch (SQLException e) {
+            throw new DBException("Failed to connect to database"+e.getMessage());
+        }
+    }
+
+    public void disconnect() {
+        if (connection != null) {
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("SHUTDOWN");
+                connection.close();
+                connection = null;
+            } catch (SQLException e) {
+                throw new RuntimeException("Failed to disconnect from database", e);
+            }
+        }
+    }
+    
+    private void runScript(String filepath) throws DBException {
+        try (Statement stmt = connection.createStatement();
              InputStream is = context.getAssets().open(filepath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
-            // Read in the file.
             StringBuilder sql = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 sql.append(line).append("\n");
             }
 
-            // Split SQL statements (assuming they end with semicolons)
             for (String statement : sql.toString().split(";")) {
                 if (!statement.trim().isEmpty()) {
                     stmt.execute(statement.trim());
                 }
             }
         } catch (IOException | SQLException e) {
-            throw new DBException("Failed to run script '" + filepath + "'.");
+            throw new DBException("Failed to run script '" + filepath + "'."+e.getMessage());
         }
     }
 
-    private static void initializeDatabase(Context context) throws DBException {
-        if (!initialized) {
-            try {
-                // Create SQL tables.
-                runScript(context, "create_tables.sql");
+    private void initializeDatabase() throws DBException {
+        try {
+            // Create SQL tables
+            runScript("db/Project.script");
 
-                // Insert data.
-                runScript(context, "insert_data.sql");
-
-                initialized = true;
-            } catch (DBException e) {
-                throw new DBException("Failed to initialize database.");
-            }
+            initialized = true;
+        } catch (DBException e) {
+            throw new DBException("Failed to initialize database."+e.getMessage());
         }
     }
 
-    public static Connection getConnection() throws SQLException {
-        // Get the application context.
-        Context context = GlobalApplication.getAppContext();
-
-        // Initialize if needed.
-        if (!initialized) {
-            initializeDatabase(context);
+    /**
+     * Static method to get a database connection.
+     * @return The database connection
+     * @throws DBException if the database is not initialized or connection fails
+     */
+    public static Connection getConnection() throws DBException {
+        if (instance == null) {
+            throw new DBException("HSQLDBHelper not initialized. Call getInstance(context) first.");
         }
-
-        return getConnectionDriver(context);
+        if (instance.connection == null) {
+            instance.connect();
+        }
+        return instance.connection;
     }
 
-    private static Connection getConnectionDriver(Context context) throws SQLException {
-        // Get an appropriate filepath to the database through the Android API.
-        File dbFile = new File(context.getFilesDir(), FILE_PATH);
-        String dbPath = dbFile.getAbsolutePath();
-
-        // Establish database connection.
-        String url = "jdbc:hsqldb:file:" + dbPath + ";shutdown=true";
-        return DriverManager.getConnection(url, USER, PASSWORD);
+    @Override
+    public void close() {
+        disconnect();
     }
 }
