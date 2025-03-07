@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
@@ -27,12 +28,10 @@ public class WorkoutLogActivity extends BaseActivity {
         binding = ActivityWorkoutLogBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.workoutLogSearchView.setQueryHint(getString(R.string.workout_log_search_hint));
-
         binding.workoutLogRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Fetch data from persistence
-        var workoutSessionManager = new WorkoutSessionManager(true);
+        WorkoutSessionManager workoutSessionManager = new WorkoutSessionManager(false);
         List<WorkoutSession> sessions = new ArrayList<>();
         try {
             sessions = workoutSessionManager.getAll();
@@ -40,8 +39,28 @@ public class WorkoutLogActivity extends BaseActivity {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        var logAdapter = new WorkoutLogAdapter(sessions, this::openWorkoutLogDetail);
+        WorkoutLogAdapter logAdapter = new WorkoutLogAdapter(sessions, this::openWorkoutLogDetail);
         binding.workoutLogRecyclerView.setAdapter(logAdapter);
+
+        binding.workoutLogSearchView.setQueryHint(getString(R.string.workout_log_search_hint));
+        binding.workoutLogSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                logAdapter.setWorkoutSessions(workoutSessionManager.search(query));
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(!newText.isBlank()){
+                    logAdapter.setWorkoutSessions(workoutSessionManager.search(newText));
+                }
+                else{
+                    logAdapter.setWorkoutSessions(workoutSessionManager.getAll());
+                }
+                return false;
+            }
+        });
 
         setupBottomNavigation(binding.bottomNavigationView);
     }
