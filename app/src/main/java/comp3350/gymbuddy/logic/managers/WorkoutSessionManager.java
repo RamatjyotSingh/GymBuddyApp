@@ -18,7 +18,7 @@ public class WorkoutSessionManager {
         return Collections.unmodifiableList(workoutSessionDB.getAll());
     }
 
-    public WorkoutSession getWorkoutSessionById(int id) {
+    public WorkoutSession getWorkoutSessionByID(int id) {
         return workoutSessionDB.getWorkoutSessionByid(id);
     }
 }

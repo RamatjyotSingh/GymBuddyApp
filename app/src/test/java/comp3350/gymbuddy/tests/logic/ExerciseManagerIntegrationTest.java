@@ -1,27 +1,31 @@
 package comp3350.gymbuddy.tests.logic;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 
-public class ExerciseManagerTest {
+public class ExerciseManagerIntegrationTest {
     private IExerciseDB exerciseStub;
     private ExerciseManager exerciseManager;
 
     @Before
     public void setup() {
         // Initialize before each test
-        exerciseStub = PersistenceManager.getExerciseDB(false);
-        exerciseManager = new ExerciseManager(false);
+        exerciseStub = PersistenceManager.getExerciseDB(true);
+        exerciseManager = new ExerciseManager(true);
     }
 
     @Test public void testGetAll(){

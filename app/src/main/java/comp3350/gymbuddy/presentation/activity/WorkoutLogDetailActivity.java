@@ -33,7 +33,7 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
         var workoutSessionManager = new WorkoutSessionManager(true);
         WorkoutSession session = null;
         try {
-            session = workoutSessionManager.getWorkoutSessionById(id);
+            session = workoutSessionManager.getWorkoutSessionByID(id);
         } catch (DBException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
