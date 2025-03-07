@@ -14,16 +14,29 @@ public class ExerciseStub implements IExerciseDB {
     private final List<Tag> tags;
     private final List<Exercise> exercises;
 
+    /**
+     * Initializes the stub with pre-defined tags and exercises.
+     */
     public ExerciseStub() {
         tags = createTags();
         exercises = createExercises();
     }
+
+    /**
+     * Retrieves all exercises.
+     * @return A list of exercises.
+     */
 
     @Override
     public List<Exercise> getAll() {
         return Collections.unmodifiableList(exercises);
     }
 
+    /**
+     * Retrieves an exercise by its ID.
+     * @param id The ID of the exercise.
+     * @return The matching exercise, or null if not found.
+     */
     @Override
     public Exercise getExerciseByID(int id) {
         Exercise result = null;
@@ -39,6 +52,10 @@ public class ExerciseStub implements IExerciseDB {
         return result;
     }
 
+    /**
+     * Creates a list of pre-defined tags for exercises.
+     * @return A list of tag objects.
+     */
     private List<Tag> createTags() {
         List<Tag> tags = new ArrayList<>();
 
@@ -67,6 +84,11 @@ public class ExerciseStub implements IExerciseDB {
 
         return tags;
     }
+
+    /**
+     * Creates a list of sample exercises with associated tags.
+     * @return A list of pre-defined exercises.
+     */
 
     private List<Exercise> createExercises() {
         List<Exercise> exercises = new ArrayList<>();
