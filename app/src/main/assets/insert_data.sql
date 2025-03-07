@@ -128,42 +128,6 @@ INSERT INTO PUBLIC.workout_profile (profile_id, profile_name) VALUES
 INSERT INTO PUBLIC.workout_profile (profile_id, profile_name) VALUES
 (5, 'Quick HIIT Session');
 
--- Workout Items
--- Full Body Workout Items
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(1, 1, 3, 12, NULL, NULL);  -- Push-ups
-
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(1, 2, 3, 15, 50.0, NULL);  -- Squats with weight
-
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(1, 3, 3, 0, NULL, 60.0);  -- Plank (time-based)
-
--- Upper Body Focus Items
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(2, 1, 4, 15, NULL, NULL);  -- Push-ups
-
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(2, 4, 3, 8, NULL, NULL);  -- Pull-ups
-
--- Lower Body Day Items
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(3, 2, 4, 12, 65.0, NULL);  -- Squats with weight
-
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(3, 5, 3, 10, NULL, NULL);  -- Lunges
-
--- Core Strengthening Items
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(4, 3, 3, 0, NULL, 90.0);  -- Plank (time-based)
-
--- Quick HIIT Session Items
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(5, 1, 2, 20, NULL, NULL);  -- Push-ups
-
-INSERT INTO PUBLIC.workout_item (profile_id, exercise_id, sets, reps, weight, duration) VALUES
-(5, 2, 2, 20, NULL, NULL);  -- Bodyweight Squats
-
 -- Workout Sessions
 -- March 1, 2025 - Full Body Workout
 INSERT INTO PUBLIC.workout_session (session_id, start_time, end_time, profile_id) VALUES
@@ -184,28 +148,28 @@ INSERT INTO PUBLIC.workout_session (session_id, start_time, end_time, profile_id
 -- Session Items
 -- Session 1 Items (Full Body Workout)
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
-(1, 1, 12, NULL, 0);  -- Push-ups
+(1, 1, 12, 0, 0);  -- Push-ups
 
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
 (1, 2, 15, 55.0, 0);  -- Squats with weight
 
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
-(1, 3, 0, NULL, 65);  -- Plank (time-based)
+(1, 3, 0, 0, 65);
 
 -- Session 2 Items (Upper Body Focus)
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
-(2, 1, 15, NULL, 0);  -- Push-ups
+(2, 1, 15, 0, 0);
 
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
-(2, 4, 8, NULL, 0);  -- Pull-ups
+(2, 4, 8, 0, 0);
 
 -- Session 3 Items (Lower Body Day)
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
-(3, 2, 12, 70.0, 0);  -- Squats with weight
+(3, 2, 12, 70.0, 0);
 
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
-(3, 5, 10, NULL, 0);  -- Lunges
+(3, 5, 10, 0, 0);
 
 -- Session 4 Items (Core Strengthening)
 INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
-(4, 3, 0, NULL, 90);  -- Plank (time-based)
+(4, 3, 0, 0, 90);

@@ -29,7 +29,6 @@ public class HSQLDBHelper {
 
     private static void runScript(Context context, String filepath) throws DBException {
         // Get a connection and open the file.
-        String linebad = "";
         try (Connection conn = getConnectionDriver(context);
              Statement stmt = conn.createStatement();
              InputStream is = context.getAssets().open(filepath);
@@ -45,12 +44,10 @@ public class HSQLDBHelper {
             // Split SQL statements (assuming they end with semicolons)
             for (String statement : sql.toString().split(";")) {
                 if (!statement.trim().isEmpty()) {
-                    linebad = statement;
                     stmt.execute(statement.trim());
                 }
             }
         } catch (IOException | SQLException e) {
-            System.out.println(linebad);
             throw new DBException("Failed to run script '" + filepath + "'.");
         }
     }
