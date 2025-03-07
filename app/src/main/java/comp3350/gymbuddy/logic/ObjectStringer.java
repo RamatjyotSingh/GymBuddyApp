@@ -13,7 +13,7 @@ public class ObjectStringer {
                 result = "Time: " + item.getTime() + " sec";
             }
             else {
-                result = "Reps: " + item.getReps() + ", Weight: " + item.getWeight() + " kg";
+                result = "Reps: " + item.getReps() + ", Weight: " + item.getWeight() + " lbs";
             }
         }
 
@@ -30,7 +30,7 @@ public class ObjectStringer {
                 result = item.getSets() + " sets x " + item.getReps() + " reps";
 
                 if (item.getWeight() > 0.0) {
-                    result += " | " + item.getWeight() + " kg";
+                    result += " | " + item.getWeight() + " lbs";
                 }
             }
         }
