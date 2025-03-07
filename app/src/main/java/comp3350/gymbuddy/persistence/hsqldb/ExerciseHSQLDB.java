@@ -14,18 +14,27 @@ import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 
+/**
+ * ExerciseHSQLDB implements IExerciseDB, providing methods to interact with the exercise database.
+ */
 public class ExerciseHSQLDB implements IExerciseDB {
+
+    /**
+     * Retrieves all exercises from the database.
+     * @return A list of all exercises.
+     * @throws DBException If an error occurs while accessing the database.
+     */
     @Override
     @NonNull
     public List<Exercise> getAll() throws DBException {
         List<Exercise> exercises = new ArrayList<>();
-
         String query = "SELECT * FROM exercise";
 
         try (Connection conn = HSQLDBHelper.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
+            // Iterate through the result set and extract exercises
             while (rs.next()) {
                 exercises.add(extractExercise(rs));
             }
@@ -36,10 +45,15 @@ public class ExerciseHSQLDB implements IExerciseDB {
         return exercises;
     }
 
+    /**
+     * Retrieves a specific exercise by its ID.
+     * @param id The ID of the exercise to retrieve.
+     * @return The corresponding Exercise object, or null if not found.
+     * @throws DBException If an error occurs while accessing the database.
+     */
     @Override
     public Exercise getExerciseByID(int id) {
         Exercise exercise = null;
-
         String query = "SELECT * FROM exercise WHERE exercise_id = ?";
 
         try (Connection conn = HSQLDBHelper.getConnection();
@@ -58,6 +72,12 @@ public class ExerciseHSQLDB implements IExerciseDB {
         return exercise;
     }
 
+    /**
+     * Extracts exercise data from a ResultSet and constructs an Exercise object.
+     * @param rs The ResultSet containing the exercise data.
+     * @return A new Exercise object populated with the retrieved data.
+     * @throws SQLException If an error occurs while reading the result set.
+     */
     @NonNull
     private Exercise extractExercise(ResultSet rs) throws SQLException {
         int exerciseId = rs.getInt("exercise_id");
@@ -67,12 +87,18 @@ public class ExerciseHSQLDB implements IExerciseDB {
         boolean isTimeBased = rs.getBoolean("is_time_based");
         boolean hasWeight = rs.getBoolean("has_weight");
 
-        // Fetch related tags and instructions
+        // Fetch related tags for the exercise
         List<Tag> tags = getTagsByExerciseId(exerciseId);
 
         return new Exercise(exerciseId, name, tags, instructions, imagePath, isTimeBased, hasWeight);
     }
 
+    /**
+     * Extracts tag data from a ResultSet and constructs a Tag object.
+     * @param rs The ResultSet containing the tag data.
+     * @return A new Tag object populated with the retrieved data.
+     * @throws SQLException If an error occurs while reading the result set.
+     */
     @NonNull
     private Tag extractTag(ResultSet rs) throws SQLException {
         String name = rs.getString("tag_name");
@@ -84,10 +110,15 @@ public class ExerciseHSQLDB implements IExerciseDB {
         return new Tag(type, name, textColor, bgColor);
     }
 
+    /**
+     * Retrieves a list of tags associated with a given exercise ID.
+     * @param exerciseID The ID of the exercise whose tags need to be fetched.
+     * @return A list of associated Tag objects.
+     * @throws DBException If an error occurs while accessing the database.
+     */
     @NonNull
     private List<Tag> getTagsByExerciseId(int exerciseID) throws DBException {
         List<Tag> tags = new ArrayList<>();
-
         String query = "SELECT tag_name, tag_type, text_color, background_color " +
                 "FROM exercise_tag et " +
                 "JOIN tag t ON et.tag_id = t.tag_id " +

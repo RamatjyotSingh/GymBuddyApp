@@ -10,9 +10,13 @@ import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.persistence.stubs.ExerciseStub;
 
+/**
+ * WorkoutItemGenerator generates a list of randomized workout items.
+ * It assigns exercises, sets, reps, time, and weight based on predefined ranges.
+ */
 public class WorkoutItemGenerator {
 
-    // Constants for workout item generation.
+    // Constants defining the limits for random workout item generation.
     private static final int MIN_WORKOUT_ITEMS = 1;
     private static final int MAX_WORKOUT_ITEMS = 8;
     private static final int MIN_SETS = 2;
@@ -24,24 +28,33 @@ public class WorkoutItemGenerator {
     private static final double MIN_WEIGHT = 5.0;
     private static final double MAX_WEIGHT = 25.0;
 
-    private final int seed;
+    private final int seed; // Seed for randomness to ensure reproducibility.
 
+    /**
+     * Constructor initializes the generator with a specific seed for consistency.
+     * @param seed The seed for the random number generator.
+     */
     public WorkoutItemGenerator(int seed) {
         this.seed = seed;
     }
 
+    /**
+     * Generates a randomized list of workout items.
+     * @return A list of randomly generated WorkoutItem objects.
+     */
     @NonNull
     public List<WorkoutItem> generate() {
-        // Generate random workouts based on the given seed.
         List<WorkoutItem> workoutItems = new ArrayList<>();
         Random random = new Random(seed);
 
-        // Get some exercises to use.
+        // Retrieve a list of exercises to assign to workout items.
         List<Exercise> exercises = new ExerciseStub().getAll();
 
+        // Determine the number of workout items to generate.
         int count = random.nextInt(MAX_WORKOUT_ITEMS - MIN_WORKOUT_ITEMS) + MIN_WORKOUT_ITEMS;
+
         for (int i = 0; i < count; i++) {
-            // Fill in the item information.
+            // Select a random exercise from the available list.
             Exercise exercise = exercises.get(random.nextInt(exercises.size()));
             int sets = random.nextInt(MAX_SETS - MIN_SETS) + MIN_SETS;
 
@@ -53,7 +66,7 @@ public class WorkoutItemGenerator {
                 // Generate rep-based workout item.
                 int reps = random.nextInt(MAX_REPS - MIN_REPS) + MIN_REPS;
 
-                // Generate weight if needed.
+                // Generate weight if the exercise requires it.
                 double weight = 0.0;
                 if (exercise.hasWeight()) {
                     weight = random.nextDouble() * (MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
