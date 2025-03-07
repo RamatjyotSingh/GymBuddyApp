@@ -1,26 +1,28 @@
 package comp3350.gymbuddy.objects;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Exercise {
+    private final int id;
     private final String name;
     private final List<Tag> tags;
-    private final ArrayList<String> instructions;
+    private final String instructions;
     private final String imagePath;
+    private final boolean isTimeBased;
+    private final boolean hasWeight;
 
-    public Exercise(String name, List<Tag> tags, ArrayList<String> instructions, String imagePath) {
+    public Exercise(int id, String name, List<Tag> tags, String instructions, String imagePath, boolean isTimeBased, boolean hasWeight) {
+        this.id = id;
         this.name = name;
         this.tags = tags;
         this.instructions = instructions;
         this.imagePath = imagePath;
+        this.isTimeBased = isTimeBased;
+        this.hasWeight = hasWeight;
     }
 
-    public Exercise(String name, List<Tag> tags, ArrayList<String> instructions) {
-        this.name = name;
-        this.tags = tags;
-        this.instructions = instructions;
-        this.imagePath = null;
+    public int getID(){
+        return id;
     }
 
     public String getName() {
@@ -31,11 +33,19 @@ public class Exercise {
         return tags;
     }
 
-    public ArrayList<String> getInstructions() {
+    public String getInstructions() {
         return instructions;
     }
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public boolean isTimeBased() {
+        return isTimeBased;
+    }
+
+    public boolean hasWeight() {
+        return hasWeight;
     }
 }

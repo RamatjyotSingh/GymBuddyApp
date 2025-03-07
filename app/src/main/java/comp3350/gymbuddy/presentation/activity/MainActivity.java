@@ -1,55 +1,50 @@
 package comp3350.gymbuddy.presentation.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Menu;
+import android.widget.Toast;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import comp3350.gymbuddy.R;
+import java.util.ArrayList;
+import java.util.List;
+
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
+import comp3350.gymbuddy.logic.managers.WorkoutManager;
+import comp3350.gymbuddy.objects.WorkoutProfile;
+import comp3350.gymbuddy.persistence.exception.DBException;
+import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 
-public class MainActivity extends AppCompatActivity {
-
-    private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // Initialize View Binding
+        comp3350.gymbuddy.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), WorkoutBuilderActivity.class);
-                startActivity(intent);
-            }
-        });
+        // Set up BottomNavigationView using the base class
+        setupBottomNavigation(binding.bottomNavigationView);
 
-        ConstraintLayout constraint = binding.constraintLayout;
-    }
+        RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+        // Initialize WorkoutManager
+        WorkoutManager workoutManager = new WorkoutManager(true);
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+        // Fetch data from persistence
+        List<WorkoutProfile> workoutProfiles = new ArrayList<>();
+        try {
+            workoutProfiles = workoutManager.getAll();
+        } catch (DBException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        // Initialize RecyclerView
+        recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up adapter
+        WorkoutProfileAdapter workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
+        recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
     }
 }

@@ -1,137 +1,167 @@
 package comp3350.gymbuddy.presentation.activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.Tag;
-import comp3350.gymbuddy.objects.WorkoutItem;
+
 import comp3350.gymbuddy.R;
-import comp3350.gymbuddy.presentation.adapters.WorkoutAdapter;
+import comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding;
+import comp3350.gymbuddy.logic.managers.WorkoutManager;
+import comp3350.gymbuddy.logic.InputValidator;
+import comp3350.gymbuddy.logic.exception.InvalidInputException;
+import comp3350.gymbuddy.logic.exception.InvalidNameException;
+import comp3350.gymbuddy.objects.WorkoutItem;
+import comp3350.gymbuddy.objects.WorkoutProfile;
+import comp3350.gymbuddy.persistence.exception.DBException;
+import comp3350.gymbuddy.presentation.adapters.WorkoutItemAdapter;
+import comp3350.gymbuddy.presentation.fragments.AddExerciseDialogFragment;
+import comp3350.gymbuddy.presentation.util.DSOBundler;
 
-public class WorkoutBuilderActivity extends AppCompatActivity {
-    private WorkoutAdapter adapter;
-    private Exercise selectedExercise; // Store selected exercise
-    private Button btnSelectExercise; // Reference to update UI in the dialog
+public class WorkoutBuilderActivity extends BaseActivity {
 
-    // Register Activity Result for selecting an exercise
-    private final ActivityResultLauncher<Intent> selectExerciseLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::handleActivityResult);
+    // View binding for accessing UI elements efficiently
+    private ActivityWorkoutBuilderBinding binding;
+
+    // Launcher for starting the ExerciseListActivity and handling its result
+    private final ActivityResultLauncher<Intent> exerciseListLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), this::handleExerciseListActivityResult);
+
+    private WorkoutItemAdapter adapter;
+
+    private List<WorkoutItem> workoutItems;
+    private String selectedIconPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_workout_builder);
+        // Inflate the layout using view binding
+        binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerWorkoutItems);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Set up the RecyclerView with a LinearLayoutManager for displaying workout items
+        binding.recyclerWorkoutItems.setLayoutManager(new LinearLayoutManager(this));
 
-        List<WorkoutItem> workoutItems = new ArrayList<>();
-        adapter = new WorkoutAdapter(workoutItems);
-        recyclerView.setAdapter(adapter);
+        // Listen for results from the AddExerciseDialogFragment (workout item details)
+        getSupportFragmentManager().setFragmentResultListener("workout_item", this, this::handleWorkoutItemResult);
 
-        findViewById(R.id.fabAddItem).setOnClickListener(v -> showAddWorkoutItemDialog());
+        // Initialize the workout items list
+        workoutItems = new ArrayList<>();
+
+        // Initialize icon with default path
+        selectedIconPath = getString(R.string.default_workout_icon_path);
+
+        // Set up the adapter for the RecyclerView
+        adapter = new WorkoutItemAdapter(workoutItems);
+        binding.recyclerWorkoutItems.setAdapter(adapter);
+
+        setupBottomNavigation(binding.bottomNavigationView);
     }
 
-    private void showAddWorkoutItemDialog() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_add_workout_item);
+    /**
+     * Creates a WorkoutProfile instance if all validation rules pass.
+     *
+     * @return A valid WorkoutProfile instance or null if validation fails.
+     */
+    private @Nullable WorkoutProfile generateWorkoutProfile() {
+        WorkoutProfile workoutProfile = null;
 
-        btnSelectExercise = dialog.findViewById(R.id.btnSelectExercise);
-        EditText edtSets = dialog.findViewById(R.id.edtSets);
-        EditText edtReps = dialog.findViewById(R.id.edtReps);
-        EditText edtWeight = dialog.findViewById(R.id.edtWeight);
-        EditText edtTime = dialog.findViewById(R.id.edtTime);
-        Button btnAddWorkoutItem = dialog.findViewById(R.id.btnAddWorkoutItem);
+        // Ensure all input is valid before proceeding
+        try {
+            String name = binding.edtWorkoutName.getText().toString();
 
-        // Reset selected exercise & UI
-        selectedExercise = null;
-        btnSelectExercise.setText("Select Exercise");
+            var inputValidator = new InputValidator();
+            workoutProfile = inputValidator.newWorkoutProfile(name, selectedIconPath, workoutItems);
 
-        // Open ExerciseListActivity to select an exercise
-        btnSelectExercise.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ExerciseListActivity.class);
-            selectExerciseLauncher.launch(intent);
-        });
+            // Report invalid input.
+        } catch (InvalidNameException e) {
+            binding.edtWorkoutName.setError(e.getMessage());
+        } catch (InvalidInputException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
-        // Add Workout Item button
-        btnAddWorkoutItem.setOnClickListener(v -> {
-
-            if (selectedExercise == null) {
-                btnSelectExercise.setError("Please select an exercise.");
-                return;
-            } else {
-                btnSelectExercise.setError(null);
-            }
-
-            if (edtSets.getText().toString().trim().isEmpty()) {
-                edtSets.setError("Required");
-                return;
-            }
-            if (edtReps.getText().toString().trim().isEmpty()) {
-                edtReps.setError("Required");
-                return;
-            }
-
-            int sets = Integer.parseInt(edtSets.getText().toString().trim());
-            int reps = Integer.parseInt(edtReps.getText().toString().trim());
-            double weight = edtWeight.getText().toString().trim().isEmpty() ? 0.0 : Double.parseDouble(edtWeight.getText().toString().trim());
-            double time = edtTime.getText().toString().trim().isEmpty() ? 0.0 : Double.parseDouble(edtTime.getText().toString().trim());
-
-            WorkoutItem newItem = new WorkoutItem(selectedExercise, sets, reps, weight, time);
-            adapter.addWorkoutItem(newItem);
-
-            selectedExercise = null;
-            btnSelectExercise.setText("Select Exercise");
-            edtSets.setText("");
-            edtReps.setText("");
-            edtWeight.setText("");
-            edtTime.setText("");
-
-            dialog.dismiss();
-        });
-
-        dialog.show();
+        return workoutProfile;
     }
 
-    private void handleActivityResult(ActivityResult result) {
+ /**
+  * Handles the save button click event.
+  * If the workout profile is valid, it saves the profile and its items to the database
+  * and navigates to the WorkoutLogActivity.
+  */
+ public void onClickSave(View v) {
+     WorkoutProfile profile = generateWorkoutProfile();
+
+     if (profile != null) {
+         // Save the profile to the database
+         WorkoutManager workoutManager = new WorkoutManager(true);
+         try {
+             workoutManager.saveWorkout(profile);
+
+             // Show success message
+             Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
+
+             // Close this activity
+             finish();
+         } catch (DBException e) {
+             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+         }
+     }
+ }
+
+    /**
+     * Handles the Floating Action Button (FAB) click event.
+     * Opens the ExerciseListActivity for the user to select an exercise.
+     */
+    public void onClickFAB(View v) {
+        Intent intent = new Intent(this, ExerciseListActivity.class);
+        exerciseListLauncher.launch(intent);
+    }
+
+    /**
+     * Handles the result from the AddExerciseDialogFragment.
+     * Extracts the workout item from the bundle and adds it to the adapter.
+     *
+     * @param requestKey The key identifying the request.
+     * @param bundle The data bundle containing workout item details.
+     */
+    private void handleWorkoutItemResult(String requestKey, Bundle bundle) {
+        var dsoBundler = new DSOBundler();
+        WorkoutItem workoutItem = dsoBundler.unbundleWorkoutItem(bundle);
+
+        if (workoutItem != null) {
+            // Add the new workout item to the adapter
+            adapter.addWorkoutItem(workoutItem);
+        }
+    }
+
+    /**
+     * Handles the result from ExerciseListActivity.
+     * If an exercise was selected, it opens the AddExerciseDialogFragment.
+     *
+     * @param result The result data from ExerciseListActivity.
+     */
+    private void handleExerciseListActivityResult(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-            Intent data = result.getData();
+            // Get the selected exercise ID from the result data
+            int selectedExerciseId = result.getData().getIntExtra("exerciseID", -1);
 
-            // Get exercise details from the Intent
-            String exerciseName = data.getStringExtra("exerciseName");
-            ArrayList<String> exerciseInstructions = data.getStringArrayListExtra("exerciseInstructions");
-            String exerciseImage = data.getStringExtra("exerciseImage");
-            ArrayList<String> tagNames = data.getStringArrayListExtra("tagNames");
-            ArrayList<String> tagColors = data.getStringArrayListExtra("tagColors");
-
-            // Convert tags from received data
-            List<Tag> tags = new ArrayList<>();
-            for (int i = 0; i < Objects.requireNonNull(tagNames).size(); i++) {
-                assert tagColors != null;
-                tags.add(new Tag(tagNames.get(i), tagColors.get(i)));
-            }
-
-            // Create Exercise object
-            selectedExercise = new Exercise(exerciseName, tags, exerciseInstructions, exerciseImage);
-
-            // Update button text in the dialog
-            if (btnSelectExercise != null) {
-                btnSelectExercise.setText(exerciseName); // Show selected exercise name
-                btnSelectExercise.setError(null);
+            if (selectedExerciseId >= 0) {
+                // Open the dialog to configure the selected exercise
+                var dialog = AddExerciseDialogFragment.newInstance(selectedExerciseId);
+                dialog.show(getSupportFragmentManager(), "add_workout_item_dialog");
             }
         }
     }
+
+
 }
