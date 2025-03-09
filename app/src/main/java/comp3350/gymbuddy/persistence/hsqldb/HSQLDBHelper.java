@@ -1,20 +1,16 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
-import android.content.Context;
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import comp3350.gymbuddy.GlobalApplication;
 import comp3350.gymbuddy.persistence.exception.DBException;
+import timber.log.Timber;
 
 /**
  * Provides connections to HSQLDB with project configurations set.
@@ -29,6 +25,17 @@ public class HSQLDBHelper {
     private static boolean initialized = false;
     private static boolean isTestMode = false;
 
+    private static String dbDirectoryPath;
+    private static String sqlScriptDirectory;
+
+    public static void setDatabaseDirectoryPath(String path) {
+        dbDirectoryPath = path;
+    }
+
+    public static void setSqlScriptDirectory(String path) {
+        sqlScriptDirectory = path;
+    }
+
     /**
      * Enables or disables test mode.
      * @param testMode True to use the test database, false for production.
@@ -39,15 +46,19 @@ public class HSQLDBHelper {
     }
 
     /**
-     * Runs an SQL script from the assets folder.
+     * Runs an SQL script from the file system.
      */
-    private static void runScript(Context context, String filepath) throws DBException {
-        Log.d(TAG, "Running SQL script: " + filepath);
+    private static void runScript(String filename) throws DBException {
+        if (sqlScriptDirectory == null) {
+            throw new DBException("SQL script directory not set. Call setSqlScriptDirectory() first.");
+        }
 
-        try (Connection conn = getConnectionDriver(context);
+        File sqlFile = new File(sqlScriptDirectory, filename);
+
+        try (Connection conn = getConnectionDriver();
              Statement stmt = conn.createStatement();
-             InputStream is = context.getAssets().open(filepath);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+             FileInputStream fis = new FileInputStream(sqlFile);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
 
             StringBuilder sql = new StringBuilder();
             String line;
@@ -57,36 +68,27 @@ public class HSQLDBHelper {
 
             for (String statement : sql.toString().split(";")) {
                 if (!statement.trim().isEmpty()) {
-                    try {
-                        stmt.execute(statement.trim());
-                    } catch (SQLException sqlException) {
-                        Log.e(TAG, "SQL Execution Error: " + sqlException.getMessage());
-                        throw new DBException("SQL Error in script '" + filepath + "': " + sqlException.getMessage());
-                    }
+                    stmt.execute(statement.trim());
                 }
             }
-        } catch (IOException e) {
-            Log.e(TAG, "Error reading script file: " + filepath, e);
-            throw new DBException("Failed to read SQL script '" + filepath + "'.");
-        } catch (SQLException e) {
-            Log.e(TAG, "SQL Execution Error in script: " + filepath, e);
-            throw new DBException("Failed to execute SQL script '" + filepath + "'.");
+        } catch (Exception e) {
+            throw new DBException("Error running SQL script: " + e.getMessage());
         }
     }
 
     /**
      * Initializes the database by creating tables and inserting default data.
      */
-    private static void initializeDatabase(Context context) throws DBException {
+    private static void initializeDatabase() throws DBException {
         if (!initialized) {
-            Log.d(TAG, "Initializing database...");
+            Timber.tag(TAG).d("Initializing database...");
             try {
-                runScript(context, "create_tables.sql");
-                runScript(context, "insert_data.sql");
+                runScript("create_tables.sql");
+                runScript("insert_data.sql");
                 initialized = true;
-                Log.d(TAG, "Database initialized successfully.");
+                Timber.tag(TAG).d("Database initialized successfully.");
             } catch (DBException e) {
-                Log.e(TAG, "Database initialization failed.", e);
+                Timber.tag(TAG).e(e, "Database initialization failed.");
                 throw new DBException("Failed to initialize database: " + e.getMessage());
             }
         }
@@ -96,34 +98,36 @@ public class HSQLDBHelper {
      * Provides a connection to the database, initializing it if necessary.
      */
     public static Connection getConnection() throws SQLException {
-        Context context = GlobalApplication.getAppContext();
-
         if (!initialized) {
             try {
-                initializeDatabase(context);
+                initializeDatabase();
             } catch (DBException e) {
                 throw new SQLException("Database initialization error: " + e.getMessage());
             }
         }
 
-        return getConnectionDriver(context);
+        return getConnectionDriver();
     }
 
     /**
      * Establishes a connection to the appropriate database file.
      */
-    private static Connection getConnectionDriver(Context context) throws SQLException {
+    private static Connection getConnectionDriver() throws SQLException {
+        if (dbDirectoryPath == null) {
+            throw new SQLException("Database path not set. Call setDatabaseDirectoryPath() first.");
+        }
+
         String dbFilePath = isTestMode ? TEST_FILE_PATH : PROD_FILE_PATH;
-        File dbFile = new File(context.getFilesDir(), dbFilePath);
+        File dbFile = new File(dbDirectoryPath, dbFilePath);
         String dbPath = dbFile.getAbsolutePath();
 
         String url = "jdbc:hsqldb:file:" + dbPath + ";shutdown=true";
-        Log.d(TAG, "Connecting to HSQLDB: " + url);
+        Timber.tag(TAG).d("Connecting to HSQLDB: %s", url);
 
         try {
             return DriverManager.getConnection(url, USER, PASSWORD);
         } catch (SQLException e) {
-            Log.e(TAG, "Database connection failed: " + e.getMessage());
+            Timber.tag(TAG).e("Database connection failed: %s", e.getMessage());
             throw e;
         }
     }
@@ -131,22 +135,22 @@ public class HSQLDBHelper {
     /**
      * Resets the test database to a clean state.
      */
-    public static void resetTestDatabase(Context context) {
-        Log.d(TAG, "Resetting test database...");
+    public static void resetTestDatabase() {
+        Timber.tag(TAG).d("Resetting test database...");
 
-        File testDbFile = new File(context.getFilesDir(), TEST_FILE_PATH);
+        File testDbFile = new File(dbDirectoryPath, TEST_FILE_PATH);
         if (testDbFile.exists()) {
             if (!testDbFile.delete()) {
-                Log.e(TAG, "Failed to delete test database file.");
+                Timber.tag(TAG).e("Failed to delete test database file.");
                 throw new RuntimeException("Failed to delete test database file.");
             }
         }
 
         initialized = false;
         try {
-            Log.d(TAG, "Reinitializing test database...");
-            initializeDatabase(context);
-            Log.d(TAG, "Test database reset and reinitialized.");
+            Timber.tag(TAG).d("Reinitializing test database...");
+            initializeDatabase();
+            Timber.tag(TAG).d("Test database reset and reinitialized.");
         } catch (DBException e) {
             throw new RuntimeException("Test database failed to initialize: " + e.getMessage());
         }
