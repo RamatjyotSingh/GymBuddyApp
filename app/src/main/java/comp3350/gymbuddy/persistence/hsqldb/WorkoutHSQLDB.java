@@ -51,17 +51,31 @@ public class WorkoutHSQLDB implements IWorkoutDB {
      */
     @Override
     public void saveWorkout(WorkoutProfile profile) throws DBException {
-        String query = "INSERT INTO workout_profile (profile_name, icon_path) VALUES (?, ?)";
+        String getLastIdQuery = "SELECT MAX(profile_id) FROM workout_profile";  // Get the highest ID
+        String insertQuery = "INSERT INTO workout_profile (profile_id, profile_name, icon_path) VALUES (?, ?, ?)";
 
         try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, profile.getName());
-            stmt.setString(2, profile.getIconPath());
-            stmt.executeUpdate();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(getLastIdQuery)) {
+
+            int newProfileId = 1; // Default ID if table is empty
+
+            if (rs.next()) {
+                newProfileId = rs.getInt(1) + 1; // Increment last ID
+            }
+
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                insertStmt.setInt(1, newProfileId);
+                insertStmt.setString(2, profile.getName());
+                insertStmt.setString(3, profile.getIconPath());
+                insertStmt.executeUpdate();
+            }
+
         } catch (SQLException e) {
-            throw new DBException("Failed to save workout.");
+            throw new DBException("Failed to save workout: " + e.getMessage());
         }
     }
+
 
     /**
      * Retrieves a workout profile by its ID.
@@ -72,7 +86,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     @Override
     public WorkoutProfile getWorkoutProfileById(int id) throws DBException {
         WorkoutProfile workoutProfile = null;
-        String query = "SELECT * FROM workout_profile WHERE id = ?";
+        String query = "SELECT * FROM workout_profile WHERE profile_id = ?";
 
         try (Connection conn = HSQLDBHelper.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {

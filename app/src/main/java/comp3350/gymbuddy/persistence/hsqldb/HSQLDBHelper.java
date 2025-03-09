@@ -1,6 +1,7 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,96 +20,136 @@ import comp3350.gymbuddy.persistence.exception.DBException;
  * Provides connections to HSQLDB with project configurations set.
  */
 public class HSQLDBHelper {
-    // HSQLDB configurations.
-    private static final String FILE_PATH = "gymbuddydb";
+    private static final String TAG = "HSQLDBHelper";
+    private static final String PROD_FILE_PATH = "gymbuddydb";
+    private static final String TEST_FILE_PATH = "test_gymbuddydb"; // Separate test DB
     private static final String USER = "SA";
     private static final String PASSWORD = "";
 
-    // Tracks whether the database has been initialized in the current run.
     private static boolean initialized = false;
+    private static boolean isTestMode = false;
+
+    /**
+     * Enables or disables test mode.
+     * @param testMode True to use the test database, false for production.
+     */
+    public static void setTestMode(boolean testMode) {
+        isTestMode = testMode;
+        initialized = false; // Reset initialization state
+    }
 
     /**
      * Runs an SQL script from the assets folder.
-     * @param context The application context.
-     * @param filepath The path of the script file inside assets.
-     * @throws DBException If an error occurs while executing the script.
      */
     private static void runScript(Context context, String filepath) throws DBException {
+        Log.d(TAG, "Running SQL script: " + filepath);
+
         try (Connection conn = getConnectionDriver(context);
              Statement stmt = conn.createStatement();
              InputStream is = context.getAssets().open(filepath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
-            // Read the script file line by line
             StringBuilder sql = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 sql.append(line).append("\n");
             }
 
-            // Execute SQL statements (assuming they end with semicolons)
             for (String statement : sql.toString().split(";")) {
                 if (!statement.trim().isEmpty()) {
-                    stmt.execute(statement.trim());
+                    try {
+                        stmt.execute(statement.trim());
+                    } catch (SQLException sqlException) {
+                        Log.e(TAG, "SQL Execution Error: " + sqlException.getMessage());
+                        throw new DBException("SQL Error in script '" + filepath + "': " + sqlException.getMessage());
+                    }
                 }
             }
-        } catch (IOException | SQLException e) {
-            throw new DBException("Failed to run script '" + filepath + "'.");
+        } catch (IOException e) {
+            Log.e(TAG, "Error reading script file: " + filepath, e);
+            throw new DBException("Failed to read SQL script '" + filepath + "'.");
+        } catch (SQLException e) {
+            Log.e(TAG, "SQL Execution Error in script: " + filepath, e);
+            throw new DBException("Failed to execute SQL script '" + filepath + "'.");
         }
     }
 
     /**
      * Initializes the database by creating tables and inserting default data.
-     * @param context The application context.
-     * @throws DBException If initialization fails.
      */
     private static void initializeDatabase(Context context) throws DBException {
         if (!initialized) {
+            Log.d(TAG, "Initializing database...");
             try {
-                // Execute table creation script.
                 runScript(context, "create_tables.sql");
-
-                // Execute data insertion script.
                 runScript(context, "insert_data.sql");
-
                 initialized = true;
+                Log.d(TAG, "Database initialized successfully.");
             } catch (DBException e) {
-                throw new DBException("Failed to initialize database.");
+                Log.e(TAG, "Database initialization failed.", e);
+                throw new DBException("Failed to initialize database: " + e.getMessage());
             }
         }
     }
 
     /**
      * Provides a connection to the database, initializing it if necessary.
-     * @return A Connection object for HSQLDB.
-     * @throws SQLException If a connection error occurs.
      */
     public static Connection getConnection() throws SQLException {
         Context context = GlobalApplication.getAppContext();
 
-        // Ensure database is initialized before establishing a connection.
         if (!initialized) {
-            initializeDatabase(context);
+            try {
+                initializeDatabase(context);
+            } catch (DBException e) {
+                throw new SQLException("Database initialization error: " + e.getMessage());
+            }
         }
 
         return getConnectionDriver(context);
     }
 
     /**
-     * Establishes a connection to the HSQLDB database file.
-     * @param context The application context.
-     * @return A Connection object for HSQLDB.
-     * @throws SQLException If a connection error occurs.
+     * Establishes a connection to the appropriate database file.
      */
     private static Connection getConnectionDriver(Context context) throws SQLException {
-        // Construct the database file path using the Android file system.
-        File dbFile = new File(context.getFilesDir(), FILE_PATH);
+        String dbFilePath = isTestMode ? TEST_FILE_PATH : PROD_FILE_PATH;
+        File dbFile = new File(context.getFilesDir(), dbFilePath);
         String dbPath = dbFile.getAbsolutePath();
 
-        // Define the JDBC connection URL.
         String url = "jdbc:hsqldb:file:" + dbPath + ";shutdown=true";
+        Log.d(TAG, "Connecting to HSQLDB: " + url);
 
-        // Return a connection to the database.
-        return DriverManager.getConnection(url, USER, PASSWORD);
+        try {
+            return DriverManager.getConnection(url, USER, PASSWORD);
+        } catch (SQLException e) {
+            Log.e(TAG, "Database connection failed: " + e.getMessage());
+            throw e;
+        }
     }
+
+    /**
+     * Resets the test database to a clean state.
+     */
+    public static void resetTestDatabase(Context context) {
+        Log.d(TAG, "Resetting test database...");
+
+        File testDbFile = new File(context.getFilesDir(), TEST_FILE_PATH);
+        if (testDbFile.exists()) {
+            if (!testDbFile.delete()) {
+                Log.e(TAG, "Failed to delete test database file.");
+                throw new RuntimeException("Failed to delete test database file.");
+            }
+        }
+
+        initialized = false;
+        try {
+            Log.d(TAG, "Reinitializing test database...");
+            initializeDatabase(context);
+            Log.d(TAG, "Test database reset and reinitialized.");
+        } catch (DBException e) {
+            throw new RuntimeException("Test database failed to initialize: " + e.getMessage());
+        }
+    }
+
 }

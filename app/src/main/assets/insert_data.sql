@@ -2,6 +2,9 @@
 DELETE FROM exercise;
 DELETE FROM tag;
 DELETE FROM exercise_tag;
+DELETE FROM workout_profile;
+DELETE FROM workout_session;
+DELETE FROM session_item;
 
 
 -- Insert sample exercises
