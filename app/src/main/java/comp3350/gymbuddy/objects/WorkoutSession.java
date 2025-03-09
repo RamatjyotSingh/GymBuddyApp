@@ -58,4 +58,8 @@ public class WorkoutSession {
     public WorkoutProfile getWorkoutProfile() {
         return profile;
     }
+
+    public long getEndTime() {
+        return endTime;
+    }
 }

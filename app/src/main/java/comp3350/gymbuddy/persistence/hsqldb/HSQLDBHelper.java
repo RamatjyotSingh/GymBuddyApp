@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import comp3350.gymbuddy.persistence.exception.DBException;
 import timber.log.Timber;
@@ -46,7 +48,8 @@ public class HSQLDBHelper {
     }
 
     /**
-     * Runs an SQL script from the file system.
+     * Runs an SQL script from the file system, executing each statement individually.
+     * Optimized to handle multi-value INSERT statements by splitting them into separate executions.
      */
     private static void runScript(String filename) throws DBException {
         if (sqlScriptDirectory == null) {
@@ -54,26 +57,177 @@ public class HSQLDBHelper {
         }
 
         File sqlFile = new File(sqlScriptDirectory, filename);
+        Timber.tag(TAG).d("Running SQL script: %s", sqlFile.getAbsolutePath());
 
         try (Connection conn = getConnectionDriver();
              Statement stmt = conn.createStatement();
              FileInputStream fis = new FileInputStream(sqlFile);
              BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
 
-            StringBuilder sql = new StringBuilder();
+            StringBuilder sqlBuffer = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
-                sql.append(line).append("\n");
-            }
 
-            for (String statement : sql.toString().split(";")) {
-                if (!statement.trim().isEmpty()) {
-                    stmt.execute(statement.trim());
+            // First pass: Read the entire script to handle multi-line statements
+            while ((line = reader.readLine()) != null) {
+                String trimmedLine = line.trim();
+                
+                // Skip empty lines and comments
+                if (trimmedLine.isEmpty() || trimmedLine.startsWith("--")) {
+                    continue;
+                }
+                
+                sqlBuffer.append(line).append("\n");
+            }
+            
+            // Process the complete SQL script
+            String sqlScript = sqlBuffer.toString();
+            
+            // Split the script at semicolons but keep CREATE TABLE statements intact
+            List<String> statements = new ArrayList<>();
+            int startPos = 0;
+            boolean inString = false;
+            boolean multiValueInsert = false;
+            String insertPrefix = null;
+            
+            for (int i = 0; i < sqlScript.length(); i++) {
+                char c = sqlScript.charAt(i);
+                
+                // Handle string literals so we don't mistakenly split at semicolons inside strings
+                if (c == '\'') {
+                    inString = !inString;
+                    continue;
+                }
+                
+                if (inString) {
+                    continue; // Skip processing if we're inside a string
+                }
+                
+                // Look for potential multi-value INSERT statements
+                if (!multiValueInsert && i + 11 < sqlScript.length() && 
+                    sqlScript.substring(i, i + 11).equalsIgnoreCase("INSERT INTO")) {
+                    
+                    // Find the VALUES keyword
+                    int valuesPos = sqlScript.indexOf("VALUES", i);
+                    if (valuesPos > 0 && valuesPos < sqlScript.length()) {
+                        // Look for a comma followed by opening parenthesis after VALUES
+                        int openParenPos = sqlScript.indexOf("(", valuesPos);
+                        if (openParenPos > 0) {
+                            int closeParenPos = findMatchingCloseParen(sqlScript, openParenPos);
+                            
+                            if (closeParenPos > 0 && closeParenPos + 1 < sqlScript.length() && 
+                                sqlScript.charAt(closeParenPos + 1) == ',') {
+                                // This is a multi-value INSERT
+                                multiValueInsert = true;
+                                insertPrefix = sqlScript.substring(i, valuesPos + 6).trim(); // Include "VALUES"
+                                startPos = i; // Mark the start of this statement
+                            }
+                        }
+                    }
+                }
+                
+                // Process statement termination
+                if (c == ';') {
+                    String statement = sqlScript.substring(startPos, i).trim();
+                    
+                    if (multiValueInsert) {
+                        // Handle multi-value INSERT by splitting into individual statements
+                        processMultiValueInsert(statements, statement, insertPrefix);
+                        multiValueInsert = false;
+                        insertPrefix = null;
+                    } else if (!statement.isEmpty()) {
+                        // Add normal statement
+                        statements.add(statement);
+                    }
+                    
+                    startPos = i + 1;
+                }
+            }
+            
+            // Execute each statement individually
+            for (String statement : statements) {
+                try {
+                    if (!statement.trim().isEmpty()) {
+                        Timber.tag(TAG).d("Executing SQL: %s", statement);
+                        stmt.execute(statement);
+                    }
+                } catch (SQLException e) {
+                    Timber.tag(TAG).e("Error executing statement: %s", statement);
+                    Timber.tag(TAG).e("SQLException: %s", e.getMessage());
+                    throw e;
                 }
             }
         } catch (Exception e) {
+            Timber.tag(TAG).e("Error running SQL script %s: %s", filename, e.getMessage());
             throw new DBException("Error running SQL script: " + e.getMessage());
         }
+    }
+
+    /**
+     * Processes a multi-value INSERT statement by splitting it into individual INSERT statements.
+     */
+    private static void processMultiValueInsert(List<String> statements, String multiInsert, String insertPrefix) {
+        // Find where the values start (after "VALUES")
+        int valuesPos = multiInsert.toUpperCase().indexOf("VALUES");
+        if (valuesPos < 0) return; // Not a valid INSERT statement
+        
+        String valuesText = multiInsert.substring(valuesPos + 6).trim();
+        
+        // Create a pattern for matching value groups respecting nested parentheses
+        List<String> valueGroups = new ArrayList<>();
+        int depth = 0;
+        int startPos = -1;
+        
+        for (int i = 0; i < valuesText.length(); i++) {
+            char c = valuesText.charAt(i);
+            
+            if (c == '(') {
+                depth++;
+                if (depth == 1) {
+                    startPos = i;
+                }
+            } else if (c == ')') {
+                depth--;
+                if (depth == 0 && startPos >= 0) {
+                    valueGroups.add(valuesText.substring(startPos, i + 1));
+                    startPos = -1;
+                }
+            }
+        }
+        
+        // Create individual INSERT statements
+        for (String valueGroup : valueGroups) {
+            String singleInsert = insertPrefix + " " + valueGroup;
+            statements.add(singleInsert);
+        }
+    }
+
+    /**
+     * Finds the matching closing parenthesis for an opening parenthesis at the given position.
+     */
+    private static int findMatchingCloseParen(String s, int openPos) {
+        int depth = 0;
+        boolean inString = false;
+        
+        for (int i = openPos; i < s.length(); i++) {
+            char c = s.charAt(i);
+            
+            if (c == '\'' && (i == 0 || s.charAt(i - 1) != '\\')) {
+                inString = !inString;
+            }
+            
+            if (!inString) {
+                if (c == '(') {
+                    depth++;
+                } else if (c == ')') {
+                    depth--;
+                    if (depth == 0) {
+                        return i;
+                    }
+                }
+            }
+        }
+        
+        return -1; // No matching parenthesis found
     }
 
     /**

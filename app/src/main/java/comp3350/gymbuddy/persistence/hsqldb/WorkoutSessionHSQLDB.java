@@ -139,4 +139,233 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
 
         return workoutItems;
     }
+
+    /**
+     * Inserts a new workout session into the database.
+     * 
+     * @param session The workout session to insert.
+     * @return True if successful, false otherwise.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    public boolean insertSession(WorkoutSession session) throws DBException {
+        String query = "INSERT INTO workout_session (session_id, start_time, end_time, profile_id) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setInt(1, session.getId());
+            stmt.setLong(2, session.getStartTime());
+            stmt.setLong(3, session.getEndTime());
+            stmt.setInt(4, session.getWorkoutProfile().getId());
+            
+            int rowsInserted = stmt.executeUpdate();
+            
+            if (rowsInserted > 0) {
+                // Insert all workout items if we have any
+                List<WorkoutItem> items = session.getWorkoutItems();
+                if (items != null && !items.isEmpty()) {
+                    for (WorkoutItem item : items) {
+                        addExerciseToSession(session.getId(), item);
+                    }
+                }
+                return true;
+            }
+            
+            return false;
+            
+        } catch (SQLException e) {
+            throw new DBException("Failed to insert workout session: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Adds an exercise to an existing workout session.
+     * 
+     * @param sessionId ID of the session.
+     * @param item The workout item to add.
+     * @return True if successful, false otherwise.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    public boolean addExerciseToSession(int sessionId, WorkoutItem item) throws DBException {
+        String query = "INSERT INTO session_item (session_id, exercise_id, reps, weight, duration) VALUES (?, ?, ?, ?, ?)";
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+             
+            stmt.setInt(1, sessionId);
+            stmt.setInt(2, item.getExercise().getID());
+            stmt.setInt(3, item.getReps());
+            stmt.setDouble(4, item.getWeight());
+            stmt.setDouble(5, item.getTime());
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            throw new DBException("Failed to add exercise to session: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Updates an existing workout session.
+     * Note: Due to WorkoutSession immutability, this creates a new DB record with same ID.
+     * 
+     * @param session The workout session with updated values.
+     * @return True if successful, false otherwise.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    public boolean updateSession(WorkoutSession session) throws DBException {
+        String query = "UPDATE workout_session SET start_time = ?, end_time = ?, profile_id = ? WHERE session_id = ?";
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+             
+            stmt.setLong(1, session.getStartTime());
+            stmt.setLong(2, session.getEndTime());
+            stmt.setInt(3, session.getWorkoutProfile().getId());
+            stmt.setInt(4, session.getId());
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            throw new DBException("Failed to update workout session: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Updates just the end time of a workout session.
+     * 
+     * @param sessionId ID of the session to update.
+     * @param endTime The new end time value.
+     * @return True if successful, false otherwise.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    public boolean updateSessionEndTime(int sessionId, long endTime) throws DBException {
+        String query = "UPDATE workout_session SET end_time = ? WHERE session_id = ?";
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+             
+            stmt.setLong(1, endTime);
+            stmt.setInt(2, sessionId);
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            throw new DBException("Failed to update workout session end time: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Deletes a workout session and all its associated items.
+     * 
+     * @param sessionId ID of the session to delete.
+     * @return True if successful, false otherwise.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    public boolean deleteSession(int sessionId) throws DBException {
+        // First delete all related session items
+        String deleteItemsQuery = "DELETE FROM session_item WHERE session_id = ?";
+        String deleteSessionQuery = "DELETE FROM workout_session WHERE session_id = ?";
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement deleteItemsStmt = conn.prepareStatement(deleteItemsQuery);
+             PreparedStatement deleteSessionStmt = conn.prepareStatement(deleteSessionQuery)) {
+             
+            // Delete related items first to maintain referential integrity
+            deleteItemsStmt.setInt(1, sessionId);
+            deleteItemsStmt.executeUpdate();
+            
+            // Then delete the session
+            deleteSessionStmt.setInt(1, sessionId);
+            int rowsAffected = deleteSessionStmt.executeUpdate();
+            
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            throw new DBException("Failed to delete workout session: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Removes an exercise from a workout session.
+     * 
+     * @param sessionId ID of the session.
+     * @param exerciseId ID of the exercise to remove.
+     * @return True if successful, false otherwise.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    public boolean removeExerciseFromSession(int sessionId, int exerciseId) throws DBException {
+        String query = "DELETE FROM session_item WHERE session_id = ? AND exercise_id = ?";
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+             
+            stmt.setInt(1, sessionId);
+            stmt.setInt(2, exerciseId);
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            throw new DBException("Failed to remove exercise from session: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Searches for workout sessions by matching profile name or date.
+     * 
+     * @param query The search query string.
+     * @return A list of matching workout sessions.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    @NonNull
+    public List<WorkoutSession> search(String query) throws DBException {
+        List<WorkoutSession> results = new ArrayList<>();
+        String searchQuery = 
+            "SELECT ws.* FROM workout_session ws " +
+            "JOIN workout_profile wp ON ws.profile_id = wp.profile_id " +
+            "WHERE LOWER(wp.profile_name) LIKE ? OR CAST(ws.start_time AS VARCHAR(100)) LIKE ?";
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(searchQuery)) {
+             
+            String searchParam = "%" + query.toLowerCase() + "%";
+            stmt.setString(1, searchParam);
+            stmt.setString(2, searchParam);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    results.add(extractWorkoutSession(rs));
+                }
+            }
+            
+        } catch (SQLException e) {
+            throw new DBException("Failed to search workout sessions: " + e.getMessage());
+        }
+        
+        return results;
+    }
+    
+    /**
+     * Gets all exercises for a specific workout session.
+     * 
+     * @param sessionId ID of the session.
+     * @return List of workout items for the session.
+     * @throws DBException If an error occurs while accessing the database.
+     */
+    @Override
+    @NonNull
+    public List<WorkoutItem> getExercisesForSession(int sessionId) throws DBException {
+        return getWorkoutItemsBySessionId(sessionId);
+    }
 }
