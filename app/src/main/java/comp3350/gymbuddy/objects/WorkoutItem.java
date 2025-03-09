@@ -80,11 +80,14 @@ public class WorkoutItem {
     public String toString(){
         String result = "";
 
-        if(isTimeBased()){
-            result = "Time: " + this.time;
-        }
-        else{
-            result = "Reps: " + this.reps + ", Weight: " + this.weight;
+        if (isTimeBased()) {
+            result = getTime() + " sec";
+        } else {
+            result = getSets() + " sets x " + getReps() + " reps";
+
+            if (getWeight() > 0.0) {
+                result += " | " + getWeight() + " kg";
+            }
         }
 
         return result;

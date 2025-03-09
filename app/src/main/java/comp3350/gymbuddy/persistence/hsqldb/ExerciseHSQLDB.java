@@ -139,4 +139,9 @@ public class ExerciseHSQLDB implements IExerciseDB {
 
         return tags;
     }
+
+    @Override
+    public void close() throws Exception {
+
+    }
 }

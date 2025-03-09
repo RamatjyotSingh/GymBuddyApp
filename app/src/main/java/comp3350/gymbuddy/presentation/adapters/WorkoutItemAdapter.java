@@ -32,17 +32,7 @@ public class WorkoutItemAdapter extends RecyclerView.Adapter<WorkoutItemAdapter.
         WorkoutItem item = workoutItems.get(position);
         holder.txtExerciseName.setText(item.getExercise().getName());
 
-        String details;
-
-        if (item.isTimeBased()) {
-            details = item.getTime() + " sec";
-        } else {
-            details = item.getSets() + " sets x " + item.getReps() + " reps";
-
-            if (item.getWeight() > 0.0) {
-                details += " | " + item.getWeight() + " kg";
-            }
-        }
+        String details = item.toString();
 
         holder.txtWorkoutDetails.setText(details);
     }

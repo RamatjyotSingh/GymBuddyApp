@@ -13,16 +13,16 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="ExerciseManagerIntegrationTest">
+      <SelectionState runConfigName="IntegrationTests">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WorkoutManagerIntegrationTest">
+      <SelectionState runConfigName="IntegrationTestSuite">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WorkoutSessionManagerIntegrationTest">
+      <SelectionState runConfigName="testGetAllExercises()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="AllIntegrationTests">
+      <SelectionState runConfigName="WorkoutDBIntegrationTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
