@@ -5,7 +5,7 @@ import comp3350.gymbuddy.persistence.exception.DBException;
 
 import java.util.List;
 
-public interface IExerciseDB {
+public interface IExerciseDB extends AutoCloseable {
     List<Exercise> getAll() throws DBException;
 
     Exercise getExerciseByID(int id) throws DBException;

@@ -5,7 +5,7 @@ import java.util.List;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 
-public interface IWorkoutDB {
+public interface IWorkoutDB extends AutoCloseable {
     /**
      * Get all workout profiles.
      * @return A list of all workout profiles.

@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
+import androidx.annotation.NonNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -173,13 +175,24 @@ public class HSQLDBHelper {
         String valuesText = multiInsert.substring(valuesPos + 6).trim();
         
         // Create a pattern for matching value groups respecting nested parentheses
+        List<String> valueGroups = getValueGroups(valuesText);
+
+        // Create individual INSERT statements
+        for (String valueGroup : valueGroups) {
+            String singleInsert = insertPrefix + " " + valueGroup;
+            statements.add(singleInsert);
+        }
+    }
+
+    @NonNull
+    private static List<String> getValueGroups(String valuesText) {
         List<String> valueGroups = new ArrayList<>();
         int depth = 0;
         int startPos = -1;
-        
+
         for (int i = 0; i < valuesText.length(); i++) {
             char c = valuesText.charAt(i);
-            
+
             if (c == '(') {
                 depth++;
                 if (depth == 1) {
@@ -193,12 +206,7 @@ public class HSQLDBHelper {
                 }
             }
         }
-        
-        // Create individual INSERT statements
-        for (String valueGroup : valueGroups) {
-            String singleInsert = insertPrefix + " " + valueGroup;
-            statements.add(singleInsert);
-        }
+        return valueGroups;
     }
 
     /**

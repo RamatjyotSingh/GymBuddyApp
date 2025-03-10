@@ -157,7 +157,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             stmt.setInt(1, session.getId());
             stmt.setLong(2, session.getStartTime());
             stmt.setLong(3, session.getEndTime());
-            stmt.setInt(4, session.getWorkoutProfile().getId());
+            stmt.setInt(4, session.getWorkoutProfile().getID());
             
             int rowsInserted = stmt.executeUpdate();
             
@@ -225,7 +225,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
              
             stmt.setLong(1, session.getStartTime());
             stmt.setLong(2, session.getEndTime());
-            stmt.setInt(3, session.getWorkoutProfile().getId());
+            stmt.setInt(3, session.getWorkoutProfile().getID());
             stmt.setInt(4, session.getId());
             
             int rowsAffected = stmt.executeUpdate();
@@ -367,5 +367,10 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     @NonNull
     public List<WorkoutItem> getExercisesForSession(int sessionId) throws DBException {
         return getWorkoutItemsBySessionId(sessionId);
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

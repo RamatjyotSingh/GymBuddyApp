@@ -53,8 +53,8 @@ public class WorkoutStub implements IWorkoutDB {
         profiles.add(profile2);
         
         // Store items by profile ID
-        profileItems.put(profile1.getId(), new ArrayList<>(items1));
-        profileItems.put(profile2.getId(), new ArrayList<>(items2));
+        profileItems.put(profile1.getID(), new ArrayList<>(items1));
+        profileItems.put(profile2.getID(), new ArrayList<>(items2));
     }
     
     @Override
@@ -65,14 +65,14 @@ public class WorkoutStub implements IWorkoutDB {
     @Override
     public WorkoutProfile getWorkoutProfileById(int id) throws DBException {
         for (WorkoutProfile profile : profiles) {
-            if (profile.getId() == id) {
+            if (profile.getID() == id) {
                 // Get stored items for this profile
                 List<WorkoutItem> items = profileItems.get(id);
                 if (items == null) items = new ArrayList<>();
                 
                 // Return a new profile instance with the stored items
                 return new WorkoutProfile(
-                    profile.getId(), 
+                    profile.getID(),
                     profile.getName(), 
                     profile.getIconPath(), 
                     new ArrayList<>(items)
@@ -110,9 +110,9 @@ public class WorkoutStub implements IWorkoutDB {
             
             // Store items by profile ID
             if (profile.getWorkoutItems() != null) {
-                profileItems.put(newProfile.getId(), new ArrayList<>(profile.getWorkoutItems()));
+                profileItems.put(newProfile.getID(), new ArrayList<>(profile.getWorkoutItems()));
             } else {
-                profileItems.put(newProfile.getId(), new ArrayList<>());
+                profileItems.put(newProfile.getID(), new ArrayList<>());
             }
             
             return true;
@@ -121,7 +121,7 @@ public class WorkoutStub implements IWorkoutDB {
             int index = profiles.indexOf(existingProfile);
             
             WorkoutProfile updatedProfile = new WorkoutProfile(
-                existingProfile.getId(),
+                existingProfile.getID(),
                 profile.getName(),
                 profile.getIconPath(),
                 profile.getWorkoutItems() 
@@ -131,9 +131,9 @@ public class WorkoutStub implements IWorkoutDB {
             
             // Update stored items
             if (profile.getWorkoutItems() != null) {
-                profileItems.put(existingProfile.getId(), new ArrayList<>(profile.getWorkoutItems()));
+                profileItems.put(existingProfile.getID(), new ArrayList<>(profile.getWorkoutItems()));
             } else {
-                profileItems.put(existingProfile.getId(), new ArrayList<>());
+                profileItems.put(existingProfile.getID(), new ArrayList<>());
             }
             
             return true;
@@ -143,7 +143,7 @@ public class WorkoutStub implements IWorkoutDB {
     @Override
     public boolean deleteWorkout(int id) throws DBException {
         for (int i = 0; i < profiles.size(); i++) {
-            if (profiles.get(i).getId() == id) {
+            if (profiles.get(i).getID() == id) {
                 profiles.remove(i);
                 profileItems.remove(id);
                 return true;
@@ -168,5 +168,10 @@ public class WorkoutStub implements IWorkoutDB {
         }
         
         return results;
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

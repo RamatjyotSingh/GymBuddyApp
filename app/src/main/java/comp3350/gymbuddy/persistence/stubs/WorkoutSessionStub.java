@@ -400,4 +400,9 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
             sessions.set(index, updatedSession);
         }
     }
+
+    @Override
+    public void close() throws Exception {
+
+    }
 }

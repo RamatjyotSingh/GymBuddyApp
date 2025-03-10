@@ -96,27 +96,39 @@ public class WorkoutBuilderActivity extends BaseActivity {
  /**
   * Handles the save button click event.
   * If the workout profile is valid, it saves the profile and its items to the database
-  * and navigates to the WorkoutLogActivity.
+  * and navigates to MainActivity with the created profile.
   */
  public void onClickSave(View v) {
-     WorkoutProfile profile = generateWorkoutProfile();
+    WorkoutProfile profile = generateWorkoutProfile();
 
-     if (profile != null) {
-         // Save the profile to the database
-         WorkoutManager workoutManager = new WorkoutManager(true);
-         try {
-             workoutManager.saveWorkout(profile);
-
-             // Show success message
-             Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
-
-             // Close this activity
-             finish();
-         } catch (DBException e) {
-             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-         }
-     }
- }
+    if (profile != null) {
+        try {
+            WorkoutManager workoutManager = new WorkoutManager(true);
+            boolean success = workoutManager.saveWorkout(profile);
+            
+            if (success) {
+                // Show success message
+                Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
+                
+                // Create intent to return to MainActivity with the new profile data
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("new_workout_profile_id", profile.getID());
+                intent.putExtra("new_workout_profile_name", profile.getName());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear activity stack
+                startActivity(intent);
+                
+                // Close this activity
+                finish();
+            } else {
+                Toast.makeText(this, "Failed to save workout profile", Toast.LENGTH_SHORT).show();
+            }
+        } catch (DBException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+}
 
     /**
      * Handles the Floating Action Button (FAB) click event.

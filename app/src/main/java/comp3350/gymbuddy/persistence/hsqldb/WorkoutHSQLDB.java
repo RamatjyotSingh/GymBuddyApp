@@ -59,7 +59,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                             Statement.RETURN_GENERATED_KEYS)) {
                         
                         // Use provided ID or generate next ID
-                        profileId = profile.getId() > 0 ? profile.getId() : getNextProfileId();
+                        profileId = profile.getID() > 0 ? profile.getID() : getNextProfileId();
                         
                         stmt.setInt(1, profileId);
                         stmt.setString(2, profile.getName());
@@ -68,7 +68,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     }
                 } else {
                     // Use existing profile ID
-                    profileId = existingProfile.getId();
+                    profileId = existingProfile.getID();
                     
                     // Update existing profile
                     try (PreparedStatement stmt = conn.prepareStatement(
@@ -302,5 +302,18 @@ public class WorkoutHSQLDB implements IWorkoutDB {
         }
         
         return items;
+    }
+
+    @Override
+    public void close() throws Exception {
+        try (Connection conn = HSQLDBHelper.getConnection();
+             Statement stmt = conn.createStatement()) {
+            // CHECKPOINT ensures all data is written to disk files
+            stmt.execute("CHECKPOINT");
+            timber.log.Timber.d("WorkoutHSQLDB closed successfully with CHECKPOINT");
+        } catch (SQLException e) {
+            timber.log.Timber.e(e, "Error during WorkoutHSQLDB close operation");
+            throw new DBException("Error during database cleanup: " + e.getMessage());
+        }
     }
 }

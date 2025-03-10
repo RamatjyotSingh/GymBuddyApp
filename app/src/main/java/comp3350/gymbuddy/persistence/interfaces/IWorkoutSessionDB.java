@@ -6,7 +6,7 @@ import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.exception.DBException;
 
-public interface IWorkoutSessionDB {
+public interface IWorkoutSessionDB extends AutoCloseable {
     // Read operations
     List<WorkoutSession> getAll() throws DBException;
     WorkoutSession getWorkoutSessionByid(int id) throws DBException;
