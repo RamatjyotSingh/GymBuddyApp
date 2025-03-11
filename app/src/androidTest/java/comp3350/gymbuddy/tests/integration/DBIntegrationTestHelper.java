@@ -17,19 +17,19 @@ import comp3350.gymbuddy.persistence.hsqldb.HSQLDBHelper;
  */
 public class DBIntegrationTestHelper {
     protected Context context;
-    
+
+
     @Before
     public void setUp() {
         // Get Android context
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         
         // Set up paths for test database and SQL scripts
-        String dbPath = new File(context.getFilesDir(), "test_db").getAbsolutePath();
-        String sqlScriptPath = new File(context.getFilesDir(), "sql_scripts").getAbsolutePath();
-        
-        // Configure HSQLDBHelper for testing
+        String dbPath = new File(context.getFilesDir(), "db").getAbsolutePath();
+
+
         HSQLDBHelper.setDatabaseDirectoryPath(dbPath);
-        HSQLDBHelper.setSqlScriptDirectory(sqlScriptPath);
+        HSQLDBHelper.init();
         HSQLDBHelper.setTestMode(true);
         
         // Ensure clean test database for each test

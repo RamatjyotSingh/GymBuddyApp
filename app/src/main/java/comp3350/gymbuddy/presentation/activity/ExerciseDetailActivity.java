@@ -86,8 +86,13 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     private void setInstructions(String instructions) {
         binding.exerciseInstructions.removeAllViews(); // Clear previous instructions
 
-        List<String> lines = instructions.lines().toList();
+        // Replace escape sequences with actual newlines
+        String processedInstructions = instructions.replace("\\n", "\n");
+        
+        // Now split by the actual newlines
+        List<String> lines = processedInstructions.lines().toList();
 
+        // Process each instruction line
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i).trim();
 

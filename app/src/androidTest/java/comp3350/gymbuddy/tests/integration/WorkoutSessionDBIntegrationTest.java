@@ -68,7 +68,7 @@ public class WorkoutSessionDBIntegrationTest extends DBIntegrationTestHelper {
                 assertEquals("Session ID should match", 100, retrieved.getId());
                 assertEquals("Start time should match", startTime, retrieved.getStartTime());
                 assertEquals("End time should match", endTime, retrieved.getEndTime());
-                assertEquals("Profile should match", profile.getId(), retrieved.getWorkoutProfile().getId());
+                assertEquals("Profile should match", profile.getID(), retrieved.getWorkoutProfile().getID());
                 
                 // Check workout items
                 assertNotNull("Session should have workout items", retrieved.getWorkoutItems());

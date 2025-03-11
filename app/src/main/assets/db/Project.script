@@ -1,0 +1,236 @@
+-- Exercise table stores exercises with metadata
+CREATE TABLE IF NOT EXISTS PUBLIC.exercise (
+    exercise_id INTEGER NOT NULL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    instructions VARCHAR(1000) NOT NULL,
+    image_path VARCHAR(255),
+    is_time_based BOOLEAN NOT NULL,
+    has_weight BOOLEAN NOT NULL
+);
+
+-- Tags table for categorizing exercises with colors for UI display
+CREATE TABLE IF NOT EXISTS PUBLIC.tag (
+    tag_id INTEGER NOT NULL PRIMARY KEY,
+    tag_name VARCHAR(50) NOT NULL,
+    tag_type INTEGER NOT NULL,
+    text_color VARCHAR(7) NOT NULL,
+    background_color VARCHAR(7) NOT NULL
+);
+
+-- Many-to-many relationship between exercises and tags
+CREATE TABLE IF NOT EXISTS PUBLIC.exercise_tag (
+    exercise_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    CONSTRAINT pk_exercise_tag PRIMARY KEY (exercise_id, tag_id),
+    CONSTRAINT fk_exercise_tag_exercise FOREIGN KEY (exercise_id)
+        REFERENCES PUBLIC.exercise (exercise_id) ON DELETE CASCADE,
+    CONSTRAINT fk_exercise_tag_tag FOREIGN KEY (tag_id)
+        REFERENCES PUBLIC.tag (tag_id) ON DELETE CASCADE
+);
+
+-- Workout profiles representing different user-defined workouts
+CREATE TABLE IF NOT EXISTS PUBLIC.workout_profile (
+    profile_id INTEGER PRIMARY KEY,
+    profile_name VARCHAR(255) NOT NULL,
+    icon_path VARCHAR(255) DEFAULT NULL
+);
+
+-- Store exercises assigned to workout profiles
+CREATE TABLE IF NOT EXISTS PUBLIC.profile_exercise (
+    profile_id INTEGER NOT NULL,
+    exercise_id INTEGER NOT NULL,
+    sets INTEGER NOT NULL,
+    reps INTEGER NOT NULL,
+    weight DOUBLE PRECISION DEFAULT 0,
+    duration DOUBLE PRECISION DEFAULT 0,
+    CONSTRAINT pk_profile_exercise PRIMARY KEY (profile_id, exercise_id),
+    CONSTRAINT fk_profile_exercise_profile FOREIGN KEY (profile_id)
+        REFERENCES PUBLIC.workout_profile (profile_id) ON DELETE CASCADE,
+    CONSTRAINT fk_profile_exercise_exercise FOREIGN KEY (exercise_id)
+        REFERENCES PUBLIC.exercise (exercise_id) ON DELETE CASCADE
+);
+
+-- Workout session logs past workouts with timestamps
+CREATE TABLE IF NOT EXISTS PUBLIC.workout_session (
+    session_id INTEGER PRIMARY KEY,
+    start_time BIGINT NOT NULL,
+    end_time BIGINT NOT NULL,
+    profile_id INTEGER,
+    CONSTRAINT fk_workout_session_profile FOREIGN KEY (profile_id)
+        REFERENCES PUBLIC.workout_profile (profile_id) ON DELETE SET NULL
+);
+
+-- Session items track individual exercises performed in a session
+CREATE TABLE IF NOT EXISTS PUBLIC.session_item (
+    session_id INTEGER NOT NULL,
+    exercise_id INTEGER NOT NULL,
+    reps INTEGER DEFAULT 0,
+    weight DOUBLE PRECISION DEFAULT 0,
+    duration INTEGER DEFAULT 0,
+    CONSTRAINT pk_session_item PRIMARY KEY (session_id, exercise_id),
+    CONSTRAINT fk_session_item_session FOREIGN KEY (session_id)
+        REFERENCES PUBLIC.workout_session (session_id) ON DELETE CASCADE,
+    CONSTRAINT fk_session_item_exercise FOREIGN KEY (exercise_id)
+        REFERENCES PUBLIC.exercise (exercise_id) ON DELETE CASCADE
+);
+-- Clear data from previous sessions (order matters for foreign key constraints)
+DELETE FROM PUBLIC.session_item;
+DELETE FROM PUBLIC.workout_session;
+DELETE FROM PUBLIC.profile_exercise;
+DELETE FROM PUBLIC.exercise_tag;
+DELETE FROM PUBLIC.workout_profile; 
+DELETE FROM PUBLIC.tag;
+DELETE FROM PUBLIC.exercise;
+
+
+-- Insert sample exercises with detailed instructions (at least 3 steps each)
+INSERT INTO PUBLIC.exercise (exercise_id, name, instructions, image_path, is_time_based, has_weight) VALUES 
+(1, 'Push-Up', '1. Start in a plank position with hands slightly wider than shoulder-width apart.\n2. Lower your body until your chest nearly touches the floor, keeping elbows at a 45-degree angle.\n3. Push back up to the starting position, fully extending your arms without locking elbows.', 'images/push_up.png', FALSE, FALSE),
+
+(2, 'Squat', '1. Stand with feet shoulder-width apart, toes pointed slightly outward.\n 2. Bend your knees and hips, lowering as if sitting in a chair while keeping chest up.\n3. Keep weight in your heels as you lower to parallel or below.\n4. Push through heels to return to standing position.', 'images/squat.png', FALSE, TRUE),
+
+(3, 'Plank', '1. Place forearms on the ground with elbows aligned below shoulders, arms parallel at shoulder-width.\n2. Ground toes into the floor, squeeze glutes, and keep body in a straight line from head to heels.\n3. Keep neck and spine neutral, gaze at a spot on the floor.\n4. Hold the position while breathing deeply.', 'images/plank.png', TRUE, FALSE),
+
+(4, 'Deadlift', '1. Stand with feet hip-width apart, with barbell over mid-foot.\n 2. Bend at hips and knees, grasp the bar with hands just outside your legs.\n3. With flat back and chest up, push through heels and stand up tall.\n4. Keep the bar close to your body throughout the movement.\n5. Lower the weight by hinging at the hips, then bending knees.', 'images/deadlift.png', FALSE, TRUE),
+
+(5, 'Pull-Up', '1. Hang from a bar with hands slightly wider than shoulder-width apart, palms facing away.\n2. Pull your body upward by driving elbows down toward your hips.\n3. Continue pulling until chin is above the bar.\n4. Lower yourself with control to starting position.', 'images/pull-up.png', FALSE, TRUE),
+
+(6, 'Bicep Curl', '1. Stand with feet shoulder-width apart, holding dumbbells at your sides, palms facing forward.\n2. Keep elbows close to your torso and shoulders stationary.\n3. Curl weights toward shoulders by bending at the elbow.\n4. Squeeze biceps at the top, then slowly lower to starting position.', 'images/bicep-curls.png', FALSE, TRUE),
+
+(7, 'Tricep Dips', '1. Sit on edge of a bench or chair with hands gripping the edge beside your hips.\n2. Slide buttocks off the bench with legs extended or slightly bent.\n3. Lower your body by bending your elbows to about 90 degrees.\n4. Push back up until arms are straight but not locked.', 'images/tricep-dips.png', FALSE, TRUE),
+
+(8, 'Lunges', '1. Stand tall with feet hip-width apart.\n2. Step forward with one leg and lower your body until both knees form 90-degree angles.\n3. Front knee should be above ankle, not pushed forward past toes.\n4. Back knee should hover just above the ground.\n5. Push through front heel to return to starting position.', 'images/lunges.png', FALSE, TRUE),
+
+(9, 'Calf Raises', '1. Stand with feet hip-width apart, toes pointing forward.\n 2. Raise your heels off the ground by pushing through the balls of your feet.\n 3. Rise as high as possible, feeling the contraction in your calves.\n 4. Hold briefly at the top, then lower heels back to the ground with control.', 'images/calf-raises.png', FALSE, TRUE),
+
+(10, 'Russian Twists', '1. Sit on the floor with knees bent and feet either flat or raised slightly off the ground.\n 2. Lean back slightly to engage core, maintaining a straight spine.\n 3. Clasp hands together or hold a weight in front of you.\n 4. Rotate your torso to the right, then to the left, touching the floor beside you with your hands each time.', 'images/russian-twists.png', TRUE, TRUE),
+
+(11, 'Leg Raises', '1. Lie flat on your back with legs straight and together.\n 2. Place hands under your lower back for support or alongside your body.\n 3. Keeping legs straight, lift them until they form a 90-degree angle with the floor.\n 4. Lower legs slowly back down without letting them touch the ground.', 'images/leg-raises.png', FALSE, FALSE),
+
+(12, 'Bent-Over Rows', '1. Stand with feet shoulder-width apart, knees slightly bent.\n 2. Bend at the waist keeping back straight, until torso is almost parallel to floor.\n 3. Hold dumbbells or barbell with hands shoulder-width apart, arms extended.\n 4. Pull the weight toward your lower ribs, keeping elbows close to body.\n 5. Squeeze shoulder blades, then lower weight with control.', 'images/bent-over-rows.png', FALSE, TRUE),
+
+(13, 'Dumbbell Shoulder Press', '1. Sit or stand with feet shoulder-width apart, holding dumbbells at shoulder height.\n 2. Palms should face forward with elbows bent at 90 degrees.\n 3. Press weights upward until arms are fully extended overhead.\n 4. Pause briefly at the top, then lower weights back to shoulder level with control.', 'images/dumbbell-shoulder-press.png', FALSE, TRUE);
+
+
+-- Insert sample tags
+INSERT INTO PUBLIC.tag (tag_id, tag_name, tag_type, text_color, background_color) VALUES
+(1, 'Upper Body', 1, '#FFFFFF', '#1D4ED8'),
+(2, 'Lower Body', 1, '#FFFFFF', '#6B21A8'),
+(3, 'Core', 1, '#FFFFFF', '#0D9488'),
+(4, 'Beginner', 0, '#FFFFFF', '#15803D'),
+(5, 'Intermediate', 0, '#FFFFFF', '#CA8A04'),
+(6, 'Advanced', 0, '#FFFFFF', '#BE185D'),
+(7, 'Arms', 1, '#FFFFFF', '#0369A1'),
+(8, 'Back', 1, '#FFFFFF', '#4338CA'),
+(9, 'Chest', 1, '#FFFFFF', '#7E22CE'),
+(10, 'Shoulders', 1, '#FFFFFF', '#A16207');
+
+
+-- Link exercises to tags
+INSERT INTO PUBLIC.exercise_tag (exercise_id, tag_id) VALUES
+(1, 1), -- Push-up: Upper Body
+(1, 9), -- Push-up: Chest
+(1, 4), -- Push-up: Beginner
+
+(2, 2), -- Squat: Lower Body
+(2, 4), -- Squat: Beginner
+
+(3, 3), -- Plank: Core
+(3, 4), -- Plank: Beginner
+
+(4, 2), -- Deadlift: Lower Body
+(4, 8), -- Deadlift: Back
+(4, 6), -- Deadlift: Advanced
+
+(5, 1), -- Pull-Up: Upper Body
+(5, 8), -- Pull-Up: Back
+(5, 6), -- Pull-Up: Advanced
+
+(6, 1), -- Bicep Curl: Upper Body
+(6, 7), -- Bicep Curl: Arms
+(6, 4), -- Bicep Curl: Beginner
+
+(7, 1), -- Tricep Dips: Upper Body
+(7, 7), -- Tricep Dips: Arms
+(7, 5), -- Tricep Dips: Intermediate
+
+(8, 2), -- Lunges: Lower Body
+(8, 4), -- Lunges: Beginner
+
+(9, 2), -- Calf Raises: Lower Body
+(9, 4), -- Calf Raises: Beginner
+
+(10, 3), -- Russian Twists: Core
+(10, 5), -- Russian Twists: Intermediate
+
+(11, 3), -- Leg Raises: Core
+(11, 5), -- Leg Raises: Intermediate
+
+(12, 1), -- Bent-Over Rows: Upper Body
+(12, 8), -- Bent-Over Rows: Back
+(12, 5), -- Bent-Over Rows: Intermediate
+
+(13, 1), -- Dumbbell Shoulder Press: Upper Body
+(13, 10), -- Dumbbell Shoulder Press: Shoulders
+(13, 5); -- Dumbbell Shoulder Press: Intermediate
+
+
+-- Insert sample workout profiles
+INSERT INTO PUBLIC.workout_profile (profile_id, profile_name, icon_path) VALUES
+(1, 'Full Body Workout', 'icons/full_body.png'),
+(2, 'Upper Body Focus', 'icons/upper_body.png'),
+(3, 'Lower Body Day', 'icons/lower_body.png'),
+(4, 'Core Crusher', 'icons/core.png'),
+(5, 'Arms & Shoulders', 'icons/arms.png');
+
+
+-- Add exercises to profiles
+-- Full Body Workout
+INSERT INTO PUBLIC.profile_exercise (profile_id, exercise_id, sets, reps, weight, duration) VALUES
+(1, 1, 3, 10, 0, 0),    -- Push-ups: 3 sets, 10 reps
+(1, 2, 3, 12, 40, 0),   -- Squats: 3 sets, 12 reps, 40 lbs
+(1, 3, 3, 0, 0, 60),    -- Plank: 3 sets, 60 seconds
+(1, 12, 3, 8, 30, 0);   -- Bent-Over Rows: 3 sets, 8 reps, 30 lbs
+
+
+-- Upper Body Focus
+INSERT INTO PUBLIC.profile_exercise (profile_id, exercise_id, sets, reps, weight, duration) VALUES
+(2, 1, 4, 15, 0, 0),    -- Push-ups: 4 sets, 15 reps
+(2, 5, 3, 8, 0, 0),     -- Pull-ups: 3 sets, 8 reps
+(2, 6, 3, 12, 20, 0),   -- Bicep Curls: 3 sets, 12 reps, 20 lbs
+(2, 7, 3, 15, 0, 0),    -- Tricep Dips: 3 sets, 15 reps
+(2, 13, 3, 10, 15, 0);  -- Dumbbell Shoulder Press: 3 sets, 10 reps, 15 lbs
+
+
+-- Lower Body Day
+INSERT INTO PUBLIC.profile_exercise (profile_id, exercise_id, sets, reps, weight, duration) VALUES
+(3, 2, 4, 12, 60, 0),   -- Squats: 4 sets, 12 reps, 60 lbs
+(3, 4, 3, 5, 225, 0),   -- Deadlift: 3 sets, 5 reps, 225 lbs
+(3, 8, 3, 10, 0, 0),    -- Lunges: 3 sets, 10 reps per leg
+(3, 9, 4, 20, 0, 0);    -- Calf Raises: 4 sets, 20 reps
+
+
+-- Core Crusher
+INSERT INTO PUBLIC.profile_exercise (profile_id, exercise_id, sets, reps, weight, duration) VALUES
+(4, 3, 3, 0, 0, 60),    -- Plank: 3 sets, 60 seconds
+(4, 10, 3, 20, 10, 0),  -- Russian Twists: 3 sets, 20 reps, 10 lbs
+(4, 11, 3, 15, 0, 0);   -- Leg Raises: 3 sets, 15 reps
+
+
+-- Arms & Shoulders
+INSERT INTO PUBLIC.profile_exercise (profile_id, exercise_id, sets, reps, weight, duration) VALUES
+(5, 6, 4, 12, 20, 0),   -- Bicep Curls: 4 sets, 12 reps, 20 lbs
+(5, 7, 4, 15, 0, 0),    -- Tricep Dips: 4 sets, 15 reps
+(5, 13, 3, 10, 15, 0);  -- Dumbbell Shoulder Press: 3 sets, 10 reps, 15 lbs
+
+
+-- Insert a sample workout session
+INSERT INTO PUBLIC.workout_session (session_id, start_time, end_time, profile_id) VALUES
+(1, 1709473200000, 1709476800000, 1); -- Full Body Workout session
+
+
+-- Insert exercises performed in the session
+INSERT INTO PUBLIC.session_item (session_id, exercise_id, reps, weight, duration) VALUES
+(1, 1, 10, 0, 0),       -- Push-ups: 10 reps
+(1, 2, 12, 45, 0),      -- Squats: 12 reps, 45 lbs
+(1, 3, 0, 0, 45);       -- Plank: 45 seconds

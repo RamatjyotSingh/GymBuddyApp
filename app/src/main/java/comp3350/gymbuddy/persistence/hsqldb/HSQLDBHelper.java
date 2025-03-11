@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import comp3350.gymbuddy.persistence.exception.DBException;
 import timber.log.Timber;
@@ -20,25 +22,78 @@ import timber.log.Timber;
  * Provides connections to HSQLDB with project configurations set.
  */
 public class HSQLDBHelper {
+
     private static final String TAG = "HSQLDBHelper";
-    private static final String PROD_FILE_PATH = "gymbuddydb";
-    private static final String TEST_FILE_PATH = "test_gymbuddydb"; // Separate test DB
-    private static final String USER = "SA";
-    private static final String PASSWORD = "";
 
-    private static boolean initialized = false;
+   // Properties keys
+    private static final String PROD_FILE_KEY = "db.prod.filename";
+    private static final String TEST_FILE_KEY = "db.test.filename";
+    private static final String USER_KEY = "db.user";
+    private static final String PASSWORD_KEY = "db.password";
+    private static final String SQL_SCRIPTS_KEY = "db.sql.script";
+
+    private static final String  relativeConfigPath = "DBConfig.properties";
+
+    private static HSQLDBHelper instance;
+
+    // Default values in case properties can't be loaded
+    private static String PROD_FILE_PATH = "gymbuddydb";
+    private static String TEST_FILE_PATH = "test_gymbuddydb";
+    private static String USER = "SA";
+    private static String PASSWORD = "";
+
+    private static boolean initialized = false; // for debugging  output , variables reset after every app restart
     private static boolean isTestMode = false;
+    private static boolean propertiesLoaded = false;
 
-    private static String dbDirectoryPath;
-    private static String sqlScriptDirectory;
+    private static String dbDirectoryPath = null;
+    private static String SQLScriptPath = "Project.script";
 
+
+
+
+
+;
     public static void setDatabaseDirectoryPath(String path) {
         dbDirectoryPath = path;
     }
 
-    public static void setSqlScriptDirectory(String path) {
-        sqlScriptDirectory = path;
+
+    public static String getAbsSqlScriptPath() {
+
+       return  dbDirectoryPath + File.separator + SQLScriptPath;
+
+    }  
+    
+    public static String getAbsConfigPath() {
+
+        return dbDirectoryPath  + File.separator + relativeConfigPath;
+
     }
+
+
+    public static void loadConfig() {
+        if (!propertiesLoaded) {
+            try {
+                String configPath = getAbsConfigPath();
+                Properties properties = new Properties();
+                properties.load(new FileInputStream(configPath));
+
+                PROD_FILE_PATH = properties.getProperty(PROD_FILE_KEY, PROD_FILE_PATH);
+                TEST_FILE_PATH = properties.getProperty(TEST_FILE_KEY, TEST_FILE_PATH);
+                USER = properties.getProperty(USER_KEY, USER);
+                PASSWORD = properties.getProperty(PASSWORD_KEY, PASSWORD);
+                SQLScriptPath = properties.getProperty(SQL_SCRIPTS_KEY);
+
+                propertiesLoaded = true;
+            } catch (IOException e) {
+                Timber.tag(TAG).e("Failed to load database properties: %s", e.getMessage());
+            }
+        }
+    }
+
+
+
 
     /**
      * Enables or disables test mode.
@@ -53,12 +108,14 @@ public class HSQLDBHelper {
      * Runs an SQL script from the file system, executing each statement individually.
      * Optimized to handle multi-value INSERT statements by splitting them into separate executions.
      */
-    private static void runScript(String filename) throws DBException {
-        if (sqlScriptDirectory == null) {
-            throw new DBException("SQL script directory not set. Call setSqlScriptDirectory() first.");
-        }
+    private static void createDB() throws DBException {
 
-        File sqlFile = new File(sqlScriptDirectory, filename);
+        if (SQLScriptPath == null) {
+            throw new DBException("SQL script path not set. Call setAbsSQLPath() first.");
+        }
+        
+        String filename = getAbsSqlScriptPath();
+        File sqlFile = new File(filename);
         Timber.tag(TAG).d("Running SQL script: %s", sqlFile.getAbsolutePath());
 
         try (Connection conn = getConnectionDriver();
@@ -241,14 +298,16 @@ public class HSQLDBHelper {
     /**
      * Initializes the database by creating tables and inserting default data.
      */
-    private static void initializeDatabase() throws DBException {
+    public static void init() throws DBException {
         if (!initialized) {
             Timber.tag(TAG).d("Initializing database...");
+
             try {
-                runScript("create_tables.sql");
-                runScript("insert_data.sql");
+                loadConfig();
+                createDB();
                 initialized = true;
                 Timber.tag(TAG).d("Database initialized successfully.");
+
             } catch (DBException e) {
                 Timber.tag(TAG).e(e, "Database initialization failed.");
                 throw new DBException("Failed to initialize database: " + e.getMessage());
@@ -259,14 +318,7 @@ public class HSQLDBHelper {
     /**
      * Provides a connection to the database, initializing it if necessary.
      */
-    public static Connection getConnection() throws SQLException {
-        if (!initialized) {
-            try {
-                initializeDatabase();
-            } catch (DBException e) {
-                throw new SQLException("Database initialization error: " + e.getMessage());
-            }
-        }
+    public static Connection getConnection() throws DBException {
 
         return getConnectionDriver();
     }
@@ -274,9 +326,9 @@ public class HSQLDBHelper {
     /**
      * Establishes a connection to the appropriate database file.
      */
-    private static Connection getConnectionDriver() throws SQLException {
+    private static Connection getConnectionDriver() throws DBException {
         if (dbDirectoryPath == null) {
-            throw new SQLException("Database path not set. Call setDatabaseDirectoryPath() first.");
+            throw new DBException("Database path not set. Call setDatabaseDirectoryPath() first.");
         }
 
         String dbFilePath = isTestMode ? TEST_FILE_PATH : PROD_FILE_PATH;
@@ -290,7 +342,7 @@ public class HSQLDBHelper {
             return DriverManager.getConnection(url, USER, PASSWORD);
         } catch (SQLException e) {
             Timber.tag(TAG).e("Database connection failed: %s", e.getMessage());
-            throw e;
+            throw new DBException("Failed to connect to database: " + e.getMessage());
         }
     }
 
@@ -300,20 +352,41 @@ public class HSQLDBHelper {
     public static void resetTestDatabase() {
         Timber.tag(TAG).d("Resetting test database...");
 
-        File testDbFile = new File(dbDirectoryPath, TEST_FILE_PATH);
-        if (testDbFile.exists()) {
-            if (!testDbFile.delete()) {
-                Timber.tag(TAG).e("Failed to delete test database file.");
-                throw new RuntimeException("Failed to delete test database file.");
+        if (!isTestMode) {
+            Timber.tag(TAG).w("Cannot reset production database. Set test mode first.");
+            return;
+        }
+
+        // HSQLDB creates multiple files with different extensions
+        String[] extensions = {".script", ".properties", ".log", ".data", ".backup", ".lobs"};
+        boolean deletionSuccess = true;
+
+        for (String extension : extensions) {
+            File dbFile = new File(dbDirectoryPath, TEST_FILE_PATH + extension);
+            if (dbFile.exists()) {
+                if (dbFile.delete()) {
+                    Timber.tag(TAG).d("Deleted database file: %s", dbFile.getName());
+                } else {
+                    deletionSuccess = false;
+                    Timber.tag(TAG).e("Failed to delete database file: %s", dbFile.getName());
+                }
             }
         }
 
+        if (!deletionSuccess) {
+            Timber.tag(TAG).w("Some database files could not be deleted. Reset may be incomplete.");
+        }
+
+        // Reset initialization flag
         initialized = false;
+        
+        // Reinitialize the database
         try {
             Timber.tag(TAG).d("Reinitializing test database...");
-            initializeDatabase();
+            init();
             Timber.tag(TAG).d("Test database reset and reinitialized.");
         } catch (DBException e) {
+            Timber.tag(TAG).e("Test database failed to initialize: %s", e.getMessage());
             throw new RuntimeException("Test database failed to initialize: " + e.getMessage());
         }
     }

@@ -63,7 +63,7 @@ public class WorkoutDBIntegrationTest extends DBIntegrationTestHelper {
             assertNotNull("Saved profile should be found", savedProfile);
             
             // Get profile by ID
-            WorkoutProfile retrieved = workoutDB.getWorkoutProfileById(savedProfile.getId());
+            WorkoutProfile retrieved = workoutDB.getWorkoutProfileById(savedProfile.getID());
             assertNotNull("Retrieved profile should not be null", retrieved);
             assertEquals("Profile name should match", uniqueName, retrieved.getName());
             
