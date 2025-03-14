@@ -1,6 +1,5 @@
 package comp3350.gymbuddy.presentation.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
