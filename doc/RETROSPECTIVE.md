@@ -15,14 +15,14 @@ If we meet with Lauren for a review, it should ideally be two weeks before the i
 
 ## Project Velocity for Features
 
-Committed features in iteration 1:
-Building workouts (partially complete), 1 week estimate
-Keep a log of past workouts (not complete), 3 day estimate
-Total time estimate: ~10 days = 80 hrs Total completed: ~3 days = ~32 hrs 
+Committed features in iteration 1:  
+Building workouts (partially complete), 1 week estimate. 
+Keep a log of past workouts (not complete), 3 day estimate. 
+Total time estimate: ~10 days = 80 hrs Total completed: ~3 days = ~32 hrs  
 
-Committed features in iteration 2:
-Start a workout (not complete), 2 week estimate
-Keep a log of past workouts (complete), 3 day estimate
+Committed features in iteration 2:  
+Start a workout (not complete), 2 week estimate. 
+Keep a log of past workouts (complete), 3 day estimate. 
 Total time estimate: ~17 days = 136 hrs Total completed: 3 days = 24 hrs
 
 To estimate our velocity for iteration 3, we will take the average amount of time spent on the previous iterations, which would be 28 hours of work. However, it’s important to note that our time tracking may not have been as thorough as it should have been. In both iterations, we may not have logged all the time spent on features, which means the actual time spent on tasks may be higher than what was recorded and some tasks may have taken more effort than reflected in the tracked hours. This lack of detailed time tracking could have led to underestimation of effort and inaccurate planning. To address this, we will Improve time tracking by ensuring all team members log their hours consistently and plan conservatively for Iteration 3, committing to 28 hours of work while remaining flexible to adjust if tasks take longer than expected. 
