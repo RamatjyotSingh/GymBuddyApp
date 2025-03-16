@@ -52,10 +52,10 @@ public class MainActivity extends BaseActivity {
         // Load workout profiles
         loadWorkoutProfiles();
 
-       
+
     }
 
- 
+
 
     /**
      * Loads workout profiles from the database
@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity {
             WorkoutManager workoutManager = new WorkoutManager(true);
             workoutProfiles.clear();
             workoutProfiles.addAll(workoutManager.getAll());
-          
+
             workoutProfileAdapter.notifyDataSetChanged();
         } catch (DBException e) {
             Toast.makeText(this, "Error loading workout profiles: " + e.getMessage(), 
@@ -73,22 +73,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Scrolls the RecyclerView to show a specific workout profile
-     */
-    private void scrollToProfile(int profileId) {
-        // Find the position of the profile with the given ID
-        for (int i = 0; i < workoutProfiles.size(); i++) {
-            if (workoutProfiles.get(i).getID() == profileId) {
-                // Scroll to the position
-                binding.recyclerViewWorkouts.smoothScrollToPosition(i);
-                
-                // Optionally highlight the item
-                workoutProfileAdapter.highlightItem(i);
-                break;
-            }
-        }
-    }
+
 
     @Override
     protected void onResume() {
@@ -142,6 +127,7 @@ public class MainActivity extends BaseActivity {
      */
     private void extractFile(String assetPath, File destDir, String destFilename) {
         File outputFile = new File(destDir, destFilename);
+        timber.log.Timber.tag("Main").d("Extracting file: %s → %s", assetPath, outputFile.getAbsolutePath());
 
         // Skip if file already exists and is not empty
         if (outputFile.exists() && outputFile.length() > 0) {
