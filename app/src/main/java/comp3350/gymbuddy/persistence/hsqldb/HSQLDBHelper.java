@@ -34,7 +34,6 @@ public class HSQLDBHelper {
 
     private static final String  relativeConfigPath = "DBConfig.properties";
 
-    private static HSQLDBHelper instance;
 
     // Default values in case properties can't be loaded
     private static String PROD_FILE_PATH = "gymbuddydb";
@@ -43,7 +42,6 @@ public class HSQLDBHelper {
     private static String PASSWORD = "";
 
     private static boolean initialized = false; // for debugging  output , variables reset after every app restart
-    private static boolean isTestMode = false;
     private static boolean propertiesLoaded = false;
 
     private static String dbDirectoryPath = null;
@@ -65,7 +63,7 @@ public class HSQLDBHelper {
 
     }  
     
-    public static String getAbsConfigPath() {
+    private  static String getAbsConfigPath() {
 
         return dbDirectoryPath  + File.separator + relativeConfigPath;
 
@@ -95,14 +93,7 @@ public class HSQLDBHelper {
 
 
 
-    /**
-     * Enables or disables test mode.
-     * @param testMode True to use the test database, false for production.
-     */
-    public static void setTestMode(boolean testMode) {
-        isTestMode = testMode;
-        initialized = false; // Reset initialization state
-    }
+  
 
     /**
      * Runs an SQL script from the file system, executing each statement individually.
@@ -331,7 +322,7 @@ public class HSQLDBHelper {
             throw new DBException("Database path not set. Call setDatabaseDirectoryPath() first.");
         }
 
-        String dbFilePath = isTestMode ? TEST_FILE_PATH : PROD_FILE_PATH;
+        String dbFilePath = PROD_FILE_PATH;
         File dbFile = new File(dbDirectoryPath, dbFilePath);
         String dbPath = dbFile.getAbsolutePath();
 
@@ -346,49 +337,6 @@ public class HSQLDBHelper {
         }
     }
 
-    /**
-     * Resets the test database to a clean state.
-     */
-    public static void resetTestDatabase() {
-        Timber.tag(TAG).d("Resetting test database...");
-
-        if (!isTestMode) {
-            Timber.tag(TAG).w("Cannot reset production database. Set test mode first.");
-            return;
-        }
-
-        // HSQLDB creates multiple files with different extensions
-        String[] extensions = {".script", ".properties", ".log", ".data", ".backup", ".lobs"};
-        boolean deletionSuccess = true;
-
-        for (String extension : extensions) {
-            File dbFile = new File(dbDirectoryPath, TEST_FILE_PATH + extension);
-            if (dbFile.exists()) {
-                if (dbFile.delete()) {
-                    Timber.tag(TAG).d("Deleted database file: %s", dbFile.getName());
-                } else {
-                    deletionSuccess = false;
-                    Timber.tag(TAG).e("Failed to delete database file: %s", dbFile.getName());
-                }
-            }
-        }
-
-        if (!deletionSuccess) {
-            Timber.tag(TAG).w("Some database files could not be deleted. Reset may be incomplete.");
-        }
-
-        // Reset initialization flag
-        initialized = false;
-        
-        // Reinitialize the database
-        try {
-            Timber.tag(TAG).d("Reinitializing test database...");
-            init();
-            Timber.tag(TAG).d("Test database reset and reinitialized.");
-        } catch (DBException e) {
-            Timber.tag(TAG).e("Test database failed to initialize: %s", e.getMessage());
-            throw new RuntimeException("Test database failed to initialize: " + e.getMessage());
-        }
-    }
+    
 
 }

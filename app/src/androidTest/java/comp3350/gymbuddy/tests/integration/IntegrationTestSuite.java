@@ -5,6 +5,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    
+    // Run the database verification test first
+    DatabaseSetupTest.class,
+    
+    // Then run the other tests
     ExerciseDBIntegrationTest.class,
     WorkoutDBIntegrationTest.class,
     WorkoutSessionDBIntegrationTest.class

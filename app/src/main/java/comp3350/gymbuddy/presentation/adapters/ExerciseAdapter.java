@@ -100,9 +100,22 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
             for (int i = 0; i < Math.min(tags.size(), MAX_TAGS); i++) {
                 Tag tag = tags.get(i);
                 Chip chip = new Chip(exerciseTags.getContext());
+                
+                // Set chip content
                 chip.setText(tag.getName());
                 chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(tag.getBgColor())));
                 chip.setTextColor(Color.parseColor(tag.getTextColor()));
+                
+                // Disable chip interaction
+                chip.setClickable(false);
+                chip.setCheckable(false);
+                chip.setFocusable(false);
+                
+                //  Remove the ripple effect
+                chip.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
+                
+
+                
                 exerciseTags.addView(chip);
             }
         }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
+import comp3350.gymbuddy.logic.ObjectStringer;
 import comp3350.gymbuddy.objects.WorkoutItem;
 
 public class WorkoutItemAdapter extends RecyclerView.Adapter<WorkoutItemAdapter.WorkoutViewHolder> {
@@ -32,7 +33,8 @@ public class WorkoutItemAdapter extends RecyclerView.Adapter<WorkoutItemAdapter.
         WorkoutItem item = workoutItems.get(position);
         holder.txtExerciseName.setText(item.getExercise().getName());
 
-        String details = item.toString();
+        ObjectStringer stringer = new ObjectStringer();
+        String details = stringer.workoutBuilderItemString(item);
 
         holder.txtWorkoutDetails.setText(details);
     }
