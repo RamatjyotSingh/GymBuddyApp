@@ -27,4 +27,4 @@ Total time estimate: ~17 days = 136 hrs Total completed: 3 days = 24 hrs
 
 To estimate our velocity for iteration 3, we will take the average amount of time spent on the previous iterations, which would be 28 hours of work. However, it’s important to note that our time tracking may not have been as thorough as it should have been. In both iterations, we may not have logged all the time spent on features, which means the actual time spent on tasks may be higher than what was recorded and some tasks may have taken more effort than reflected in the tracked hours. This lack of detailed time tracking could have led to underestimation of effort and inaccurate planning. To address this, we will Improve time tracking by ensuring all team members log their hours consistently and plan conservatively for Iteration 3, committing to 28 hours of work while remaining flexible to adjust if tasks take longer than expected. 
 
-![Velocity Chart](docs/Project_Velocity.png)
+![Velocity Chart](doc/Project_Velocity.png)
