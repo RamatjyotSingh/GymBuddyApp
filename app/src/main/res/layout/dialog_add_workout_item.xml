@@ -16,7 +16,7 @@
             android:id="@+id/selectedExercise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No Selection"
+            android:text="@string/no_selection"
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -31,34 +31,34 @@
             android:id="@+id/edtSets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Sets"
+            android:hint="@string/sets"
             android:inputType="number" />
 
         <EditText
             android:id="@+id/edtReps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Reps"
+            android:hint="@string/reps"
             android:inputType="number" />
 
         <EditText
             android:id="@+id/edtWeight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Weight (lbs)"
+            android:hint="@string/weight"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/edtTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Time (sec)"
+            android:hint="@string/time"
             android:inputType="numberDecimal" />
 
         <Button
             android:id="@+id/btnAddWorkoutItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add" />
+            android:text="@string/add" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
