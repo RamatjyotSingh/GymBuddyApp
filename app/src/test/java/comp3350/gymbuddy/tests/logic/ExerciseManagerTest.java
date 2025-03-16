@@ -7,55 +7,88 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
 import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 
 public class ExerciseManagerTest {
+    private IExerciseDB exerciseStub;
     private ExerciseManager exerciseManager;
-    private IExerciseDB exercisePersistence;
 
     @Before
     public void setup() {
         // Initialize before each test
-        exercisePersistence = mock(IExerciseDB.class);
+        exerciseStub = PersistenceManager.getExerciseDB(false);
         exerciseManager = new ExerciseManager(false);
     }
 
-    @Test public void testGetAllExercises(){
-        final List<Exercise> exerciseList = new ArrayList<>();
+    @Test public void testGetAll(){
         final List<Exercise> resultList;
-
-        final Exercise exercise = new Exercise(0, "Push-up", null, null, null,false,false);
-        exerciseList.add(exercise);
-
-        // define the behaviour of the mock inside the logic object when this method is called with these arguments
-        when(exercisePersistence.getAll()).thenReturn(exerciseList);
 
         resultList = exerciseManager.getAll();
         assertNotNull(resultList);
         assertFalse(resultList.isEmpty());
-        assertEquals(1, resultList.size());
-        assertEquals(exercise, resultList.get(0));
-
-        verify(exercisePersistence).getAll();
+        assertEquals(exerciseStub.getAll(), resultList);
     }
 
     @Test
     public void testGetExerciseByID(){
         final Exercise result;
+        final Exercise expected;
 
-        when(exercisePersistence.getExerciseByID(0)).thenReturn(new Exercise(0,"Push-up", null, null, null, false,false));
-
+        expected = exerciseStub.getExerciseByID(0);
         result = exerciseManager.getExerciseByID(0);
-        assertNotNull(result);
-        assertTrue(result.getName().equalsIgnoreCase("Push-up"));
 
-        verify(exercisePersistence).getExerciseByID(0);
+        assertNotNull(result);
+        assertEquals(expected.getName(), result.getName());
+        assertEquals(expected.getID(), result.getID());
+        assertEquals(expected.getImagePath(), result.getImagePath());
+        assertEquals(expected.getTags(), result.getTags());
+        assertEquals(expected.getInstructions(), result.getInstructions());
+    }
+
+    @Test
+    public void testInvalidGetExerciseByID(){
+        final Exercise result;
+
+        result = exerciseManager.getExerciseByID(-1);
+        assertNull(result);
+    }
+
+    @Test
+    public void testSearch(){
+        final List<Exercise> result;
+        final List<Exercise> expected = new ArrayList<>();
+        final String searchString;
+
+        expected.add(exerciseStub.getExerciseByID(0));
+        searchString = expected.get(0).getName();
+
+        result = exerciseManager.search(searchString);
+        assertNotNull(result);
+        assertEquals(expected.size(), result.size());
+        assertEquals(expected.get(0), result.get(0));
+    }
+
+    @Test
+    public void testInvalidSearch(){
+        final List<Exercise> result;
+        final String searchString = "12345";
+
+        result = exerciseManager.search(searchString);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testNullSearch(){
+        final List<Exercise> result;
+
+        result = exerciseManager.search(null);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 }
 

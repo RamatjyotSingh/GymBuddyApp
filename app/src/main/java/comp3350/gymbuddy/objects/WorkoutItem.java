@@ -75,4 +75,18 @@ public class WorkoutItem {
     public boolean hasWeight() {
         return exercise.hasWeight();
     }
+
+    @NonNull
+    public String toString(){
+        String result = "";
+
+        if(isTimeBased()){
+            result = "Time: " + this.time;
+        }
+        else{
+            result = "Reps: " + this.reps + ", Weight: " + this.weight;
+        }
+
+        return result;
+    }
 }

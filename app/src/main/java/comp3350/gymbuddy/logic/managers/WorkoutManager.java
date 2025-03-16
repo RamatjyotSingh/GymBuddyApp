@@ -7,7 +7,7 @@ import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
 
-public class WorkoutManager {
+public class WorkoutManager  {
     private final IWorkoutDB workoutProfileDB;
 
     public WorkoutManager(boolean forProduction) {
@@ -18,7 +18,7 @@ public class WorkoutManager {
         return Collections.unmodifiableList(workoutProfileDB.getAll());
     }
 
-    public void saveWorkout(WorkoutProfile workoutProfile) {
-        workoutProfileDB.saveWorkout(workoutProfile);
+    public boolean saveWorkout(WorkoutProfile workoutProfile) {
+       return workoutProfileDB.saveWorkout(workoutProfile);
     }
 }

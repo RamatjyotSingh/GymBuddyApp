@@ -80,10 +80,10 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="90dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/nav_bar_border"
-        app:itemIconSize="24dp"
+        app:itemIconSize="60dp"
         app:itemTextColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
