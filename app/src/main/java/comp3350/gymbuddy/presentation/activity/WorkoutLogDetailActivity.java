@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogDetailBinding;
+import comp3350.gymbuddy.logic.ObjectStringer;
 import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutSession;
@@ -68,8 +69,9 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
                 TextView exerciseName = newView.findViewById(R.id.workoutItemExerciseName);
                 exerciseName.setText(exercise.getName());
 
+                ObjectStringer stringer = new ObjectStringer();
                 TextView exerciseInfo = newView.findViewById(R.id.workoutItemExerciseInfo);
-                exerciseInfo.setText(item.toString());
+                exerciseInfo.setText(stringer.workoutLogDetailItemString(item));
 
                 // set margins on the list elements so they aren't so close together
                 CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
