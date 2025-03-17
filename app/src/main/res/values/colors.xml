@@ -1,36 +1,67 @@
 <resources>
-        <!-- Primary Blue Colors -->
-        <color name="blue_500">#2962FF</color> <!-- Primary blue (vibrant, cool tone) -->
-        <color name="blue_700">#0039CB</color> <!-- Darker blue (deep blue, fits well with dark theme) -->
-        <color name="blue_200">#82B1FF</color> <!-- Light blue (cool, refreshing tone) -->
-        <color name="blue_400">#448AFF</color> <!-- Slightly lighter blue (crisp and cool) -->
-
-        <!-- Dark Blue for Backgrounds and UI Elements -->
-        <color name="blue_900">#0D47A1</color> <!-- Very dark blue (used for background or borders) -->
-
-        <!-- Add the missing blue colors here -->
-        <color name="blue_800">#1565C0</color> <!-- A dark, medium blue tone -->
-        <color name="blue_600">#039BE5</color> <!-- A brighter blue tone -->
-
-        <!-- Secondary Accent Colors -->
-        <color name="teal_200">#00B8D4</color> <!-- A cool teal accent -->
-        <color name="teal_700">#00838F</color> <!-- Darker teal, can be used as secondary accent -->
-
-        <!-- Purple Colors (for accents and additional depth) -->
-        <color name="purple_200">#BB86FC</color> <!-- Light purple -->
-        <color name="purple_500">#6200EE</color> <!-- Main purple tone -->
-        <color name="purple_700">#3700B3</color> <!-- Dark purple (fits well with dark theme) -->
-
-        <!-- Neutral Colors -->
-        <color name="black">#000000</color> <!-- Black for text or icons -->
-        <color name="white">#FFFFFF</color> <!-- White for text or icons -->
-
-        <!-- Grey Colors for contrast -->
-        <color name="grey_800">#424242</color> <!-- Dark grey for background contrasts -->
-        <color name="grey_200">#E0E0E0</color> <!-- Light grey for subtle accents or borders -->
-
-        <color name="card_background_normal">#FFFFFF</color>
-        <color name="card_background_highlight">#E0F7FA</color>
-        <!-- Dark Background Color for Night Mode -->
-        <color name="dark_background">#121212</color> <!-- Dark background for dark mode -->
+    <!-- Primary Blue Colors -->
+    <color name="blue_50">#E3F2FD</color>  <!-- Lightest blue for backgrounds -->
+    <color name="blue_100">#BBDEFB</color> <!-- Very light blue for containers -->
+    <color name="blue_200">#90CAF9</color> <!-- Light blue for buttons/accents -->
+    <color name="blue_300">#64B5F6</color> <!-- Medium light blue -->
+    <color name="blue_400">#42A5F5</color> <!-- Standard blue -->
+    <color name="blue_500">#2196F3</color> <!-- Primary blue -->
+    <color name="blue_600">#1E88E5</color> <!-- Medium dark blue -->
+    <color name="blue_700">#1976D2</color> <!-- Dark blue -->
+    <color name="blue_800">#1565C0</color> <!-- Darker blue -->
+    <color name="blue_900">#0D47A1</color> <!-- Darkest blue for text on light backgrounds -->
+    
+    <!-- Teal Secondary Colors -->
+    <color name="teal_50">#E0F2F1</color>  <!-- Lightest teal for backgrounds -->
+    <color name="teal_100">#B2DFDB</color> <!-- Light teal for containers -->
+    <color name="teal_200">#80CBC4</color> <!-- Standard teal -->
+    <color name="teal_300">#4DB6AC</color> <!-- Medium teal -->
+    <color name="teal_400">#26A69A</color> <!-- Medium dark teal -->
+    <color name="teal_500">#009688</color> <!-- Dark teal -->
+    <color name="teal_700">#00796B</color> <!-- Very dark teal -->
+    <color name="teal_900">#004D40</color> <!-- Darkest teal for text on light backgrounds -->
+    
+    <!-- Purple Accent Colors -->
+    <color name="purple_50">#F3E5F5</color>  <!-- Lightest purple -->
+    <color name="purple_100">#E1BEE7</color> <!-- Light purple -->
+    <color name="purple_200">#CE93D8</color> <!-- Standard light purple -->
+    <color name="purple_300">#BA68C8</color> <!-- Medium purple -->
+    <color name="purple_400">#AB47BC</color> <!-- Medium dark purple -->
+    <color name="purple_500">#9C27B0</color> <!-- Dark purple -->
+    <color name="purple_700">#7B1FA2</color> <!-- Very dark purple -->
+    <color name="purple_900">#4A148C</color> <!-- Darkest purple -->
+    
+    <!-- Grey Colors -->
+    <color name="grey_50">#FAFAFA</color>   <!-- Almost white -->
+    <color name="grey_100">#F5F5F5</color>  <!-- Very light grey for backgrounds -->
+    <color name="grey_200">#EEEEEE</color>  <!-- Light grey for dividers -->
+    <color name="grey_300">#E0E0E0</color>  <!-- Standard light grey -->
+    <color name="grey_400">#BDBDBD</color>  <!-- Medium light grey for borders -->
+    <color name="grey_500">#9E9E9E</color>  <!-- Medium grey for disabled text -->
+    <color name="grey_600">#757575</color>  <!-- Medium dark grey for secondary text -->
+    <color name="grey_700">#616161</color>  <!-- Dark grey for primary text -->
+    <color name="grey_800">#424242</color>  <!-- Very dark grey -->
+    <color name="grey_900">#212121</color>  <!-- Almost black -->
+    
+    <!-- Basic Colors -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Functional Colors -->
+    <color name="success">#4CAF50</color>   <!-- Green for success states -->
+    <color name="warning">#FFC107</color>   <!-- Amber for warnings -->
+    <color name="error">#F44336</color>     <!-- Red for errors -->
+    <color name="info">#2196F3</color>      <!-- Blue for information -->
+    
+    <!-- UI Element Colors -->
+    <color name="card_background_normal">#FFFFFF</color>
+    <color name="card_background_highlight">#E3F2FD</color> <!-- Blue tinted highlight -->
+    
+    <!-- Dark Theme Colors -->
+    <color name="dark_background">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="dark_surface_variant">#2D2D2D</color>
+    <color name="dark_on_surface">#E3E3E3</color>
+    <color name="dark_on_surface_variant">#AFAFAF</color>
 </resources>

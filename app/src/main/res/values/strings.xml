@@ -25,4 +25,27 @@
 
     <string name="default_workout_icon_path">drawable/ic_default_workout.xml</string>
     <string name="more">+ More</string>
+
+    <!-- StartWorkoutListActivity strings -->
+    <string name="start_workout">Start Workout</string>
+    <string name="no_exercises">No exercises</string>
+    <string name="no_exercises_in_workout">No exercises in this workout</string>
+    <string name="exercise_count_format">%1$d exercises</string>
+
+    <!-- WorkoutPlayerActivity strings -->
+    <string name="setNumberPlaceholder">#</string>
+    <string name="delete_set_button_content_description">Delete Set</string>
+    <string name="weight_lbs">Weight (lbs)</string>
+    <string name="time_sec">Time (sec)</string>
+    <string name="reps">Reps</string>
+    <string name="workout_name">Workout Name</string>
+    <string name="current_exercise">Current Exercise</string>
+    <string name="exercise_name">Exercise Name</string>
+    <string name="sets">Sets</string>
+    <string name="weight">Weight</string>
+    <string name="previous">Previous</string>
+    <string name="add_set_entry_button_content_description">Add Set Entry Button</string>
+    <string name="next">Next</string>
+    <string name="exercise_image_content_description">Image of the current exercise</string>
+    <string name="time">Time</string>
 </resources>

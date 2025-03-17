@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp"
+    tools:context=".presentation.activity.WorkoutPlayerActivity">
+
+    <!-- Top Bar with Workout Name -->
+    <TextView
+        android:id="@+id/tvWorkoutName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/workout_name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Exercise Name -->
+    <LinearLayout
+        android:id="@+id/exerciseNameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:layout_below="@+id/tvWorkoutName"
+        android:orientation="vertical" >
+
+        <TextView
+            android:text="@string/current_exercise"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textAlignment="textStart" />
+
+        <TextView
+            android:id="@+id/tvExerciseName"
+            android:text="@string/exercise_name"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textAlignment="textStart" />
+
+    </LinearLayout>
+
+    <!-- Exercise Cover Image -->
+    <ImageView
+        android:id="@+id/ivExerciseImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/exerciseNameLayout"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/exercise_image_content_description"
+        android:src="@drawable/ic_launcher_background" />
+
+    <!-- Exercise Information -->
+    <LinearLayout
+        android:id="@+id/exerciseInfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivExerciseImage"
+        android:baselineAligned="false"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/setsLayout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="@string/sets"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tvSets"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text=""
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/repsLayout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="@string/reps"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tvReps"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text=""
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timeLayout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="@string/time"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text=""
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/weightLayout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:text="@string/weight"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tvWeight"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text=""
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- RecyclerView for Set Entries -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSets"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/exerciseInfoLayout"
+        android:layout_above="@+id/fabAddSet"
+        android:nestedScrollingEnabled="false" />
+
+    <Button
+        android:id="@+id/btnPrevious"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/previous"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/grey_800" />
+
+    <!-- Add Set Entry Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/add_set_entry_button_content_description"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>
