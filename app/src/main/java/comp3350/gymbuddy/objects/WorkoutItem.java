@@ -72,6 +72,8 @@ public class WorkoutItem {
         return exercise.isTimeBased();
     }
 
+    public boolean hasWeight() { return exercise.hasWeight(); }
+
     /**
      * Returns a nicely formatted string representation of this workout item.
      * Only includes attributes with valid values.
