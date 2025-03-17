@@ -30,4 +30,12 @@
     <string name="weight_lbs">Weight (lbs)</string>
     <string name="time_sec">Time (sec)</string>
     <string name="reps">Reps</string>
+    <string name="workout_name">Workout Name</string>
+    <string name="current_exercise">Current Exercise</string>
+    <string name="exercise_name">Exercise Name</string>
+    <string name="sets">Sets</string>
+    <string name="weight">Weight</string>
+    <string name="previous">Previous</string>
+    <string name="add_set_entry_button_content_description">Add Set Entry Button</string>
+    <string name="next">Next</string>
 </resources>
