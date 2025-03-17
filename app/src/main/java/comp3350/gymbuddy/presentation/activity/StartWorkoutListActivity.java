@@ -1,5 +1,6 @@
 package comp3350.gymbuddy.presentation.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -142,14 +143,9 @@ public class StartWorkoutListActivity extends AppCompatActivity {
      * Start a workout session with this profile
      */
     private void startWorkout() {
-        // Here you would start the actual workout session
-        // For now, just show a toast
-        Toast.makeText(this, "Starting workout: " + profile.getName(), Toast.LENGTH_SHORT).show();
-        
-        // TODO: Implement starting a workout session
-        // Intent intent = new Intent(this, ActiveWorkoutActivity.class);
-        // intent.putExtra("workoutProfileId", profileId);
-        // startActivity(intent);
+        Intent intent = new Intent(this, WorkoutPlayerActivity.class);
+        intent.putExtra("workoutProfileId", profileId);
+        startActivity(intent);
     }
     
     /**
