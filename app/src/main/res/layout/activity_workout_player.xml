@@ -53,6 +53,7 @@
         android:layout_below="@id/exerciseNameLayout"
         android:layout_marginTop="16dp"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/exercise_image_content_description"
         android:src="@drawable/ic_launcher_background" />
 
     <!-- Exercise Information -->
@@ -61,6 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ivExerciseImage"
+        android:baselineAligned="false"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:gravity="center">
