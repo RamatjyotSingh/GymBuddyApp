@@ -34,5 +34,5 @@
         <!-- Dark Background Color for Night Mode -->
         <color name="dark_background">#121212</color> <!-- Dark background for dark mode -->
 
-        <color name="destroy_action">#FF8080</color>
+        <color name="destroy_action">#FF4040</color>
 </resources>
