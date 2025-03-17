@@ -25,4 +25,10 @@
 
     <string name="default_workout_icon_path">drawable/ic_default_workout.xml</string>
     <string name="more">+ More</string>
+
+    <!-- StartWorkoutListActivity strings -->
+    <string name="start_workout">Start Workout</string>
+    <string name="no_exercises">No exercises</string>
+    <string name="no_exercises_in_workout">No exercises in this workout</string>
+    <string name="exercise_count_format">%1$d exercises</string>
 </resources>

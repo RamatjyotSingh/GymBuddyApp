@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import comp3350.gymbuddy.objects.WorkoutProfile;
+import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
 
@@ -20,5 +21,11 @@ public class WorkoutManager  {
 
     public boolean saveWorkout(WorkoutProfile workoutProfile) {
        return workoutProfileDB.saveWorkout(workoutProfile);
+    }
+
+
+
+    public WorkoutProfile getWorkoutProfileByID(int id) {
+        return workoutProfileDB.getWorkoutProfileById(id);
     }
 }
