@@ -72,7 +72,50 @@ public class WorkoutItem {
         return exercise.isTimeBased();
     }
 
-    public boolean hasWeight() {
-        return exercise.hasWeight();
+    /**
+     * Returns a nicely formatted string representation of this workout item.
+     * Only includes attributes with valid values.
+     */
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        
+        if (isTimeBased()) {
+            // Time-based exercise formatting
+            if (time > 0) {
+                builder.append("Time: ").append(time).append(" sec");
+            }
+            
+            // Add sets if present
+            if (sets > 0) {
+                if (builder.length() > 0) {
+                    builder.append(" | ");
+                }
+                builder.append("Sets: ").append(sets);
+            }
+        } else {
+            // Rep-based exercise formatting
+            if (reps > 0) {
+                builder.append("Reps: ").append(reps);
+                
+                // Add sets if present
+                if (sets > 0) {
+                    builder.append(" × ").append(sets).append(" sets");
+                }
+            } else if (sets > 0) {
+                // Only sets are defined
+                builder.append("Sets: ").append(sets);
+            }
+            
+            // Add weight if present
+            if (weight > 0) {
+                if (builder.length() > 0) {
+                    builder.append(" | ");
+                }
+                builder.append("Weight: ").append(weight).append(" lbs");
+            }
+        }
+        
+        return builder.toString();
     }
 }
