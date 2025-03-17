@@ -208,4 +208,9 @@ public class ExerciseStub implements IExerciseDB {
         int newSize = Math.min(tags.size(), NUM_TAGS);
         return tags.subList(0, newSize);
     }
+
+    @Override
+    public void close() throws Exception {
+
+    }
 }

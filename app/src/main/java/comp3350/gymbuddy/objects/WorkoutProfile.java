@@ -25,11 +25,11 @@ public class WorkoutProfile {
         this.workoutItems = workoutItems;
     }
 
-    public int getId() {
+    public int getID() {
         return id;
     }
 
-    public void setId(int id) { // Allows setting ID after inserting into DB
+    public void setID(int id) { // Allows setting ID after inserting into DB
         this.id = id;
     }
 
@@ -48,5 +48,6 @@ public class WorkoutProfile {
     public List<WorkoutItem> getWorkoutItems() {
         return Collections.unmodifiableList(workoutItems);
     }
+
 
 }

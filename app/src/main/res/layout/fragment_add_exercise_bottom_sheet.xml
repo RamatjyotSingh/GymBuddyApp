@@ -22,19 +22,19 @@
             android:id="@+id/textViewExerciseName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exercise Name"
+            android:text="@string/exercise_name"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/btnAddExercise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Exercise" />
+            android:text="@string/add_exercise" />
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:text="@string/cancel" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

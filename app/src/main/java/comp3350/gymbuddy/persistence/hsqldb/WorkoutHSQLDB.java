@@ -2,163 +2,318 @@ package comp3350.gymbuddy.persistence.hsqldb;
 
 import androidx.annotation.NonNull;
 
-import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.objects.WorkoutItem;
-import comp3350.gymbuddy.objects.WorkoutProfile;
-import comp3350.gymbuddy.persistence.PersistenceManager;
-import comp3350.gymbuddy.persistence.exception.DBException;
-import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * WorkoutHSQLDB implements IWorkoutDB, providing database operations for workout profiles and items.
- */
+import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.objects.WorkoutItem;
+import comp3350.gymbuddy.objects.WorkoutProfile;
+import comp3350.gymbuddy.persistence.exception.DBException;
+import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
+import comp3350.gymbuddy.persistence.PersistenceManager;
+
 public class WorkoutHSQLDB implements IWorkoutDB {
 
-    /**
-     * Retrieves all workout profiles from the database.
-     * @return A list of all workout profiles.
-     * @throws DBException If an error occurs while accessing the database.
-     */
     @Override
-    @NonNull
-    public List<WorkoutProfile> getAll() throws DBException {
-        List<WorkoutProfile> workoutProfiles = new ArrayList<>();
-        String query = "SELECT * FROM workout_profile";
+    public boolean saveWorkout(WorkoutProfile profile) throws DBException {
+        if (profile == null) {
+            return false;
+        }
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            // Iterate through the result set and extract workout profiles
-            while (rs.next()) {
-                workoutProfiles.add(extractWorkoutProfile(rs));
+        try (Connection conn = HSQLDBHelper.getConnection()) {
+            // Begin transaction
+            conn.setAutoCommit(false);
+            
+            try {
+                // First, check if profile already exists
+                WorkoutProfile existingProfile = null;
+                int profileId;
+                
+                // Check by name
+                try (PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT * FROM PUBLIC.workout_profile WHERE profile_name = ?")) {
+                    stmt.setString(1, profile.getName());
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            profileId = rs.getInt("profile_id");
+                            existingProfile = new WorkoutProfile(
+                                profileId,
+                                rs.getString("profile_name"),
+                                rs.getString("icon_path"),
+                                new ArrayList<>()
+                            );
+                        }
+                    }
+                }
+                
+                if (existingProfile == null) {
+                    // Insert new profile
+                    try (PreparedStatement stmt = conn.prepareStatement(
+                            "INSERT INTO PUBLIC.workout_profile (profile_id, profile_name, icon_path) VALUES (?, ?, ?)",
+                            Statement.RETURN_GENERATED_KEYS)) {
+                        
+                        // Use provided ID or generate next ID
+                        profileId = profile.getID() > 0 ? profile.getID() : getNextProfileId();
+                        
+                        stmt.setInt(1, profileId);
+                        stmt.setString(2, profile.getName());
+                        stmt.setString(3, profile.getIconPath());
+                        stmt.executeUpdate();
+                    }
+                } else {
+                    // Use existing profile ID
+                    profileId = existingProfile.getID();
+                    
+                    // Update existing profile
+                    try (PreparedStatement stmt = conn.prepareStatement(
+                            "UPDATE PUBLIC.workout_profile SET icon_path = ? WHERE profile_id = ?")) {
+                        stmt.setString(1, profile.getIconPath());
+                        stmt.setInt(2, profileId);
+                        stmt.executeUpdate();
+                    }
+                    
+                    // Delete existing workout items to replace with new ones
+                    try (PreparedStatement stmt = conn.prepareStatement(
+                            "DELETE FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
+                        stmt.setInt(1, profileId);
+                        stmt.executeUpdate();
+                    }
+                }
+                
+                // Now insert workout items
+                if (profile.getWorkoutItems() != null && !profile.getWorkoutItems().isEmpty()) {
+                    try (PreparedStatement stmt = conn.prepareStatement(
+                            "INSERT INTO PUBLIC.profile_exercise (profile_id, exercise_id, sets, reps, weight, duration) VALUES (?, ?, ?, ?, ?, ?)")) {
+                        
+                        for (WorkoutItem item : profile.getWorkoutItems()) {
+                            stmt.setInt(1, profileId);
+                            stmt.setInt(2, item.getExercise().getID());
+                            stmt.setInt(3, item.getSets());
+                            stmt.setInt(4, item.getReps());
+                            stmt.setDouble(5, item.getWeight());
+                            stmt.setDouble(6, item.getTime());
+                            stmt.executeUpdate();
+                        }
+                    }
+                }
+                
+                // Commit transaction
+                conn.commit();
+                return true;
+                
+            } catch (SQLException e) {
+                // Rollback transaction on error
+                conn.rollback();
+                throw new DBException("Error saving workout profile: " + e.getMessage());
+            } finally {
+                // Restore auto-commit
+                conn.setAutoCommit(true);
             }
+            
         } catch (SQLException e) {
-            throw new DBException("Failed to load workouts.");
-        }
-
-        return workoutProfiles;
-    }
-
-    /**
-     * Saves a new workout profile to the database.
-     * @param profile The workout profile to save.
-     * @throws DBException If an error occurs while saving the profile.
-     */
-    @Override
-    public void saveWorkout(WorkoutProfile profile) throws DBException {
-        String query = "INSERT INTO workout_profile (profile_name, icon_path) VALUES (?, ?)";
-
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, profile.getName());
-            stmt.setString(2, profile.getIconPath());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DBException("Failed to save workout.");
+            throw new DBException("Error connecting to database: " + e.getMessage());
         }
     }
 
-    /**
-     * Retrieves a workout profile by its ID.
-     * @param id The ID of the workout profile to retrieve.
-     * @return The corresponding WorkoutProfile object, or null if not found.
-     * @throws DBException If an error occurs while accessing the database.
-     */
-    @Override
-    public WorkoutProfile getWorkoutProfileById(int id) throws DBException {
-        WorkoutProfile workoutProfile = null;
-        String query = "SELECT * FROM workout_profile WHERE id = ?";
-
+    // Helper method to get next available profile ID
+    private int getNextProfileId() throws SQLException {
+        int nextId = 1;
+        
         try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT MAX(profile_id) AS max_id FROM PUBLIC.workout_profile")) {
+            
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    int profile_id = rs.getInt("profile_id");
-                    String name = rs.getString("profile_name");
-                    String iconPath = rs.getString("icon_path");
-
-                    // Fetch associated workout items
-                    List<WorkoutItem> workoutItems = getWorkoutItemsByProfileId(id);
-
-                    workoutProfile = new WorkoutProfile(profile_id, name, iconPath, workoutItems);
+                    nextId = rs.getInt("max_id") + 1;
                 }
             }
-        } catch (SQLException e) {
-            throw new DBException("Failed to load workout profile.");
         }
-
-        return workoutProfile;
+        
+        return nextId;
     }
-
-    /**
-     * Extracts workout profile data from a ResultSet and constructs a WorkoutProfile object.
-     * @param rs The ResultSet containing the workout profile data.
-     * @return A new WorkoutProfile object populated with the retrieved data.
-     * @throws SQLException If an error occurs while reading the result set.
-     */
-    @NonNull
-    private WorkoutProfile extractWorkoutProfile(ResultSet rs) throws SQLException {
-        int id = rs.getInt("profile_id");
-        String name = rs.getString("profile_name");
-        String iconPath = rs.getString("icon_path");
-
-        // Fetch associated workout items
-        List<WorkoutItem> workoutItems = getWorkoutItemsByProfileId(id);
-
-        return new WorkoutProfile(id, name, iconPath, workoutItems);
-    }
-
-    /**
-     * Extracts workout item data from a ResultSet and constructs a WorkoutItem object.
-     * @param rs The ResultSet containing the workout item data.
-     * @return A new WorkoutItem object populated with the retrieved data.
-     * @throws SQLException If an error occurs while reading the result set.
-     */
-    @NonNull
-    private WorkoutItem extractWorkoutItem(ResultSet rs) throws SQLException {
-        int exerciseId = rs.getInt("exercise_id");
-        int sets = rs.getInt("sets");
-        int reps = rs.getInt("reps");
-        double weight = rs.getDouble("weight");
-        double time = rs.getDouble("duration");
-
-        // Retrieve the corresponding exercise
-        Exercise exercise = PersistenceManager.getExerciseDB(true).getExerciseByID(exerciseId);
-
-        return new WorkoutItem(exercise, sets, reps, weight, time);
-    }
-
-    /**
-     * Retrieves a list of workout items associated with a given workout profile ID.
-     * @param id The ID of the workout profile whose items need to be fetched.
-     * @return A list of associated WorkoutItem objects.
-     * @throws DBException If an error occurs while accessing the database.
-     */
-    @NonNull
-    private List<WorkoutItem> getWorkoutItemsByProfileId(int id) throws DBException {
-        List<WorkoutItem> workoutItems = new ArrayList<>();
-        String query = "SELECT * FROM workout_item WHERE profile_id = ?";
-
+    
+    @Override
+    public List<WorkoutProfile> getAll() throws DBException {
+        List<WorkoutProfile> profiles = new ArrayList<>();
+        
         try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM PUBLIC.workout_profile")) {
+            
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    workoutItems.add(extractWorkoutItem(rs));
+                    int id = rs.getInt("profile_id");
+                    String name = rs.getString("profile_name");
+                    String iconPath = rs.getString("icon_path");
+                    
+                    // Get workout items for this profile
+                    List<WorkoutItem> items = getWorkoutItemsForProfile(id);
+                    
+                    profiles.add(new WorkoutProfile(id, name, iconPath, items));
                 }
             }
+            
         } catch (SQLException e) {
-            throw new DBException("Failed to load workout exercises.");
+            throw new DBException("Error retrieving workout profiles: " + e.getMessage());
         }
+        
+        return profiles;
+    }
+    
+    @Override
+    public WorkoutProfile getWorkoutProfileById(int id) throws DBException {
+        WorkoutProfile profile = null;
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM PUBLIC.workout_profile WHERE profile_id = ?")) {
+            
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String name = rs.getString("profile_name");
+                    String iconPath = rs.getString("icon_path");
+                    
+                    // Get workout items for this profile
+                    List<WorkoutItem> items = getWorkoutItemsForProfile(id);
+                    
+                    profile = new WorkoutProfile(id, name, iconPath, items);
+                }
+            }
+            
+        } catch (SQLException e) {
+            throw new DBException("Error retrieving workout profile: " + e.getMessage());
+        }
+        
+        return profile;
+    }
+    
+    @Override
+    public boolean deleteWorkout(int id) throws DBException {
+        try (Connection conn = HSQLDBHelper.getConnection()) {
+            // Begin transaction
+            conn.setAutoCommit(false);
+            
+            try {
+                // Delete profile exercises first (foreign key constraint)
+                try (PreparedStatement stmt = conn.prepareStatement(
+                        "DELETE FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
+                    stmt.setInt(1, id);
+                    stmt.executeUpdate();
+                }
+                
+                // Now delete the profile
+                try (PreparedStatement stmt = conn.prepareStatement(
+                        "DELETE FROM PUBLIC.workout_profile WHERE profile_id = ?")) {
+                    stmt.setInt(1, id);
+                    int rowsAffected = stmt.executeUpdate();
+                    
+                    // Commit transaction
+                    conn.commit();
+                    return rowsAffected > 0;
+                }
+                
+            } catch (SQLException e) {
+                // Rollback transaction on error
+                conn.rollback();
+                throw new DBException("Error deleting workout profile: " + e.getMessage());
+            } finally {
+                // Restore auto-commit
+                conn.setAutoCommit(true);
+            }
+            
+        } catch (SQLException e) {
+            throw new DBException("Error connecting to database: " + e.getMessage());
+        }
+    }
+    
+    @Override
+    public List<WorkoutProfile> search(String query) throws DBException {
+        List<WorkoutProfile> results = new ArrayList<>();
+        
+        if (query == null || query.isEmpty()) {
+            return results;
+        }
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM PUBLIC.workout_profile WHERE LOWER(profile_name) LIKE ?")) {
+            
+            stmt.setString(1, "%" + query.toLowerCase() + "%");
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("profile_id");
+                    String name = rs.getString("profile_name");
+                    String iconPath = rs.getString("icon_path");
+                    
+                    // Get workout items for this profile
+                    List<WorkoutItem> items = getWorkoutItemsForProfile(id);
+                    
+                    results.add(new WorkoutProfile(id, name, iconPath, items));
+                }
+            }
+            
+        } catch (SQLException e) {
+            throw new DBException("Error searching workout profiles: " + e.getMessage());
+        }
+        
+        return results;
+    }
+    
+    /**
+     * Helper method to get workout items for a specific profile
+     */
+    private List<WorkoutItem> getWorkoutItemsForProfile(int profileId) throws SQLException, DBException {
+        List<WorkoutItem> items = new ArrayList<>();
+        IExerciseDB exerciseDB = PersistenceManager.getExerciseDB(true);
+        
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
+            
+            stmt.setInt(1, profileId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int exerciseId = rs.getInt("exercise_id");
+                    int sets = rs.getInt("sets");
+                    int reps = rs.getInt("reps");
+                    double weight = rs.getDouble("weight");
+                    double duration = rs.getDouble("duration");
+                    
+                    Exercise exercise = exerciseDB.getExerciseByID(exerciseId);
+                    if (exercise != null) {
+                        WorkoutItem item = duration > 0 ? 
+                            new WorkoutItem(exercise, sets, reps, weight, duration) : 
+                            new WorkoutItem(exercise, sets, reps, weight);
+                        items.add(item);
+                    }
+                }
+            }
+        }
+        
+        return items;
+    }
 
-        return workoutItems;
+    @Override
+    public void close() throws Exception {
+        try (Connection conn = HSQLDBHelper.getConnection();
+             Statement stmt = conn.createStatement()) {
+            // CHECKPOINT ensures all data is written to disk files
+            stmt.execute("CHECKPOINT");
+            timber.log.Timber.d("WorkoutHSQLDB closed successfully with CHECKPOINT");
+        } catch (SQLException e) {
+            timber.log.Timber.e(e, "Error during WorkoutHSQLDB close operation");
+            throw new DBException("Error during database cleanup: " + e.getMessage());
+        }
     }
 }
