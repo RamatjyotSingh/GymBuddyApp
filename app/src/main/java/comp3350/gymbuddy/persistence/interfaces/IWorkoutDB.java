@@ -2,6 +2,7 @@ package comp3350.gymbuddy.persistence.interfaces;
 
 import java.util.List;
 
+import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 
@@ -44,4 +45,5 @@ public interface IWorkoutDB extends AutoCloseable {
      * @throws DBException If an error occurs while accessing the database.
      */
     List<WorkoutProfile> search(String query) throws DBException;
+
 }

@@ -78,7 +78,13 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload data when returning to this activity (alternative to intent-based approach)
+        
+        // Clear any highlighted items when returning to the activity
+        if (workoutProfileAdapter != null) {
+            workoutProfileAdapter.clearHighlight();
+        }
+        
+        // Reload data when returning to this activity
         loadWorkoutProfiles();
     }
 

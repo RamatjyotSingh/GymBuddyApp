@@ -11,9 +11,11 @@ public class ObjectStringer {
         if(item != null){
             if(item.isTimeBased()){
                 result = "Time: " + item.getTime() + " sec";
+                result += (item.getSets() > 0) ? " | Sets: " + item.getSets() : "";
             }
             else {
-                result = "Reps: " + item.getReps() + ", Weight: " + item.getWeight() + " lbs";
+                result = "Reps: " + item.getReps() + ((item.getSets() > 0) ? " x " + item.getSets() + " Sets" : "") 
+                         + ", Weight: " + item.getWeight() + " lbs";
             }
         }
 
@@ -25,7 +27,8 @@ public class ObjectStringer {
 
         if(item != null){
             if (item.isTimeBased()) {
-                result = item.getTime() + " sec";
+                result = "Time: " + item.getTime() + " sec";
+                result += (item.getSets() > 0) ? " | Sets: " + item.getSets() : "";
             } else {
                 result = item.getSets() + " sets x " + item.getReps() + " reps";
 

@@ -268,11 +268,13 @@ public class WorkoutHSQLDB implements IWorkoutDB {
         
         return results;
     }
-    
+
+ 
+
     /**
      * Helper method to get workout items for a specific profile
      */
-    private List<WorkoutItem> getWorkoutItemsForProfile(int profileId) throws SQLException, DBException {
+    private List<WorkoutItem> getWorkoutItemsForProfile(int profileId) throws SQLException {
         List<WorkoutItem> items = new ArrayList<>();
         IExerciseDB exerciseDB = PersistenceManager.getExerciseDB(true);
         
