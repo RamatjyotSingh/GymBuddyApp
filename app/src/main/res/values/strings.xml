@@ -25,4 +25,5 @@
 
     <string name="default_workout_icon_path">drawable/ic_default_workout.xml</string>
     <string name="more">+ More</string>
+    <string name="setNumberPlaceholder">#</string>
 </resources>
