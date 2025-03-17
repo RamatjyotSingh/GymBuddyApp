@@ -68,6 +68,7 @@
         android:gravity="center">
 
         <LinearLayout
+            android:id="@+id/setsLayout"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -92,6 +93,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/repsLayout"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -116,6 +118,32 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/timeLayout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="@string/time"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text=""
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/weightLayout"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -144,7 +172,7 @@
         android:id="@+id/recyclerViewSets"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ivExerciseImage"
+        android:layout_below="@+id/exerciseInfoLayout"
         android:layout_above="@+id/fabAddSet"
         android:nestedScrollingEnabled="false" />
 

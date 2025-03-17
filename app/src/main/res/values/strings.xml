@@ -39,4 +39,5 @@
     <string name="add_set_entry_button_content_description">Add Set Entry Button</string>
     <string name="next">Next</string>
     <string name="exercise_image_content_description">Image of the current exercise</string>
+    <string name="time">Time</string>
 </resources>
