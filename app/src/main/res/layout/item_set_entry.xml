@@ -73,5 +73,5 @@
         android:padding="8dp"
         android:minHeight="48dp"
         android:minWidth="48dp"
-        app:tint="@color/destroy_action" />
+        app:tint="@color/error" />
 </LinearLayout>
