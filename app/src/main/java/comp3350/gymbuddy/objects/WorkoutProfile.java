@@ -33,10 +33,6 @@ public class WorkoutProfile {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIconPath() {
         return this.iconPath;
     }
