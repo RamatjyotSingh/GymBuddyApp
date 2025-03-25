@@ -84,9 +84,8 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/nav_bar_border"
         app:itemIconSize="60dp"
-        app:itemTextColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:itemTextColor="@drawable/bottom_nav_icon_colour"
+        app:itemIconTint="@drawable/bottom_nav_icon_colour"
+        style="@style/MyBottomNavigationStyle"
         app:menu="@menu/nav_bar" />
 </RelativeLayout>

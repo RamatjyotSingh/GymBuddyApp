@@ -49,8 +49,9 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.cardview)
     implementation(libs.hsqldb)
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(libs.hsqldb)
+
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.mockito.core)
     androidTestImplementation(libs.ext.junit)
