@@ -1,7 +1,5 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
-import androidx.annotation.NonNull;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

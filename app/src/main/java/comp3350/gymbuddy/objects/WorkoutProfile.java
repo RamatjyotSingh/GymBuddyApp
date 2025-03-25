@@ -29,16 +29,8 @@ public class WorkoutProfile {
         return id;
     }
 
-    public void setID(int id) { // Allows setting ID after inserting into DB
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getIconPath() {

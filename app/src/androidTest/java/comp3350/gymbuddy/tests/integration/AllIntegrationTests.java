@@ -14,6 +14,6 @@ import org.junit.runners.Suite;
     WorkoutDBIntegrationTest.class,
     WorkoutSessionDBIntegrationTest.class
 })
-public class IntegrationTestSuite {
+public class AllIntegrationTests {
     // Empty test suite
 }

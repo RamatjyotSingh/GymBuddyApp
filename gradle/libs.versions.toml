@@ -23,6 +23,10 @@ androidxTestCore = "1.5.0"
 androidxTestRunner = "1.5.2"
 androidxTestJunit = "1.1.5"
 timber = "5.0.1"
+androidxTestRules = "1.4.0"
+espressoContrib = "3.4.0"
+espressoIntents = "3.4.0"
+
 
 
 [libraries]
@@ -48,6 +52,10 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
+espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espressoContrib" }
+espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
+
 
 
 [plugins]

@@ -1,5 +1,6 @@
 package comp3350.gymbuddy.presentation.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ public class WorkoutItemAdapter extends RecyclerView.Adapter<WorkoutItemAdapter.
     @Override
     public void onBindViewHolder(@NonNull WorkoutViewHolder holder, int position) {
         WorkoutItem item = workoutItems.get(position);
-        holder.txtExerciseName.setText(item.getExercise().getName());
+        holder.txtExerciseName.setText(item.getExerciseName());
 
         String details = item.toString();
 
@@ -56,4 +57,5 @@ public class WorkoutItemAdapter extends RecyclerView.Adapter<WorkoutItemAdapter.
         workoutItems.add(item);
         notifyItemInserted(workoutItems.size() - 1);
     }
+
 }

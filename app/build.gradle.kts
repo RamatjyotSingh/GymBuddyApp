@@ -56,5 +56,10 @@ dependencies {
     testImplementation(libs.mockito.mockito.core)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.runner) // ✅ Fixed reference
+    androidTestImplementation(libs.androidx.test.rules) // ✅ Fixed reference
+    androidTestImplementation(libs.espresso.contrib) // Required for RecyclerViewActions
+    androidTestImplementation(libs.espresso.intents) // Optional for testing intents
+
 
 }
