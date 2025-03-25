@@ -1,7 +1,5 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
-import androidx.annotation.NonNull;
-
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -25,7 +23,6 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * @throws DBException If an error occurs while accessing the database.
      */
     @Override
-    @NonNull
     public List<WorkoutSession> getAll() throws DBException {
         List<WorkoutSession> workoutSessions = new ArrayList<>();
         String query = "SELECT * FROM workout_session";
@@ -78,7 +75,6 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * @return A new WorkoutSession object populated with the retrieved data.
      * @throws SQLException If an error occurs while reading the result set.
      */
-    @NonNull
     private WorkoutSession extractWorkoutSession(ResultSet rs) throws SQLException {
         int sessionId = rs.getInt("session_id");
         long startTime = rs.getLong("start_time");
@@ -100,7 +96,6 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * @return A new WorkoutItem object populated with the retrieved data.
      * @throws SQLException If an error occurs while reading the result set.
      */
-    @NonNull
     private WorkoutItem extractSessionItem(ResultSet rs) throws SQLException {
         int exerciseId = rs.getInt("exercise_id");
         int reps = rs.getInt("reps");
@@ -119,7 +114,6 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * @return A list of associated WorkoutItem objects.
      * @throws DBException If an error occurs while accessing the database.
      */
-    @NonNull
     private List<WorkoutItem> getWorkoutItemsBySessionId(int id) throws DBException {
         List<WorkoutItem> workoutItems = new ArrayList<>();
         String query = "SELECT * FROM session_item WHERE session_id = ?";
@@ -328,7 +322,6 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * @throws DBException If an error occurs while accessing the database.
      */
     @Override
-    @NonNull
     public List<WorkoutSession> search(String query) throws DBException {
         List<WorkoutSession> results = new ArrayList<>();
         String searchQuery = 
@@ -364,7 +357,6 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * @throws DBException If an error occurs while accessing the database.
      */
     @Override
-    @NonNull
     public List<WorkoutItem> getExercisesForSession(int sessionId) throws DBException {
         return getWorkoutItemsBySessionId(sessionId);
     }
