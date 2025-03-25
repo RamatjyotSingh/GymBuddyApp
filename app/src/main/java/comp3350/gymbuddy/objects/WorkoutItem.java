@@ -48,6 +48,17 @@ public class WorkoutItem {
         this(exercise, sets, 0, 0.0, time);
     }
 
+    /**
+     * Constructor for rep-based workout items with no weight.
+     *
+     * @param exercise exercise associated with this workout item.
+     * @param sets number of sets to perform.
+     * @param reps number of reps to perform.
+     */
+    public WorkoutItem(Exercise exercise, int sets, int reps){
+        this(exercise, sets, reps, 0.0, 0.0);
+    }
+
     public Exercise getExercise() {
         return exercise;
     }
