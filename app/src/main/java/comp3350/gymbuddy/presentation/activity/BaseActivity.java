@@ -9,7 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Map;
+
 import comp3350.gymbuddy.R;
+import comp3350.gymbuddy.presentation.PresentationConfig;
 
 public abstract class BaseActivity extends AppCompatActivity {
     @Override
@@ -31,28 +34,18 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // Set on-click listeners for menu items
         // Does not set an on-click listener for the menu item corresponding to the current activity
-        if(currentNavBarItemId != R.id.home){
-            menuItem = menu.findItem(R.id.home);
-            menuItem.setOnMenuItemClickListener(item -> {
-               navigateToActivity(MainActivity.class);
-               return true;
-            });
-        }
+        for(Map.Entry<Integer, Class<?>> entry : PresentationConfig.activityMap.entrySet()){
+            int resourceId = entry.getKey();
 
-        if(currentNavBarItemId != R.id.build_workouts){
-            menuItem = menu.findItem(R.id.build_workouts);
-            menuItem.setOnMenuItemClickListener(item -> {
-               navigateToActivity(WorkoutBuilderActivity.class);
-               return true;
-            });
-        }
+            if(resourceId != currentNavBarItemId){
+                Class<?> activity = entry.getValue();
+                menuItem = menu.findItem(resourceId);
 
-        if(currentNavBarItemId != R.id.workout_log){
-            menuItem = menu.findItem(R.id.workout_log);
-            menuItem.setOnMenuItemClickListener(item -> {
-               navigateToActivity(WorkoutLogActivity.class);
-               return true;
-            });
+                menuItem.setOnMenuItemClickListener(item -> {
+                   navigateToActivity(activity);
+                   return true;
+                });
+            }
         }
     }
 
