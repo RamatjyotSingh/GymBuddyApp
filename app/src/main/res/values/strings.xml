@@ -1,4 +1,6 @@
 <resources>
+
+
     <!-- App Name -->
     <string name="app_name">GymBuddy</string>
 
@@ -36,9 +38,7 @@
     <string name="weight_lbs">Weight (lbs)</string>
     <string name="time_sec">Time (sec)</string>
     <string name="reps">Reps</string>
-    <string name="workout_name">Workout Name</string>
     <string name="current_exercise">Current Exercise</string>
-    <string name="exercise_name">Exercise Name</string>
     <string name="sets">Sets</string>
     <string name="weight">Weight</string>
     <string name="previous">Previous</string>
@@ -46,4 +46,22 @@
     <string name="next">Next</string>
     <string name="exercise_image_content_description">Image of the current exercise</string>
     <string name="time">Time</string>
+
+
+    <!--    default string -->
+    <string name="default_string">Default String</string>
+    <!--    exercise list search hint -->
+    <string name="exercise_list_search_hint">Search..</string>
+
+    <!-- Missing strings from error report -->
+    <string name="save">Save</string>
+    <string name="workout_log_search_hint">Search workout logs...</string>
+    <string name="no_selection">No Selection</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="view_more">View More</string>
+    <string name="home">Home</string>
+    <string name="build_workout">Build Workout</string>
+    <string name="workout_log">Workout Log</string>
+
 </resources>
