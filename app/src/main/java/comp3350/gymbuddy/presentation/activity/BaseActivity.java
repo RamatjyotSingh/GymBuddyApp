@@ -11,8 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Map;
 
-import comp3350.gymbuddy.R;
-import comp3350.gymbuddy.presentation.PresentationConfig;
+import comp3350.gymbuddy.presentation.util.PresentationConfig;
 
 public abstract class BaseActivity extends AppCompatActivity {
     @Override

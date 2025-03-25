@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.presentation;
+package comp3350.gymbuddy.presentation.util;
 
 import java.util.Map;
 

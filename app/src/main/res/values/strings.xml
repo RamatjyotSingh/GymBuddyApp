@@ -51,11 +51,11 @@
     <!--    default string -->
     <string name="default_string">Default String</string>
     <!--    exercise list search hint -->
-    <string name="exercise_list_search_hint">Search..</string>
+    <string name="exercise_list_search_hint">Search…</string>
 
     <!-- Missing strings from error report -->
     <string name="save">Save</string>
-    <string name="workout_log_search_hint">Search workout logs...</string>
+    <string name="workout_log_search_hint">Search workout logs…</string>
     <string name="no_selection">No Selection</string>
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
@@ -63,5 +63,13 @@
     <string name="home">Home</string>
     <string name="build_workout">Build Workout</string>
     <string name="workout_log">Workout Log</string>
+    <string name="instruction_num_color">#1E40AF</string>
+    <string name="exerciseid">exerciseID</string>
+    <string name="error_loading_workout_profiles">"Error loading workout profiles: "</string>
+    <string name="db_dir">db</string>
+    <string name="internal_error">Internal Error. please contact support</string>
+    <string name="tag_mainactivity">MainActivity</string>
+    <string name="db_script">gymbuddydb.script</string>
+    <string name="error_loading_db">Failed to load workout data, please try again later or contact support</string>
 
 </resources>

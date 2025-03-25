@@ -23,7 +23,6 @@ import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 import timber.log.Timber;
 
 public class MainActivity extends BaseActivity {
-    private ActivityMainBinding binding;
     private WorkoutProfileAdapter workoutProfileAdapter;
     private List<WorkoutProfile> workoutProfiles;
 
@@ -35,7 +34,7 @@ public class MainActivity extends BaseActivity {
         initializeDatabase();
 
         // Initialize View Binding
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        comp3350.gymbuddy.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Set up BottomNavigationView using the base class
@@ -66,7 +65,7 @@ public class MainActivity extends BaseActivity {
 
             workoutProfileAdapter.notifyDataSetChanged();
         } catch (DBException e) {
-            Toast.makeText(this, "Error loading workout profiles: " + e.getMessage(), 
+            Toast.makeText(this, getString(R.string.error_loading_workout_profiles) + e.getMessage(),
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -88,22 +87,23 @@ public class MainActivity extends BaseActivity {
 
     private void initializeDatabase() {
         // Create DB directory
-        File dbDir = new File(getFilesDir(), "db");
+        File dbDir = new File(getFilesDir(), getString(R.string.db_dir));
         if (!dbDir.exists() && !dbDir.mkdirs()) {
-            Timber.tag("GlobalApp").e("Failed to create DB directory");
+            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to create DB directory");
             return;
         }
 
 
-        File dbFile = new File(dbDir, "gymbuddydb.script");
+        File dbFile = new File(dbDir, getString(R.string.db_script));
 
         if(dbFile.exists() && dbFile.length() > 0) {
-            Timber.tag("GlobalApp").d("Database already exists");
+            Timber.tag(getString(R.string.tag_mainactivity)).d("Database already exists");
             HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
             return;
         }
 
-        Timber.tag("GlobalApp").d("Database needs to be initialized");
+        Timber.tag(getString(R.string.tag_mainactivity)).d("Database needs to be initialized");
 
         // Extract required files
         String[] dbFiles = {"db/Project.script", "db/DBConfig.properties"};
@@ -116,9 +116,10 @@ public class MainActivity extends BaseActivity {
         HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
         try {
             HSQLDBHelper.init();
-            Timber.tag("GlobalApp").d("Database initialized successfully");
+            Timber.tag(getString(R.string.tag_mainactivity)).d("Database initialized successfully");
         } catch (Exception e) {
-            Timber.tag("GlobalApp").e("Failed to initialize database: %s", e.getMessage());
+            Toast.makeText(this, getString(R.string.error_loading_db), Toast.LENGTH_LONG).show();
+            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to initialize database: %s", e.getMessage());
         }
     }
 
@@ -135,7 +136,7 @@ public class MainActivity extends BaseActivity {
 
         // Skip if file already exists and is not empty
         if (outputFile.exists() && outputFile.length() > 0) {
-            Timber.tag("GlobalApp").d("File already exists: %s", destFilename);
+            Timber.tag(getString(R.string.tag_mainactivity)).d("File already exists: %s", destFilename);
             return;
         }
 
@@ -148,9 +149,10 @@ public class MainActivity extends BaseActivity {
                 fos.write(buffer, 0, length);
             }
 
-            Timber.tag("GlobalApp").d("Extracted file: %s → %s", assetPath, outputFile.getAbsolutePath());
+            Timber.tag(getString(R.string.tag_mainactivity)).d("Extracted file: %s → %s", assetPath, outputFile.getAbsolutePath());
         } catch (IOException e) {
-            Timber.tag("GlobalApp").e("Failed to extract file: %s - %s", assetPath, e.getMessage());
+            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to extract file: %s - %s", assetPath, e.getMessage());
         }
     }
 }
