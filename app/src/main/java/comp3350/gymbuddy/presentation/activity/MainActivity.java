@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -32,13 +33,13 @@ public class MainActivity extends BaseActivity {
 
         Timber.plant(new Timber.DebugTree());
         initializeDatabase();
-        // Initialize View Binding
 
+        // Initialize View Binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Set up BottomNavigationView using the base class
-        setupBottomNavigation(binding.bottomNavigationView);
+        setupBottomNavigation(binding.bottomNavigationView, R.id.home);
 
         // Initialize RecyclerView
         RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
@@ -51,10 +52,7 @@ public class MainActivity extends BaseActivity {
 
         // Load workout profiles
         loadWorkoutProfiles();
-
-
     }
-
 
 
     /**
