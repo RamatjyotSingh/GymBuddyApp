@@ -52,6 +52,10 @@ public class WorkoutItem {
         return exercise;
     }
 
+    public String getExerciseName(){
+        return exercise.getName();
+    }
+
     public int getSets() {
         return sets;
     }

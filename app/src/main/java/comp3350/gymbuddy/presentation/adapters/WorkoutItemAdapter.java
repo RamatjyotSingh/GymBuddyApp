@@ -32,7 +32,7 @@ public class WorkoutItemAdapter extends RecyclerView.Adapter<WorkoutItemAdapter.
     @Override
     public void onBindViewHolder(@NonNull WorkoutViewHolder holder, int position) {
         WorkoutItem item = workoutItems.get(position);
-        holder.txtExerciseName.setText(item.getExercise().getName());
+        holder.txtExerciseName.setText(item.getExerciseName());
 
         ObjectStringer stringer = new ObjectStringer();
         String details = stringer.workoutBuilderItemString(item);
