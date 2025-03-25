@@ -65,8 +65,9 @@ public class WorkoutBuilderActivity extends BaseActivity {
         adapter = new WorkoutItemAdapter(workoutItems);
         binding.recyclerWorkoutItems.setAdapter(adapter);
 
-        setupBottomNavigation(binding.bottomNavigationView);
+        setupBottomNavigation(binding.bottomNavigationView, R.id.build_workouts);
     }
+
 
     /**
      * Creates a WorkoutProfile instance if all validation rules pass.
