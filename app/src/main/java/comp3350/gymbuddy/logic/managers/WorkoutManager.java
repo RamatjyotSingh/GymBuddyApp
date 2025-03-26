@@ -28,4 +28,8 @@ public class WorkoutManager  {
     public WorkoutProfile getWorkoutProfileByID(int id) {
         return workoutProfileDB.getWorkoutProfileById(id);
     }
+
+    public boolean deleteWorkout(int id) {
+        return workoutProfileDB.deleteWorkout(id);
+    }
 }
