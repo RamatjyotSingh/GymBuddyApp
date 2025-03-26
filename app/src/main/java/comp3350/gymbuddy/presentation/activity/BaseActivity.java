@@ -1,5 +1,6 @@
 package comp3350.gymbuddy.presentation.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,9 +55,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     private void navigateToActivity(Class<?> activity){
         Intent intent = new Intent(this, activity);
-
-        // Use single top pattern - won't create multiple instances
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
+        
+        // resuse existing activity if it is already running
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        
+        Bundle options = ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle();
+        startActivity(intent, options);
     }
 }
