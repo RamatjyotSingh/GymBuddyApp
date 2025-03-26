@@ -34,7 +34,7 @@ public class WorkoutPlaybackController {
 
     public void proceed() {
         // Continue if there's more exercises.
-        if (currentIndex < workoutProfile.getWorkoutItems().size()) {
+        if (currentIndex < workoutProfile.getWorkoutItems().size() - 1) {
             setActiveWorkoutItem(currentIndex+1);
         } else {
             // Otherwise, finish.
