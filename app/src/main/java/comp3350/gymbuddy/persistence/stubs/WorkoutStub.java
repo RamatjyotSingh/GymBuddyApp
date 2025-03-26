@@ -46,8 +46,8 @@ public class WorkoutStub implements IWorkoutDB {
             items2.add(new WorkoutItem(plank, 3, 0, 0, 60));
         }
         
-        WorkoutProfile profile1 = new WorkoutProfile(nextId++, "Full Body Workout", "workout_icon.png", items1);
-        WorkoutProfile profile2 = new WorkoutProfile(nextId++, "Upper Body Focus", "upper_body_icon.png", items2);
+        WorkoutProfile profile1 = new WorkoutProfile(nextId++, "Full Body Workout", "workout_icon.png", items1, false);
+        WorkoutProfile profile2 = new WorkoutProfile(nextId++, "Upper Body Focus", "upper_body_icon.png", items2, false);
         
         profiles.add(profile1);
         profiles.add(profile2);
@@ -72,11 +72,12 @@ public class WorkoutStub implements IWorkoutDB {
                 
                 // Return a new profile instance with the stored items
                 return new WorkoutProfile(
-                    profile.getID(),
-                    profile.getName(), 
-                    profile.getIconPath(), 
-                    new ArrayList<>(items)
-                );
+                        profile.getID(),
+                        profile.getName(),
+                        profile.getIconPath(),
+                        new ArrayList<>(items),
+                        false
+                    );
             }
         }
         return null;
@@ -100,11 +101,12 @@ public class WorkoutStub implements IWorkoutDB {
         if (existingProfile == null) {
             // Create new profile with a generated ID
             WorkoutProfile newProfile = new WorkoutProfile(
-                nextId++, 
-                profile.getName(), 
-                profile.getIconPath(),
-                profile.getWorkoutItems()
-            );
+                    nextId++,
+                    profile.getName(),
+                    profile.getIconPath(),
+                    profile.getWorkoutItems(),
+                    false
+                );
             
             profiles.add(newProfile);
             
@@ -121,11 +123,12 @@ public class WorkoutStub implements IWorkoutDB {
             int index = profiles.indexOf(existingProfile);
             
             WorkoutProfile updatedProfile = new WorkoutProfile(
-                existingProfile.getID(),
-                profile.getName(),
-                profile.getIconPath(),
-                profile.getWorkoutItems() 
-            );
+                    existingProfile.getID(),
+                    profile.getName(),
+                    profile.getIconPath(),
+                    profile.getWorkoutItems(),
+                    false
+                );
             
             profiles.set(index, updatedProfile);
             
@@ -141,15 +144,13 @@ public class WorkoutStub implements IWorkoutDB {
     }
     
     @Override
-    public boolean deleteWorkout(int id) throws DBException {
+    public void deleteWorkout(int id) throws DBException {
         for (int i = 0; i < profiles.size(); i++) {
             if (profiles.get(i).getID() == id) {
                 profiles.remove(i);
                 profileItems.remove(id);
-                return true;
             }
         }
-        return false;
     }
     
     @Override

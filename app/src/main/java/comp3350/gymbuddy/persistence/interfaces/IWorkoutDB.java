@@ -2,7 +2,6 @@ package comp3350.gymbuddy.persistence.interfaces;
 
 import java.util.List;
 
-import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 
@@ -33,10 +32,9 @@ public interface IWorkoutDB extends AutoCloseable {
     /**
      * Delete a workout profile.
      * @param id The ID of the workout profile to delete.
-     * @return True if the operation was successful, false otherwise.
      * @throws DBException If an error occurs while accessing the database.
      */
-    boolean deleteWorkout(int id) throws DBException;
+    void deleteWorkout(int id) throws DBException;
     
     /**
      * Search for workout profiles containing the given query in their name.

@@ -51,24 +51,19 @@ public class MainActivity extends BaseActivity {
         // Set up delete functionality only in this activity
         workoutProfileAdapter.setShowDeleteButtons(true);
         workoutProfileAdapter.setOnProfileDeleteListener((profile, position) -> {
+            WorkoutManager workoutManager = new WorkoutManager(true);
+
             // Delete the workout profile
             try {
-                WorkoutManager workoutManager = new WorkoutManager(true);
-                boolean success = workoutManager.deleteWorkout(profile.getID());
+                workoutManager.deleteWorkout(profile.getID());
 
-                if (success) {
-                    // Show success toast
-                    Toast.makeText(MainActivity.this,
-                            R.string.workout_deleted,
-                            Toast.LENGTH_SHORT).show();
+                // Show success toast
+                Toast.makeText(MainActivity.this,
+                        R.string.workout_deleted,
+                        Toast.LENGTH_SHORT).show();
 
-                    // Refresh the list
-                    loadWorkoutProfiles();
-                } else {
-                    Toast.makeText(MainActivity.this,
-                            R.string.failed_to_delete_workout,
-                            Toast.LENGTH_SHORT).show();
-                }
+                // Refresh the list
+                loadWorkoutProfiles();
             } catch (DBException e) {
                 Toast.makeText(MainActivity.this,
                         getString(R.string.error_deleting_workout) + e.getMessage(),
@@ -90,7 +85,7 @@ public class MainActivity extends BaseActivity {
         try {
             WorkoutManager workoutManager = new WorkoutManager(true);
             workoutProfiles.clear();
-            workoutProfiles.addAll(workoutManager.getAll());
+            workoutProfiles.addAll(workoutManager.getSavedWorkouts());
 
             workoutProfileAdapter.notifyDataSetChanged();
         } catch (DBException e) {
