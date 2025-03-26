@@ -106,7 +106,7 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
         List<WorkoutItem> workoutItems = workoutItemGenerator.generate();
 
         // Assign a random workout profile to the session.
-        WorkoutProfile profile = profiles.get(rand.nextInt(profiles.size()));
+        WorkoutProfile profile = profiles.get(id % profiles.size());
 
         // Increment the ID counter for the next session.
         nextId++;
