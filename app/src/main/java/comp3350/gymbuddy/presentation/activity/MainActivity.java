@@ -3,6 +3,7 @@ package comp3350.gymbuddy.presentation.activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,11 +21,13 @@ import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.hsqldb.HSQLDBHelper;
 import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
+import comp3350.gymbuddy.presentation.util.NavigationHelper;
 import timber.log.Timber;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
     private WorkoutProfileAdapter workoutProfileAdapter;
     private List<WorkoutProfile> workoutProfiles;
+    private NavigationHelper navigationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +35,16 @@ public class MainActivity extends BaseActivity {
 
         Timber.plant(new Timber.DebugTree());
         initializeDatabase();
+        
+        // Initialize navigation helper
+        navigationHelper = new NavigationHelper(this);
 
         // Initialize View Binding
         comp3350.gymbuddy.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Set up BottomNavigationView using the base class
-        setupBottomNavigation(binding.bottomNavigationView, R.id.home);
+        // Set up BottomNavigationView using the navigation helper
+        navigationHelper.setupBottomNavigation(binding.bottomNavigationView, R.id.home);
 
         // Initialize RecyclerView
         RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;

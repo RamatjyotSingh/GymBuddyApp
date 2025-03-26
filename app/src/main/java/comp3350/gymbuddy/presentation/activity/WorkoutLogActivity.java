@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -16,14 +17,20 @@ import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.presentation.adapters.WorkoutLogAdapter;
+import comp3350.gymbuddy.presentation.util.NavigationHelper;
 
-public class WorkoutLogActivity extends BaseActivity {
+public class WorkoutLogActivity extends AppCompatActivity {
     // View binding for accessing UI elements efficiently
     private ActivityWorkoutLogBinding binding;
+    private NavigationHelper navigationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceBundle){
         super.onCreate(savedInstanceBundle);
+        
+        // Initialize navigation helper
+        navigationHelper = new NavigationHelper(this);
+        
         // Inflate the layout using view binding
         binding = ActivityWorkoutLogBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -62,9 +69,9 @@ public class WorkoutLogActivity extends BaseActivity {
             }
         });
 
-        setupBottomNavigation(binding.bottomNavigationView, R.id.workout_log);
+        // Use the navigation helper instead of inherited method
+        navigationHelper.setupBottomNavigation(binding.bottomNavigationView, R.id.workout_log);
     }
-
 
     private void openWorkoutLogDetail(WorkoutSession workoutSession){
         Intent intent = new Intent(this, WorkoutLogDetailActivity.class);
