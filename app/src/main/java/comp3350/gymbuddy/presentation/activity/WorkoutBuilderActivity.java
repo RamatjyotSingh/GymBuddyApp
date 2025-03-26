@@ -64,6 +64,16 @@ public class WorkoutBuilderActivity extends BaseActivity {
 
         // Set up the adapter for the RecyclerView
         adapter = new WorkoutItemAdapter(workoutItems);
+        adapter.setItemDeleteListener(position -> {
+            // Remove the item
+            adapter.removeItem(position);
+            // Provide feedback
+            Toast.makeText(WorkoutBuilderActivity.this, 
+                          getString(R.string.exercise_removed), 
+                          Toast.LENGTH_SHORT).show();
+        });
+        // Enable delete buttons for this activity only
+        adapter.setShowDeleteButtons(true);
         binding.recyclerWorkoutItems.setAdapter(adapter);
 
         setupBottomNavigation(binding.bottomNavigationView, R.id.build_workouts);

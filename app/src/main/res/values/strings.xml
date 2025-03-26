@@ -71,5 +71,7 @@
     <string name="tag_mainactivity">MainActivity</string>
     <string name="db_script">gymbuddydb.script</string>
     <string name="error_loading_db">Failed to load workout data, please try again later or contact support</string>
+    <string name="delete_workout">Delete workout</string>
+    <string name="exercise_removed">Exercise Deleted</string>
 
 </resources>
