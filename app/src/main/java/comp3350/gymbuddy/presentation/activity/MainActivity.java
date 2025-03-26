@@ -47,6 +47,35 @@ public class MainActivity extends BaseActivity {
         // Initialize data structures
         workoutProfiles = new ArrayList<>();
         workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
+
+        // Set up delete functionality only in this activity
+        workoutProfileAdapter.setShowDeleteButtons(true);
+        workoutProfileAdapter.setOnProfileDeleteListener((profile, position) -> {
+            // Delete the workout profile
+            try {
+                WorkoutManager workoutManager = new WorkoutManager(true);
+                boolean success = workoutManager.deleteWorkout(profile.getID());
+
+                if (success) {
+                    // Show success toast
+                    Toast.makeText(MainActivity.this,
+                            R.string.workout_deleted,
+                            Toast.LENGTH_SHORT).show();
+
+                    // Refresh the list
+                    loadWorkoutProfiles();
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            R.string.failed_to_delete_workout,
+                            Toast.LENGTH_SHORT).show();
+                }
+            } catch (DBException e) {
+                Toast.makeText(MainActivity.this,
+                        getString(R.string.error_deleting_workout) + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
         recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
 
         // Load workout profiles
