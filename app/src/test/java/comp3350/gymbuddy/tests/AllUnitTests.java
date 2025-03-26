@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 
 import comp3350.gymbuddy.tests.logic.ExerciseManagerTest;
 import comp3350.gymbuddy.tests.logic.WorkoutManagerTest;
+import comp3350.gymbuddy.tests.logic.WorkoutSessionManagerTest;
 import comp3350.gymbuddy.tests.objects.ExerciseTest;
 import comp3350.gymbuddy.tests.objects.WorkoutItemTest;
 import comp3350.gymbuddy.tests.objects.WorkoutProfileTest;
@@ -15,7 +16,7 @@ import comp3350.gymbuddy.tests.objects.WorkoutSessionTest;
         // logic unit tests
         ExerciseManagerTest.class,
         WorkoutManagerTest.class,
-        WorkoutSessionTest.class,
+        WorkoutSessionManagerTest.class,
 
         // object tests
         ExerciseTest.class,
