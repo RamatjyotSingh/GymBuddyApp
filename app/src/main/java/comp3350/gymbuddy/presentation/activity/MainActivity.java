@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity {
         try {
             WorkoutManager workoutManager = new WorkoutManager(true);
             workoutProfiles.clear();
-            workoutProfiles.addAll(workoutManager.getAll());
+            workoutProfiles.addAll(workoutManager.getSavedWorkouts());
 
             workoutProfileAdapter.notifyDataSetChanged();
         } catch (DBException e) {

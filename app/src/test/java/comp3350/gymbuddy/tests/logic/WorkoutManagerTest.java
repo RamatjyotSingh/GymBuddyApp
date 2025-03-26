@@ -24,12 +24,12 @@ public class WorkoutManagerTest {
     }
 
     @Test
-    public void testGetAll(){
+    public void testGetSavedWorkouts(){
         List<WorkoutProfile> result;
         List<WorkoutProfile> expected;
 
         expected = workoutStub.getAll();
-        result = workoutManager.getAll();
+        result = workoutManager.getSavedWorkouts();
 
         assertNotNull(result);
         assertFalse(result.isEmpty());

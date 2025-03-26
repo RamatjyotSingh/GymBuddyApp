@@ -43,4 +43,6 @@ public class WorkoutProfile {
     public List<WorkoutItem> getWorkoutItems() {
         return Collections.unmodifiableList(workoutItems);
     }
+
+    public boolean isDeleted() { return isDeleted; }
 }

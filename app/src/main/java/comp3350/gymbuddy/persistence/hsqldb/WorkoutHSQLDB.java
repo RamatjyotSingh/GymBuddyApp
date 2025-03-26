@@ -156,7 +156,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     // Get workout items for this profile
                     List<WorkoutItem> items = getWorkoutItemsForProfile(id);
                     
-                    profiles.add(new WorkoutProfile(id, name, iconPath, items, false));
+                    profiles.add(new WorkoutProfile(id, name, iconPath, items, isDeleted));
                 }
             }
             
@@ -204,7 +204,11 @@ public class WorkoutHSQLDB implements IWorkoutDB {
              PreparedStatement stmt = conn.prepareStatement(
                      "UPDATE PUBLIC.workout_profile SET is_deleted = 1 WHERE profile_id = ?")) {
             stmt.setInt(1, id);
-            stmt.executeUpdate();
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DBException("Failed to update workout profile.");
+            }
         } catch (SQLException e) {
             throw new DBException("Error deleting workout: " + e.getMessage());
         }
