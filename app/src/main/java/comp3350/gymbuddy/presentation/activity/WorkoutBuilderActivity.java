@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
@@ -27,11 +28,15 @@ import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.presentation.adapters.WorkoutItemAdapter;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseDialogFragment;
 import comp3350.gymbuddy.presentation.util.DSOBundler;
+import comp3350.gymbuddy.presentation.util.NavigationHelper;
 
-public class WorkoutBuilderActivity extends BaseActivity {
+public class WorkoutBuilderActivity extends AppCompatActivity {
 
     // View binding for accessing UI elements efficiently
     private ActivityWorkoutBuilderBinding binding;
+
+    // Navigation helper component
+    private NavigationHelper navigationHelper;
 
     // Launcher for starting the ExerciseListActivity and handling its result
     private final ActivityResultLauncher<Intent> exerciseListLauncher = registerForActivityResult(
@@ -45,12 +50,15 @@ public class WorkoutBuilderActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Initialize navigation helper
+        navigationHelper = new NavigationHelper(this);
+        
         // Inflate the layout using view binding
         binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Set up the RecyclerView with a LinearLayoutManager for displaying workout
-        // items
+        // Set up the RecyclerView with a LinearLayoutManager for displaying workout items
         binding.recyclerWorkoutItems.setLayoutManager(new LinearLayoutManager(this));
 
         // Listen for results from the AddExerciseDialogFragment (workout item details)
@@ -76,7 +84,8 @@ public class WorkoutBuilderActivity extends BaseActivity {
         adapter.setShowDeleteButtons(true);
         binding.recyclerWorkoutItems.setAdapter(adapter);
 
-        setupBottomNavigation(binding.bottomNavigationView, R.id.build_workouts);
+        // Set up bottom navigation using our navigation helper
+        navigationHelper.setupBottomNavigation(binding.bottomNavigationView, R.id.build_workouts);
     }
 
     /**
