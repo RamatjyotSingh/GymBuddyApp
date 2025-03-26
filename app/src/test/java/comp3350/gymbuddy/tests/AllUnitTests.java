@@ -23,8 +23,7 @@ import comp3350.gymbuddy.tests.objects.WorkoutSessionTest;
         WorkoutItemTest.class,
         WorkoutProfileTest.class,
         WorkoutSessionTest.class,
-
 })
 
-public class AllTests {
+public class AllUnitTests {
 }

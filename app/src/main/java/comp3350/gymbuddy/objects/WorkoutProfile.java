@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class WorkoutProfile {
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
     private final String iconPath;
     private final List<WorkoutItem> workoutItems;
+    private final boolean isDeleted;
 
     // Constructor for creating a new profile (before saving to DB), also use with stubs
     public WorkoutProfile(String name, String iconPath, List<WorkoutItem> workoutItems) {
@@ -15,30 +16,24 @@ public class WorkoutProfile {
         this.name = name;
         this.iconPath = iconPath;
         this.workoutItems = workoutItems;
+        this.isDeleted = false;
     }
 
     // Constructor for loading from DB (with an existing ID)
-    public WorkoutProfile(int id, String name, String iconPath, List<WorkoutItem> workoutItems) {
+    public WorkoutProfile(int id, String name, String iconPath, List<WorkoutItem> workoutItems, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.iconPath = iconPath;
         this.workoutItems = workoutItems;
+        this.isDeleted = isDeleted;
     }
 
     public int getID() {
         return id;
     }
 
-    public void setID(int id) { // Allows setting ID after inserting into DB
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getIconPath() {
@@ -49,5 +44,5 @@ public class WorkoutProfile {
         return Collections.unmodifiableList(workoutItems);
     }
 
-
+    public boolean isDeleted() { return isDeleted; }
 }

@@ -66,7 +66,7 @@ public class ExerciseListActivity extends AppCompatActivity {
     private void onExerciseClicked(Exercise exercise) {
         // Send exercise data back to the previous activity (WorkoutBuilderActivity)
         Intent intent = new Intent();
-        intent.putExtra("exerciseID", exercise.getID());
+        intent.putExtra(getString(R.string.exerciseid), exercise.getID());
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -74,7 +74,7 @@ public class ExerciseListActivity extends AppCompatActivity {
     private void onViewMoreClicked(Exercise exercise) {
         // Open ExerciseDetailActivity to show exercise details.
         Intent intent = new Intent(this, ExerciseDetailActivity.class);
-        intent.putExtra("exerciseID", exercise.getID());
+        intent.putExtra(getString(R.string.exerciseid), exercise.getID());
         startActivity(intent);
     }
 }

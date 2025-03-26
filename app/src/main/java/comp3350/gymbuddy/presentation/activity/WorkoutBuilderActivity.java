@@ -49,7 +49,8 @@ public class WorkoutBuilderActivity extends BaseActivity {
         binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Set up the RecyclerView with a LinearLayoutManager for displaying workout items
+        // Set up the RecyclerView with a LinearLayoutManager for displaying workout
+        // items
         binding.recyclerWorkoutItems.setLayoutManager(new LinearLayoutManager(this));
 
         // Listen for results from the AddExerciseDialogFragment (workout item details)
@@ -63,9 +64,19 @@ public class WorkoutBuilderActivity extends BaseActivity {
 
         // Set up the adapter for the RecyclerView
         adapter = new WorkoutItemAdapter(workoutItems);
+        adapter.setItemDeleteListener(position -> {
+            // Remove the item
+            adapter.removeItem(position);
+            // Provide feedback
+            Toast.makeText(WorkoutBuilderActivity.this, 
+                          getString(R.string.exercise_removed), 
+                          Toast.LENGTH_SHORT).show();
+        });
+        // Enable delete buttons for this activity only
+        adapter.setShowDeleteButtons(true);
         binding.recyclerWorkoutItems.setAdapter(adapter);
 
-        setupBottomNavigation(binding.bottomNavigationView);
+        setupBottomNavigation(binding.bottomNavigationView, R.id.build_workouts);
     }
 
     /**
@@ -93,34 +104,46 @@ public class WorkoutBuilderActivity extends BaseActivity {
         return workoutProfile;
     }
 
- /**
-  * Handles the save button click event.
-  * If the workout profile is valid, it saves the profile and its items to the database
-  * and navigates to MainActivity with the created profile.
-  */
- public void onClickSave(View v) {
-    WorkoutProfile profile = generateWorkoutProfile();
+    /**
+     * Handles the save button click event.
+     * If the workout profile is valid, it saves the profile and its items to the
+     * database
+     * and navigates to MainActivity with the created profile.
+     */
+    public void onClickSave(View v) {
+        WorkoutProfile profile = generateWorkoutProfile();
 
-    if (profile != null) {
-        try {
-            WorkoutManager workoutManager = new WorkoutManager(true);
-            boolean success = workoutManager.saveWorkout(profile);
-            
-            if (success) {
-                // Show success message
-                Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
+        if (profile != null) {
+            try {
+                WorkoutManager workoutManager = new WorkoutManager(true);
+                boolean success = workoutManager.saveWorkout(profile);
 
-                finish();
-            } else {
-                Toast.makeText(this, "Failed to save workout profile", Toast.LENGTH_SHORT).show();
+                if (success) {
+                    // Show success message
+                    Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
+
+                    // Explicitly navigate to MainActivity
+                    Intent intent = new Intent(this, MainActivity.class);
+
+                    // Use consistent flag with your navigation approach
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                    // Add smooth transition with no animation
+                    android.app.ActivityOptions options = android.app.ActivityOptions.makeCustomAnimation(this, 0, 0);
+                    startActivity(intent, options.toBundle());
+
+                    // Still finish this activity to prevent it remaining in the back stack
+                    finish();
+                } else {
+                    Toast.makeText(this, "Failed to save workout profile", Toast.LENGTH_SHORT).show();
+                }
+            } catch (DBException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        } catch (DBException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-}
 
     /**
      * Handles the Floating Action Button (FAB) click event.
@@ -136,7 +159,7 @@ public class WorkoutBuilderActivity extends BaseActivity {
      * Extracts the workout item from the bundle and adds it to the adapter.
      *
      * @param requestKey The key identifying the request.
-     * @param bundle The data bundle containing workout item details.
+     * @param bundle     The data bundle containing workout item details.
      */
     private void handleWorkoutItemResult(String requestKey, Bundle bundle) {
         var dsoBundler = new DSOBundler();
@@ -166,6 +189,5 @@ public class WorkoutBuilderActivity extends BaseActivity {
             }
         }
     }
-
 
 }

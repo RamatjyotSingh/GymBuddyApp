@@ -1,4 +1,6 @@
 <resources>
+
+
     <!-- App Name -->
     <string name="app_name">GymBuddy</string>
 
@@ -23,29 +25,56 @@
     <string name="add_exercise">Add Exercise</string>
     <string name="exercise_name">Exercise Name</string>
     <string name="more">+ More</string>
-    <string name="view_more">view more</string>
 
-    <!-- Search Hints -->
-    <string name="exercise_list_search_hint">Search Exercises…</string>
-    <string name="workout_log_search_hint">Search Workouts…</string>
-    <string name="sets">Sets</string>
+    <!-- StartWorkoutListActivity strings -->
+    <string name="start_workout">Start Workout</string>
+    <string name="no_exercises">No exercises</string>
+    <string name="no_exercises_in_workout">No exercises in this workout</string>
+    <string name="exercise_count_format">%1$d exercises</string>
+
+    <!-- WorkoutPlayerActivity strings -->
+    <string name="setNumberPlaceholder">#</string>
+    <string name="delete_set_button_content_description">Delete Set</string>
+    <string name="weight_lbs">Weight (lbs)</string>
+    <string name="time_sec">Time (sec)</string>
     <string name="reps">Reps</string>
-    <string name="weight">Weight (lbs)</string>
-    <string name="time">Time (sec)</string>
+    <string name="current_exercise">Current Exercise</string>
+    <string name="sets">Sets</string>
+    <string name="weight">Weight</string>
+    <string name="previous">Previous</string>
+    <string name="add_set_entry_button_content_description">Add Set Entry Button</string>
+    <string name="next">Next</string>
+    <string name="exercise_image_content_description">Image of the current exercise</string>
+    <string name="time">Time</string>
 
-    <!-- Common UI Elements -->
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-    <string name="todo">TODO</string>
+
+    <!--    default string -->
     <string name="default_string">Default String</string>
-    <string name ="no_selection">No Selection</string>
-    <string name="add">Add</string>
+    <!--    exercise list search hint -->
+    <string name="exercise_list_search_hint">Search…</string>
 
-    <!-- Nav Bar Names -->
+    <!-- Missing strings from error report -->
+    <string name="save">Save</string>
+    <string name="workout_log_search_hint">Search workout logs…</string>
+    <string name="no_selection">No Selection</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="view_more">View More</string>
     <string name="home">Home</string>
     <string name="build_workout">Build Workout</string>
     <string name="workout_log">Workout Log</string>
+    <string name="instruction_num_color">#1E40AF</string>
+    <string name="exerciseid">exerciseID</string>
+    <string name="error_loading_workout_profiles">"Error loading workout profiles: "</string>
+    <string name="db_dir">db</string>
+    <string name="internal_error">Internal Error. please contact support</string>
+    <string name="tag_mainactivity">MainActivity</string>
+    <string name="db_script">gymbuddydb.script</string>
+    <string name="error_loading_db">Failed to load workout data, please try again later or contact support</string>
+    <string name="delete_workout">Delete workout</string>
+    <string name="exercise_removed">Exercise Deleted</string>
+    <string name="workout_deleted">Workout deleted successfully</string>
+    <string name="failed_to_delete_workout">Failed to delete workout</string>
+    <string name="error_deleting_workout">Error deleting workout: </string>
 
-    <!-- Date Format -->
-    <string name="date_format">MMM dd yyyy</string>
 </resources>

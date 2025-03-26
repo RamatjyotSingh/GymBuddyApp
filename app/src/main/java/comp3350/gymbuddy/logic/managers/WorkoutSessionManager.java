@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;

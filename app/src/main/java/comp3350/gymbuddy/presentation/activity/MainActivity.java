@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -22,7 +23,6 @@ import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 import timber.log.Timber;
 
 public class MainActivity extends BaseActivity {
-    private ActivityMainBinding binding;
     private WorkoutProfileAdapter workoutProfileAdapter;
     private List<WorkoutProfile> workoutProfiles;
 
@@ -32,13 +32,13 @@ public class MainActivity extends BaseActivity {
 
         Timber.plant(new Timber.DebugTree());
         initializeDatabase();
-        // Initialize View Binding
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // Initialize View Binding
+        comp3350.gymbuddy.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Set up BottomNavigationView using the base class
-        setupBottomNavigation(binding.bottomNavigationView);
+        setupBottomNavigation(binding.bottomNavigationView, R.id.home);
 
         // Initialize RecyclerView
         RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
@@ -47,14 +47,35 @@ public class MainActivity extends BaseActivity {
         // Initialize data structures
         workoutProfiles = new ArrayList<>();
         workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
+
+        // Set up delete functionality only in this activity
+        workoutProfileAdapter.setShowDeleteButtons(true);
+        workoutProfileAdapter.setOnProfileDeleteListener((profile, position) -> {
+            WorkoutManager workoutManager = new WorkoutManager(true);
+
+            // Delete the workout profile
+            try {
+                workoutManager.deleteWorkout(profile.getID());
+
+                // Show success toast
+                Toast.makeText(MainActivity.this,
+                        R.string.workout_deleted,
+                        Toast.LENGTH_SHORT).show();
+
+                // Refresh the list
+                loadWorkoutProfiles();
+            } catch (DBException e) {
+                Toast.makeText(MainActivity.this,
+                        getString(R.string.error_deleting_workout) + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
         recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
 
         // Load workout profiles
         loadWorkoutProfiles();
-
-
     }
-
 
 
     /**
@@ -64,11 +85,11 @@ public class MainActivity extends BaseActivity {
         try {
             WorkoutManager workoutManager = new WorkoutManager(true);
             workoutProfiles.clear();
-            workoutProfiles.addAll(workoutManager.getAll());
+            workoutProfiles.addAll(workoutManager.getSavedWorkouts());
 
             workoutProfileAdapter.notifyDataSetChanged();
         } catch (DBException e) {
-            Toast.makeText(this, "Error loading workout profiles: " + e.getMessage(), 
+            Toast.makeText(this, getString(R.string.error_loading_workout_profiles) + e.getMessage(),
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -78,28 +99,35 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload data when returning to this activity (alternative to intent-based approach)
+        
+        // Clear any highlighted items when returning to the activity
+        if (workoutProfileAdapter != null) {
+            workoutProfileAdapter.clearHighlight();
+        }
+        
+        // Reload data when returning to this activity
         loadWorkoutProfiles();
     }
 
     private void initializeDatabase() {
         // Create DB directory
-        File dbDir = new File(getFilesDir(), "db");
+        File dbDir = new File(getFilesDir(), getString(R.string.db_dir));
         if (!dbDir.exists() && !dbDir.mkdirs()) {
-            Timber.tag("GlobalApp").e("Failed to create DB directory");
+            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to create DB directory");
             return;
         }
 
 
-        File dbFile = new File(dbDir, "gymbuddydb.script");
+        File dbFile = new File(dbDir, getString(R.string.db_script));
 
         if(dbFile.exists() && dbFile.length() > 0) {
-            Timber.tag("GlobalApp").d("Database already exists");
+            Timber.tag(getString(R.string.tag_mainactivity)).d("Database already exists");
             HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
             return;
         }
 
-        Timber.tag("GlobalApp").d("Database needs to be initialized");
+        Timber.tag(getString(R.string.tag_mainactivity)).d("Database needs to be initialized");
 
         // Extract required files
         String[] dbFiles = {"db/Project.script", "db/DBConfig.properties"};
@@ -112,9 +140,10 @@ public class MainActivity extends BaseActivity {
         HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
         try {
             HSQLDBHelper.init();
-            Timber.tag("GlobalApp").d("Database initialized successfully");
+            Timber.tag(getString(R.string.tag_mainactivity)).d("Database initialized successfully");
         } catch (Exception e) {
-            Timber.tag("GlobalApp").e("Failed to initialize database: %s", e.getMessage());
+            Toast.makeText(this, getString(R.string.error_loading_db), Toast.LENGTH_LONG).show();
+            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to initialize database: %s", e.getMessage());
         }
     }
 
@@ -131,7 +160,7 @@ public class MainActivity extends BaseActivity {
 
         // Skip if file already exists and is not empty
         if (outputFile.exists() && outputFile.length() > 0) {
-            Timber.tag("GlobalApp").d("File already exists: %s", destFilename);
+            Timber.tag(getString(R.string.tag_mainactivity)).d("File already exists: %s", destFilename);
             return;
         }
 
@@ -144,9 +173,10 @@ public class MainActivity extends BaseActivity {
                 fos.write(buffer, 0, length);
             }
 
-            Timber.tag("GlobalApp").d("Extracted file: %s → %s", assetPath, outputFile.getAbsolutePath());
+            Timber.tag(getString(R.string.tag_mainactivity)).d("Extracted file: %s → %s", assetPath, outputFile.getAbsolutePath());
         } catch (IOException e) {
-            Timber.tag("GlobalApp").e("Failed to extract file: %s - %s", assetPath, e.getMessage());
+            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to extract file: %s - %s", assetPath, e.getMessage());
         }
     }
 }

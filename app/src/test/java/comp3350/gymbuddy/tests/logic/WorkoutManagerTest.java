@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
@@ -23,12 +24,12 @@ public class WorkoutManagerTest {
     }
 
     @Test
-    public void testGetAll(){
+    public void testGetSavedWorkouts(){
         List<WorkoutProfile> result;
         List<WorkoutProfile> expected;
 
         expected = workoutStub.getAll();
-        result = workoutManager.getAll();
+        result = workoutManager.getSavedWorkouts();
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
@@ -40,14 +41,18 @@ public class WorkoutManagerTest {
         List<WorkoutProfile> workoutProfiles;
         int beforeSize = workoutStub.getAll().size();
 
-        WorkoutProfile newProfile = new WorkoutProfile("Test Profile", "path", null);
+        WorkoutProfile newProfile = new WorkoutProfile("Test Profile", "path", new ArrayList<>());
 
         workoutManager.saveWorkout(newProfile);
 
         workoutProfiles = workoutStub.getAll();
 
         assertTrue(workoutStub.getAll().size() > beforeSize);
-        assertEquals(workoutProfiles.get(workoutProfiles.size()-1), newProfile);
+
+        WorkoutProfile addedProfile = workoutProfiles.get(workoutProfiles.size() - 1);
+        assertEquals(addedProfile.getName(), newProfile.getName());
+        assertEquals(addedProfile.getIconPath(), newProfile.getIconPath());
+        assertEquals(addedProfile.getWorkoutItems(), newProfile.getWorkoutItems());
     }
 
     @Test

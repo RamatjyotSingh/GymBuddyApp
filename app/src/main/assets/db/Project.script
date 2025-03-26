@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS PUBLIC.exercise_tag (
 CREATE TABLE IF NOT EXISTS PUBLIC.workout_profile (
     profile_id INTEGER PRIMARY KEY,
     profile_name VARCHAR(255) NOT NULL,
-    icon_path VARCHAR(255) DEFAULT NULL
+    icon_path VARCHAR(255) DEFAULT NULL,
+    is_deleted BIT DEFAULT 0
 );
 
 -- Store exercises assigned to workout profiles
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS PUBLIC.workout_session (
     end_time BIGINT NOT NULL,
     profile_id INTEGER,
     CONSTRAINT fk_workout_session_profile FOREIGN KEY (profile_id)
-        REFERENCES PUBLIC.workout_profile (profile_id) ON DELETE SET NULL
+        REFERENCES PUBLIC.workout_profile (profile_id) ON DELETE CASCADE
 );
 
 -- Session items track individual exercises performed in a session
