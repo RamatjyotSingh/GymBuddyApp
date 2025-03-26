@@ -64,12 +64,14 @@ public class WorkoutSessionManagerTest {
         final String searchString;
 
         expected.add(workoutSessionStub.getWorkoutSessionByid(0));
-        searchString = expected.get(0).getDate();
+        expected.add(workoutSessionStub.getWorkoutSessionByid(2));
+        searchString = expected.get(0).getWorkoutProfile().getName();
 
         result = workoutSessionManager.search(searchString);
         assertNotNull(result);
         assertEquals(expected.size(), result.size());
         assertEquals(expected.get(0), result.get(0));
+        assertEquals(expected.get(1), result.get(1));
     }
 
     @Test

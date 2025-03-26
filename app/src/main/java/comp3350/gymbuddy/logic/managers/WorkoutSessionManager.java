@@ -26,7 +26,7 @@ public class WorkoutSessionManager {
     public List<WorkoutSession> search(String searchString){
         List<WorkoutSession> results = new ArrayList<>();
 
-        if (!searchString.isEmpty()) {
+        if (searchString != null && !searchString.isEmpty()) {
             for (var session : workoutSessionDB.getAll()) {
                 if (session.getDate().toLowerCase().contains(searchString.toLowerCase())) {
                     results.add(session);
