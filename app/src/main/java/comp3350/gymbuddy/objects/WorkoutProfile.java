@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class WorkoutProfile {
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
     private final String iconPath;
     private final List<WorkoutItem> workoutItems;
     private final boolean isDeleted;

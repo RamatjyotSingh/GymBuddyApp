@@ -2,7 +2,6 @@ package comp3350.gymbuddy.persistence.interfaces;
 
 import java.util.List;
 
-import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 
