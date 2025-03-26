@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.persistence.util;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,6 +42,7 @@ public class WorkoutItemGenerator {
      * Generates a randomized list of workout items.
      * @return A list of randomly generated WorkoutItem objects.
      */
+    @NonNull
     public List<WorkoutItem> generate() {
         List<WorkoutItem> workoutItems = new ArrayList<>();
         Random random = new Random(seed);
