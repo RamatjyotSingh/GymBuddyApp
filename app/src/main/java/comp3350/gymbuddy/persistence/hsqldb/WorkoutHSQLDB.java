@@ -41,10 +41,11 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                         if (rs.next()) {
                             profileId = rs.getInt("profile_id");
                             existingProfile = new WorkoutProfile(
-                                profileId,
-                                rs.getString("profile_name"),
-                                rs.getString("icon_path"),
-                                new ArrayList<>()
+                                    profileId,
+                                    rs.getString("profile_name"),
+                                    rs.getString("icon_path"),
+                                    new ArrayList<>(),
+                                    false
                             );
                         }
                     }
@@ -150,11 +151,12 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     int id = rs.getInt("profile_id");
                     String name = rs.getString("profile_name");
                     String iconPath = rs.getString("icon_path");
+                    boolean isDeleted = rs.getBoolean("is_deleted");
                     
                     // Get workout items for this profile
                     List<WorkoutItem> items = getWorkoutItemsForProfile(id);
                     
-                    profiles.add(new WorkoutProfile(id, name, iconPath, items));
+                    profiles.add(new WorkoutProfile(id, name, iconPath, items, false));
                 }
             }
             
@@ -179,11 +181,12 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                 if (rs.next()) {
                     String name = rs.getString("profile_name");
                     String iconPath = rs.getString("icon_path");
+                    boolean isDeleted = rs.getBoolean("is_deleted");
                     
                     // Get workout items for this profile
                     List<WorkoutItem> items = getWorkoutItemsForProfile(id);
                     
-                    profile = new WorkoutProfile(id, name, iconPath, items);
+                    profile = new WorkoutProfile(id, name, iconPath, items, isDeleted);
                 }
             }
             
@@ -195,41 +198,15 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     }
     
     @Override
-    public boolean deleteWorkout(int id) throws DBException {
-        try (Connection conn = HSQLDBHelper.getConnection()) {
-            // Begin transaction
-            conn.setAutoCommit(false);
-            
-            try {
-                // Delete profile exercises first (foreign key constraint)
-                try (PreparedStatement stmt = conn.prepareStatement(
-                        "DELETE FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
-                    stmt.setInt(1, id);
-                    stmt.executeUpdate();
-                }
-                
-                // Now delete the profile
-                try (PreparedStatement stmt = conn.prepareStatement(
-                        "DELETE FROM PUBLIC.workout_profile WHERE profile_id = ?")) {
-                    stmt.setInt(1, id);
-                    int rowsAffected = stmt.executeUpdate();
-                    
-                    // Commit transaction
-                    conn.commit();
-                    return rowsAffected > 0;
-                }
-                
-            } catch (SQLException e) {
-                // Rollback transaction on error
-                conn.rollback();
-                throw new DBException("Error deleting workout profile: " + e.getMessage());
-            } finally {
-                // Restore auto-commit
-                conn.setAutoCommit(true);
-            }
-            
+    public void deleteWorkout(int id) throws DBException {
+        // Mark the profile as deleted (This keeps it stored in the DB for the logs).
+        try (Connection conn = HSQLDBHelper.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "UPDATE PUBLIC.workout_profile SET is_deleted = 1 WHERE profile_id = ?")) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DBException("Error connecting to database: " + e.getMessage());
+            throw new DBException("Error deleting workout: " + e.getMessage());
         }
     }
     
@@ -252,11 +229,12 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     int id = rs.getInt("profile_id");
                     String name = rs.getString("profile_name");
                     String iconPath = rs.getString("icon_path");
+                    boolean isDeleted = rs.getBoolean("is_deleted");
                     
                     // Get workout items for this profile
                     List<WorkoutItem> items = getWorkoutItemsForProfile(id);
                     
-                    results.add(new WorkoutProfile(id, name, iconPath, items));
+                    results.add(new WorkoutProfile(id, name, iconPath, items, isDeleted));
                 }
             }
             
