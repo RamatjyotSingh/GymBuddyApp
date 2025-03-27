@@ -52,7 +52,7 @@ public class WorkoutLogTest {
     }
 
     @Test
-    public void testViewWorkoutLogDetail(){
+    public void testViewWorkoutLogDetail() {
         // Check that there exists data in the log activity
         onView(withId(R.id.workoutLogRecyclerView))
                 .check(matches(hasMinimumChildCount(1)));

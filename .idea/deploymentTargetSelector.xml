@@ -13,7 +13,13 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="AllIntegrationTests">
+      <SelectionState runConfigName="WorkoutPlayerTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testViewWorkoutDetails()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testPlayThroughWorkout()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

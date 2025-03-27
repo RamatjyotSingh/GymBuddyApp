@@ -63,10 +63,6 @@ public class WorkoutItem {
         return exercise;
     }
 
-    public String getExerciseName(){
-        return exercise.getName();
-    }
-
     public int getSets() {
         return sets;
     }
@@ -93,6 +89,7 @@ public class WorkoutItem {
      * Returns a nicely formatted string representation of this workout item.
      * Only includes attributes with valid values.
      */
+    @NonNull
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
