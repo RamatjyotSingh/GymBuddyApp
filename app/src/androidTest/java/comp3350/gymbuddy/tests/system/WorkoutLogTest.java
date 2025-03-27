@@ -84,7 +84,7 @@ public class WorkoutLogTest {
     }
 
     @Test
-    public void testSearchWorkoutLog(){
+    public void testSearchWorkoutLog() throws InterruptedException {
         // Check that the search bar is visible
         onView(withId(R.id.workoutLogSearchView))
                 .check(matches(isDisplayed()));
@@ -97,6 +97,8 @@ public class WorkoutLogTest {
         onView(withId(androidx.appcompat.R.id.search_src_text))
                 .perform(typeText("Full"));
 
+        Thread.sleep(1000);  // ✅ Wait 1 second to allow UI updates
+
         // Check that there exists data in the log activity
         onView(withId(R.id.workoutLogRecyclerView))
                 .check(matches(hasMinimumChildCount(1)));
@@ -108,6 +110,8 @@ public class WorkoutLogTest {
         // Search for a non-existent item
         onView(withId(androidx.appcompat.R.id.search_src_text))
                 .perform(typeText("/"));
+
+        Thread.sleep(1000);  // ✅ Wait 1 second to allow UI updates
 
         // Check that there does not exist data in the log activity
         onView(withId(R.id.workoutLogRecyclerView))
