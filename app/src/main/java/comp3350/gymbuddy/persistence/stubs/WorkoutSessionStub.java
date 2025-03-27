@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.persistence.stubs;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -335,6 +337,7 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
      * @throws DBException If an error occurs.
      */
     @Override
+    @NonNull
     public List<WorkoutSession> search(String query) throws DBException {
         if (query == null || query.isEmpty()) {
             return new ArrayList<>();
@@ -365,6 +368,7 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
      * @throws DBException If an error occurs.
      */
     @Override
+    @NonNull
     public List<WorkoutItem> getExercisesForSession(int sessionId) throws DBException {
         List<WorkoutItem> items = sessionExercises.get(sessionId);
         return items != null ? Collections.unmodifiableList(items) : new ArrayList<>();

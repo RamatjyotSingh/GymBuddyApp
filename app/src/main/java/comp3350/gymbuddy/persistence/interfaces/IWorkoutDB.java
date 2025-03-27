@@ -32,9 +32,10 @@ public interface IWorkoutDB extends AutoCloseable {
     /**
      * Delete a workout profile.
      * @param id The ID of the workout profile to delete.
+     * @return True if the operation was successful, false otherwise.
      * @throws DBException If an error occurs while accessing the database.
      */
-    void deleteWorkout(int id) throws DBException;
+    boolean deleteWorkout(int id) throws DBException;
     
     /**
      * Search for workout profiles containing the given query in their name.
@@ -43,5 +44,4 @@ public interface IWorkoutDB extends AutoCloseable {
      * @throws DBException If an error occurs while accessing the database.
      */
     List<WorkoutProfile> search(String query) throws DBException;
-
 }

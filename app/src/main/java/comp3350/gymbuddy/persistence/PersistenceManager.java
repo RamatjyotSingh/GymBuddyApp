@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.persistence;
 
+import androidx.annotation.NonNull;
+
 import comp3350.gymbuddy.persistence.hsqldb.ExerciseHSQLDB;
 import comp3350.gymbuddy.persistence.hsqldb.WorkoutHSQLDB;
 import comp3350.gymbuddy.persistence.hsqldb.WorkoutSessionHSQLDB;
@@ -25,6 +27,7 @@ public class PersistenceManager {
      * @param forProduction If true, returns an HSQLDB instance; otherwise, returns a stub.
      * @return An instance of IWorkoutDB.
      */
+    @NonNull
     public static synchronized IWorkoutDB getWorkoutDB(boolean forProduction) {
         if (workoutDB == null) {
             if (forProduction) {
@@ -42,6 +45,7 @@ public class PersistenceManager {
      * @param forProduction If true, returns an HSQLDB instance; otherwise, returns a stub.
      * @return An instance of IExerciseDB.
      */
+    @NonNull
     public static synchronized IExerciseDB getExerciseDB(boolean forProduction) {
         if (exerciseDB == null) {
             if (forProduction) {
@@ -59,6 +63,7 @@ public class PersistenceManager {
      * @param forProduction If true, returns an HSQLDB instance; otherwise, returns a stub.
      * @return An instance of IWorkoutSessionDB.
      */
+    @NonNull
     public static synchronized IWorkoutSessionDB getWorkoutSessionDB(boolean forProduction) {
         if (workoutSessionDB == null) {
             if (forProduction) {

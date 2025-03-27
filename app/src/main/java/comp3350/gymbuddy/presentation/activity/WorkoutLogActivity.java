@@ -62,9 +62,8 @@ public class WorkoutLogActivity extends BaseActivity {
             }
         });
 
-        setupBottomNavigation(binding.bottomNavigationView, R.id.workout_log);
+        setupBottomNavigation(binding.bottomNavigationView);
     }
-
 
     private void openWorkoutLogDetail(WorkoutSession workoutSession){
         Intent intent = new Intent(this, WorkoutLogDetailActivity.class);

@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
+import androidx.annotation.NonNull;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +25,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
      * @throws DBException If an error occurs while accessing the database.
      */
     @Override
+    @NonNull
     public List<Exercise> getAll() throws DBException {
         List<Exercise> exercises = new ArrayList<>();
         String query = "SELECT * FROM exercise";
@@ -75,6 +78,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
      * @return A new Exercise object populated with the retrieved data.
      * @throws SQLException If an error occurs while reading the result set.
      */
+    @NonNull
     private Exercise extractExercise(ResultSet rs) throws SQLException {
         int exerciseId = rs.getInt("exercise_id");
         String name = rs.getString("name");
@@ -95,6 +99,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
      * @return A new Tag object populated with the retrieved data.
      * @throws SQLException If an error occurs while reading the result set.
      */
+    @NonNull
     private Tag extractTag(ResultSet rs) throws SQLException {
         String name = rs.getString("tag_name");
         int tagType = rs.getInt("tag_type");
@@ -111,6 +116,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
      * @return A list of associated Tag objects.
      * @throws DBException If an error occurs while accessing the database.
      */
+    @NonNull
     private List<Tag> getTagsByExerciseId(int exerciseID) throws DBException {
         List<Tag> tags = new ArrayList<>();
         String query = "SELECT tag_name, tag_type, text_color, background_color " +

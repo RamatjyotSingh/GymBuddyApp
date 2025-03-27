@@ -44,7 +44,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
         // Get the passed exercise ID.
         Intent intent = getIntent();
-        int exerciseID = intent.getIntExtra(getString(R.string.exerciseid), 0);
+        int exerciseID = intent.getIntExtra("exerciseID", 0);
 
         // Get the exercise details from persistence.
         var exerciseManager = new ExerciseManager(true);
@@ -107,7 +107,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
                 TextView num = new TextView(binding.exerciseInstructions.getContext());
                 num.setText(String.valueOf(i + 1)); // Dynamically assign instruction number
                 num.setBackground(ContextCompat.getDrawable(binding.exerciseInstructions.getContext(), R.drawable.circle_background));
-                num.setTextColor(Color.parseColor(getString(R.string.instruction_num_color)));
+                num.setTextColor(Color.parseColor("#1E40AF"));
                 num.setPadding(16, 8, 16, 8);
 
                 TextView instruction = getInstruction(binding.exerciseInstructions, line);

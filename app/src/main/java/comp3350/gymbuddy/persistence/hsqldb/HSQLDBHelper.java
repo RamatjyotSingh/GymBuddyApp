@@ -1,5 +1,7 @@
 package comp3350.gymbuddy.persistence.hsqldb;
 
+import androidx.annotation.NonNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -230,6 +232,7 @@ public class HSQLDBHelper {
         }
     }
 
+    @NonNull
     private static List<String> getValueGroups(String valuesText) {
         List<String> valueGroups = new ArrayList<>();
         int depth = 0;
