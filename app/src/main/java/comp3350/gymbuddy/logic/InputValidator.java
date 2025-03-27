@@ -29,13 +29,13 @@ public class InputValidator {
      */
     public WorkoutProfile newWorkoutProfile(String name, String iconPath, List<WorkoutItem> workoutItems) throws InvalidInputException {
         // Validate workout name.
-        if (name.isEmpty()) {
-            throw new InvalidNameException("Name must be provided.");
+        if (name == null || name.isEmpty()) {
+            throw new InvalidNameException(LogicConfig.invalidNameExceptionMessage);
         }
 
         // Validate workout items.
-        if (workoutItems.isEmpty()) {
-            throw new InvalidInputException("Exercises must be provided.");
+        if (workoutItems == null || workoutItems.isEmpty()) {
+            throw new InvalidInputException(LogicConfig.invalidInputExceptionMessage);
         }
 
         return new WorkoutProfile(name, iconPath, workoutItems);
@@ -53,26 +53,31 @@ public class InputValidator {
      * @throws InvalidInputException If one of the fields is invalid.
      */
     public WorkoutItem newWorkoutItem(Exercise exercise, String setsField, String repsField, String weightField, String timeField) throws InvalidInputException {
-        WorkoutItem workoutItem;
+        WorkoutItem workoutItem = null;
 
-        // Extract common sets property.
-        int sets = validateSetsField(setsField);
+        if(exercise != null){
+            // Extract common sets property.
+            int sets = validateSetsField(setsField);
 
-        if (exercise.isTimeBased()) {
-            // Construct time-based workout item.
-            double time = validateTimeField(timeField);
-            workoutItem = new WorkoutItem(exercise, sets, time);
-        } else {
-            int reps = validateRepsField(repsField);
-
-            if (exercise.hasWeight()) {
-                // Construct rep-based weighted workout item.
-                double weight = validateWeightField(weightField);
-                workoutItem = new WorkoutItem(exercise, sets, reps, weight);
+            if (exercise.isTimeBased()) {
+                // Construct time-based workout item.
+                double time = validateTimeField(timeField);
+                workoutItem = new WorkoutItem(exercise, sets, time);
             } else {
-                // Construct rep-based workout item.
-                workoutItem = new WorkoutItem(exercise, sets, reps);
+                int reps = validateRepsField(repsField);
+
+                if (exercise.hasWeight()) {
+                    // Construct rep-based weighted workout item.
+                    double weight = validateWeightField(weightField);
+                    workoutItem = new WorkoutItem(exercise, sets, reps, weight);
+                } else {
+                    // Construct rep-based workout item.
+                    workoutItem = new WorkoutItem(exercise, sets, reps);
+                }
             }
+        }
+        else{
+            throw new InvalidInputException(LogicConfig.invalidInputExceptionMessage);
         }
 
         // Return the new workout item object.
@@ -93,10 +98,10 @@ public class InputValidator {
         try {
             sets = Integer.parseInt(setsField);
         } catch (NumberFormatException e) {
-            throw new InvalidSetsException("Must be a valid integer.");
+            throw new InvalidSetsException(LogicConfig.integerFormatExceptionMessage);
         }
         if (sets < 1) {
-            throw new InvalidSetsException("Must be at least 1.");
+            throw new InvalidSetsException(LogicConfig.invalidNonzeroValueMessage);
         }
 
         return sets;
@@ -116,10 +121,10 @@ public class InputValidator {
         try {
             time = Double.parseDouble(timeField);
         } catch (NumberFormatException e) {
-            throw new InvalidTimeException("Must be a valid number.");
+            throw new InvalidTimeException(LogicConfig.doubleFormatExceptionMessage);
         }
         if (time < 1.0) {
-            throw new InvalidTimeException("Must be at least 1.");
+            throw new InvalidTimeException(LogicConfig.invalidNonnegativeValueMessage);
         }
 
         return time;
@@ -139,10 +144,10 @@ public class InputValidator {
         try {
             reps = Integer.parseInt(repsField);
         } catch (NumberFormatException e) {
-            throw new InvalidRepsException("Must be a valid integer.");
+            throw new InvalidRepsException(LogicConfig.integerFormatExceptionMessage);
         }
         if (reps < 1) {
-            throw new InvalidRepsException("Must be at least 1.");
+            throw new InvalidRepsException(LogicConfig.invalidNonzeroValueMessage);
         }
 
         return reps;
@@ -162,10 +167,10 @@ public class InputValidator {
         try {
             weight = Double.parseDouble(weightField);
         } catch (NumberFormatException e) {
-            throw new InvalidWeightException("Must be a valid number.");
+            throw new InvalidWeightException(LogicConfig.doubleFormatExceptionMessage);
         }
         if (weight < 0) {
-            throw new InvalidWeightException("Must be at least 0.");
+            throw new InvalidWeightException(LogicConfig.invalidNonnegativeValueMessage);
         }
 
         return weight;
