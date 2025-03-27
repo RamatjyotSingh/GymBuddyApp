@@ -1,6 +1,5 @@
 package comp3350.gymbuddy.presentation.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,7 @@ public class WorkoutItemAdapter extends RecyclerView.Adapter<WorkoutItemAdapter.
     @Override
     public void onBindViewHolder(@NonNull WorkoutViewHolder holder, int position) {
         WorkoutItem item = workoutItems.get(position);
-        holder.txtExerciseName.setText(item.getExerciseName());
+        holder.txtExerciseName.setText(item.getExercise().getName());
         holder.txtWorkoutDetails.setText(item.toString());
         
         // Show delete button only if enabled for this adapter instance
