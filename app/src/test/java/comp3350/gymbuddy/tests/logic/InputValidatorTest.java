@@ -32,7 +32,6 @@ public class InputValidatorTest {
         private String name;
         private String iconPath;
         private List<WorkoutItem> workoutItems;
-        private Exercise exercise;
 
         @Before
         public void setup(){
@@ -42,7 +41,7 @@ public class InputValidatorTest {
             name = "Profile 1";
             iconPath = "path";
             workoutItems = new ArrayList<>();
-            exercise = new Exercise(0, "Push-up", null, null, null, false, false);
+            Exercise exercise = new Exercise(0, "Push-up", null, null, null, false, false);
             workoutItems.add(new WorkoutItem(exercise, 1, 1));
         }
 
