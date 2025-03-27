@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        WorkoutBuilderTest.class
+        WorkoutBuilderTest.class,
+        WorkoutLogTest.class
 })
 
 public class AllSystemTests {
