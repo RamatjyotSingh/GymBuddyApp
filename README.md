@@ -1,43 +1,44 @@
-# GymBuddy
+# Gym Buddy
 
-Gym Buddy is a all-in workout assistant that helps you kees track of all of your workout and customize you existing wokrout  all  in one place.
+Gym Buddy is an all-in-one workout assistant application that lets you create and start personalized workouts, as well as keep track of previous workouts.
 
-## Vision Statement
+As of our latest release, users are able to:
+- Create workout profiles by selecting from a predefined set of exercises.
+- Start workouts based on created workout profiles.
+- View previously completed workouts.
 
-Gym Buddy is a workout assistant app that helps people stay organized and motivated as they work toward their fitness goals. It brings all workout information into one easy-to-use platform, making it simple to track routines, set goals, and see progress. By offering tools to create personalized workout plans and achievable targets, Gym Buddy is a helpful partner for anyone looking to improve their fitness.
+## Building and running
 
-This app is designed for athletes, gym enthusiasts, and students who want an easier way to manage their workouts. Many people today use several apps or rely on notebooks and spreadsheets to keep track of their progress. Gym Buddy removes this inconvenience by putting everything they need in one place. Whether someone is an experienced athlete aiming for new records or just starting their fitness journey, Gym Buddy is made for all levels of experience.
+As of our latest release, Gym Buddy is compatible with Java 21 and Android Studio Meerkat 2024.3.1 Patch 1, with Android Gradle Plugin version 8.9.1. The application is known to be working with the built-in Android emulator within Android Studio, using the Pixel Tablet device with API 36.
 
-Gym Buddy focuses on making your fitness journey simple and flexible. Users can build their workout plans using ready-made exercises or create their own to match their specific needs. The app’s workout mode guides users through each session, showing steps for every exercise, including how many sets, repetitions, and rest times they need. It also makes it easy to track how they are doing and adjust plans when needed.
+To build the program, install the indicated version of Android Studio, and make sure that the Android Gradle Plugin is up-to-date with version 8.9.1. In Android Studio, with the project folder open, click the "Sync Project with Gradle Files" button in the top right, close to the settings icon. This should successfully build the project.
 
-To keep workouts flexible, Gym Buddy offers alternative exercises that target the same muscles but have different levels of difficulty. This allows users to make quick changes if something feels too hard or too easy. The app also gives clear feedback on progress, helping users plan their next steps and stay motivated to reach their goals. A search tool helps users find exercises for specific muscle groups, making it easier to focus on areas they want to improve.
+To run the application, simply select the "app" configuration in the run configuration drop down menu and click the play button!
 
-What makes Gym Buddy stand out is its ability to keep users motivated. It includes a fun competition feature where users can compete with others, climb ranks, and earn rewards based on their progress. This creates a sense of community and gives people more reasons to stay active. To ensure users stay healthy, the app sets limits on workout hours, promoting balance and safety. By combining progress tracking with friendly competition, Gym Buddy keeps fitness fun and engaging.
+Note that you will need to setup the virtual Pixel Tablet device within the Device Manager in Android Studio prior to running the application.
 
-The app’s success will be measured in simple, clear ways. Within six months of launch, Gym Buddy aims to have at least 200 regular users and an average rating of 4.5 stars or higher. It also hopes to gather 50 positive reviews in that time. The team will track how often people use the app and how satisfied they are through surveys and feedback. If users feel Gym Buddy has helped them stay organized, motivated, and on track with their fitness goals, the app will be considered successful.
+## Vision
 
-Gym Buddy makes fitness tracking easy and effective for everyone. By focusing on clear guidance, flexibility, and motivation, the app supports users at every step of their fitness journey. Whether someone is reaching for personal milestones or trying to stay consistent, Gym Buddy is designed to help them succeed.
+Our project vision statement is written in [VISION.md](doc/VISION.md).
 
-## Retrospective Meeting Notes
+## Retrospective
 
-The notes from our retrospective meetings can be found under `docs/retrospectives`.
-
-## Iteration Milestones
-
-Each iteration has a corresponding milestone.
-
-## Features
-
-Features are issues with the `Feature` tag.
-
-## User Stories
-
-User stories are issues with the `User Story` tag, and are linked to features.
-
-## Developer Tasks
-
-Developer tasks are issues with the `Developer Task` tag, and are linked as children of user stories.
+The notes from our most recent retrospective can be found in [RETROSPECTIVE.md](doc/RETROSPECTIVE.md).  
+This file includes a reflection on our previous issues, our goals for the this iteration, and a chart showing our project velocity over the last two iterations.
 
 ## Architecture
 
-Our architecture for Iteration 1 is outlined in detail in [ARCHITECTURE.md](doc/ARCHITECTURE.md).
+Our architecture is outlined in detail in [ARCHITECTURE.md](doc/ARCHITECTURE.md).
+
+## Future releases
+
+Several planned features for this project went incomplete given the short amount of time we had to work on it. Here are some other features we had planned, but ran out of time to add:
+
+- Setting personal challenges
+- Achievements
+- Creating custom exercises
+- Recommended exercises
+- Motivational notifications and tips
+- Music player integration
+
+Our team decided that for this iteration, it would be best to commit to working on cleaning up our codebase, and ensuring that all of our existing features are as functional as possible, rather than pushing through with half-baked features that take away from the user experience.
