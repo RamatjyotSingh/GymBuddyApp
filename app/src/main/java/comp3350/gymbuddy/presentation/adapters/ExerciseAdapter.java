@@ -62,7 +62,6 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     public static class ExerciseViewHolder extends RecyclerView.ViewHolder {
         // Maximum number of tags to be displayed at one time.
         static final int MAX_TAGS = 2;
-
         private final TextView exerciseName;
         private final ShapeableImageView exerciseImage;
         private final TextView viewMoreButton;
@@ -113,8 +112,6 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
                 
                 //  Remove the ripple effect
                 chip.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
-                
-
                 
                 exerciseTags.addView(chip);
             }

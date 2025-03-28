@@ -7,8 +7,4 @@ public class InvalidRepsException extends InvalidInputException {
     public InvalidRepsException(String message) {
         super(message);
     }
-    
-    public InvalidRepsException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

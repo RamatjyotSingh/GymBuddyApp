@@ -116,7 +116,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         for (int i = 0; i < formattedInstructions.size(); i++) {
             String line = formattedInstructions.get(i);
 
-            // Create the layout for the intstruction
+            // Create the layout for the instruction
             LinearLayout instructionLine = new LinearLayout(this);
             instructionLine.setOrientation(LinearLayout.HORIZONTAL);
             instructionLine.setLayoutParams(new LinearLayout.LayoutParams(

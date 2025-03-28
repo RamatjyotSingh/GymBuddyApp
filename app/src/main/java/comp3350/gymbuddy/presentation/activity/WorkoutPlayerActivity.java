@@ -55,6 +55,7 @@ public class WorkoutPlayerActivity extends Activity {
         }
     }
 
+
     /**
      * Does all the setup required to start a workout for a valid workout profile.
      * @param profile the workout profile containing the workout.
@@ -68,20 +69,6 @@ public class WorkoutPlayerActivity extends Activity {
         controller.startWorkout();
     }
 
-    /**
-     * Handles the Floating Action Button (FAB) click event.
-     * Creates a new entry in the recycler view.fs
-     */
-    public void onClickFAB(View v) {
-
-    }
-
-    /**
-     * Handles the Previous button click event.
-     */
-    public void onClickPrevious(View v) {
-
-    }
 
     /**
      * Handles the Next button click event.
@@ -89,6 +76,7 @@ public class WorkoutPlayerActivity extends Activity {
     public void onClickNext(View v) {
         controller.proceed();
     }
+
 
     /**
      * Gets called when the controller has switched to a different workout item.
@@ -99,6 +87,7 @@ public class WorkoutPlayerActivity extends Activity {
         updateWorkoutItemInfo(workoutItem);
     }
 
+
     /**
      * Gets called when the workout is complete.
      * @param workoutSession the new workout session
@@ -107,6 +96,7 @@ public class WorkoutPlayerActivity extends Activity {
         // Go back to the main screen.
         finish();
     }
+
 
     /**
      * Updates the views to reflect the information in the workout item object.
@@ -133,6 +123,7 @@ public class WorkoutPlayerActivity extends Activity {
 
         setExerciseHeaders(sets, time, reps, weight);
     }
+
 
     /**
      * Sets the text labels for each of the exercise headers.

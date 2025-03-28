@@ -25,7 +25,6 @@ public class WorkoutSessionManager {
         this.workoutSessionDB = workoutSessionDB;
     }
 
-
     /**
      * Get all workout sessions
      * @return List of workout sessions

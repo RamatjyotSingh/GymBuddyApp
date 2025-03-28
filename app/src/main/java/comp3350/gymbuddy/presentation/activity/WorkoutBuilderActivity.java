@@ -130,7 +130,6 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
                 WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
                 workoutManager.saveWorkout(profile);
 
-
                     // Show success message
                Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
 
@@ -143,9 +142,6 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
                     // Add smooth transition with no animation
                     android.app.ActivityOptions options = android.app.ActivityOptions.makeCustomAnimation(this, 0, 0);
                     startActivity(intent, options.toBundle());
-
-
-
             }
             catch (BusinessException e) {
                 handler.handle(e, getString(R.string.error_saving_workout));

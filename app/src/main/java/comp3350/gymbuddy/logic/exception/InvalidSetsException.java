@@ -7,8 +7,4 @@ public class InvalidSetsException extends InvalidInputException {
     public InvalidSetsException(String message) {
         super(message);
     }
-    
-    public InvalidSetsException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

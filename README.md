@@ -41,4 +41,6 @@ Several planned features for this project went incomplete given the short amount
 - Motivational notifications and tips
 - Music player integration
 
-Our team decided that for this iteration, it would be best to commit to working on cleaning up our codebase, and ensuring that all of our existing features are as functional as possible, rather than pushing through with half-baked features that take away from the user experience.
+Our team decided that for this iteration, it would be best to commit to working on cleaning up our codebase and ensuring that all of our existing features are as functional as possible, rather than pushing through with half-baked features that take away from the user experience.
+
+In particular, we spent a large amount of time working with the persistence and logic layers of our project, trying to make the code as best as possible in terms of quality.
