@@ -17,7 +17,7 @@ import timber.log.Timber;
  * This class follows a singleton pattern for consistent database access.
  */
 
-public class PersistenceManager implements AutoCloseable {
+public class PersistenceManager {
     private static final String TAG = "PersistenceManager";
     private static final PersistenceManager instance = new PersistenceManager();
     
@@ -86,15 +86,8 @@ public class PersistenceManager implements AutoCloseable {
         isInitialized = true;
         Timber.tag(TAG).i("Database initialized successfully. Test mode: %s", useTestMode);
     }
-    
-    /**
-     * Check if the persistence system has been initialized
-     * @return true if initialized, false otherwise
-     */
-    public boolean isInitialized() {
-        return isInitialized; // Reading a boolean is atomic
-    }
-    
+
+
     /**
      * Retrieves an instance of IWorkoutDB
      * @return An instance of IWorkoutDB
@@ -172,42 +165,41 @@ public class PersistenceManager implements AutoCloseable {
             instance.databaseFactory : new StubDatabaseFactory();
         return factory.createWorkoutSessionDB();
     }
-    
+
     /**
      * Reset all database instances, forcing them to be recreated on next request
      */
     public synchronized void reset() {
         closeResources();
-        
+
         workoutDB = null;
         exerciseDB = null;
         workoutSessionDB = null;
         database = null;
-        
+
         Timber.tag(TAG).d("PersistenceManager reset completed");
     }
-    
+
     /**
      * Shut down all database resources
      */
     public synchronized void shutdown() {
         closeResources();
-        
+
         isInitialized = false;
         Timber.tag(TAG).d("PersistenceManager shutdown completed");
     }
-    
-    @Override
+
     public void close() {
         shutdown();
     }
-    
+
     private void closeResources() {
         // Close each repository first
         closeQuietly(workoutDB);
         closeQuietly(exerciseDB);
         closeQuietly(workoutSessionDB);
-        
+
         // Finally close the database
         if (database != null) {
             try {
@@ -219,7 +211,7 @@ public class PersistenceManager implements AutoCloseable {
             database = null;
         }
     }
-    
+
     private void closeQuietly(Object resource) {
         if (resource instanceof AutoCloseable) {
             try {
@@ -229,7 +221,7 @@ public class PersistenceManager implements AutoCloseable {
             }
         }
     }
-    
+
     private void ensureInitialized() {
         if (!isInitialized) {
             throw new DBException("Database has not been initialized. Call initialize() first.");

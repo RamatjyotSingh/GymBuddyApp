@@ -177,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
         }
             // Create config with dbFilesExist flag
             ConfigLoader config = ConfigLoader.builder()
-                    .scriptPath(paths.get("scriptPath"))
-                    .configPath(paths.get("configPath"))
+                    .scriptPath(paths.get(getString(R.string.script_path_key)))
+                    .configPath(paths.get(getString(R.string.config_path_key)))
                     .testMode(false)
                     .dbAlreadyExists(dbFilesExist)
                     .build();

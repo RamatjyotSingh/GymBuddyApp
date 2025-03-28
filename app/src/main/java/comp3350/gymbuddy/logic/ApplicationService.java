@@ -16,7 +16,7 @@ import timber.log.Timber;
  * Central service that manages application initialization and provides access to business managers
  * Implemented as a singleton for easy access from any activity
  */
-public class ApplicationService implements AutoCloseable {
+public class ApplicationService {
     private static final String TAG = "ApplicationService";
     
     // Singleton instance
@@ -129,7 +129,7 @@ public class ApplicationService implements AutoCloseable {
     /**
      * Releases all resources and closes the application
      */
-    @Override
+
     public synchronized void close() {
         if (closed) {
             Timber.tag(TAG).d("Application already closed");
