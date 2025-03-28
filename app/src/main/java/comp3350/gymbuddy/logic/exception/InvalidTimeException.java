@@ -7,8 +7,4 @@ public class InvalidTimeException extends InvalidInputException {
     public InvalidTimeException(String message) {
         super(message);
     }
-    
-    public InvalidTimeException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

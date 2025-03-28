@@ -25,7 +25,6 @@ public class ExerciseManager {
         this.exerciseDB = exerciseDB;
     }
 
-
     /**
      * Get all exercises
      * @return List of all exercises
@@ -82,6 +81,4 @@ public class ExerciseManager {
             throw new ExerciseAccessException("Failed to search exercises", e);
         }
     }
-
-
 }

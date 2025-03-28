@@ -7,8 +7,4 @@ public class InvalidWeightException extends InvalidInputException {
     public InvalidWeightException(String message) {
         super(message);
     }
-    
-    public InvalidWeightException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

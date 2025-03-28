@@ -2,7 +2,6 @@ package comp3350.gymbuddy.logic.managers;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
@@ -24,8 +23,6 @@ public class WorkoutManager {
     public WorkoutManager(IWorkoutDB workoutDB) {
         this.workoutDB = workoutDB;
     }
-
-
 
     /**
      * Get all saved (non-deleted) workouts
