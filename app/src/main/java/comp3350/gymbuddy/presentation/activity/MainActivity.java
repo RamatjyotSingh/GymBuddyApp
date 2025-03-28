@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
             // Check if both required files exist
             boolean scriptExists = FileExtractor.fileExists(this, dbDirPath, "Project.script");
             boolean configExists = FileExtractor.fileExists(this, dbDirPath, "DBConfig.properties");
-            boolean dbFilesExist = false;
+            boolean dbFilesExist = scriptExists && configExists;
             
             Map<String, String> paths = new HashMap<>();
             
