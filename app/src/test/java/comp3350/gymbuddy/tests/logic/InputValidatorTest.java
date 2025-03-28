@@ -11,8 +11,8 @@ import org.junit.runners.Suite;
 import java.util.ArrayList;
 import java.util.List;
 
-import comp3350.gymbuddy.logic.InputValidator;
-import comp3350.gymbuddy.logic.LogicConfig;
+import comp3350.gymbuddy.logic.util.InputValidator;
+import comp3350.gymbuddy.logic.util.LogicConfig;
 import comp3350.gymbuddy.logic.exception.InvalidInputException;
 import comp3350.gymbuddy.logic.exception.InvalidNameException;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;

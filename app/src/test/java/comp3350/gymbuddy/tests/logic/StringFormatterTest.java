@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import comp3350.gymbuddy.logic.StringFormatter;
+import comp3350.gymbuddy.logic.util.StringFormatter;
 
 public class StringFormatterTest {
     private StringFormatter formatter;

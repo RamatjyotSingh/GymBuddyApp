@@ -62,10 +62,5 @@ public class HSQLDBFactory implements DatabaseFactory {
        
     }
 
-    private Connection getConnection() throws DBException {
-        if (database == null) {
-            createDatabase();
-        }
-        return database.getConnection();
-    }
+
 }

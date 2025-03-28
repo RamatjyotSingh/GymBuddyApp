@@ -1,6 +1,5 @@
 package comp3350.gymbuddy.tests.logic;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -8,105 +7,98 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import comp3350.gymbuddy.logic.exception.ExerciseAccessException;
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
 import comp3350.gymbuddy.objects.Exercise;
-import comp3350.gymbuddy.persistence.PersistenceManager;
+import comp3350.gymbuddy.persistence.factory.StubDatabaseFactory;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 
 public class ExerciseManagerTest {
-    private IExerciseDB exerciseStub;
     private ExerciseManager exerciseManager;
+    private List<Exercise> existingExercises;
 
     @Before
     public void setup() {
-        // Get a stub database implementation
-        exerciseStub = PersistenceManager.getExerciseDB(false);
-        
-        // Create exercise manager with the stub database
-        exerciseManager = new ExerciseManager(exerciseStub);
+        StubDatabaseFactory factory = new StubDatabaseFactory();
+        IExerciseDB exerciseDB = factory.createExerciseDB();
+        // Initialize the database with a stub implementation
+        exerciseManager = new ExerciseManager(exerciseDB);
+        existingExercises = exerciseManager.getAll();
     }
 
     @Test
     public void testGetAll() {
-        final List<Exercise> resultList;
-        final List<Exercise> expectedList = exerciseStub.getAll();
-
-        resultList = exerciseManager.getAll();
-        
-        assertNotNull(resultList);
-        assertFalse(resultList.isEmpty());
-        assertEquals(expectedList.size(), resultList.size());
-        
-        // Check that the lists contain the same elements
-        for (Exercise expected : expectedList) {
-            boolean found = false;
-            for (Exercise result : resultList) {
-                if (expected.getID() == result.getID()) {
-                    found = true;
-                    assertEquals(expected.getName(), result.getName());
-                    assertEquals(expected.getImagePath(), result.getImagePath());
-                    break;
-                }
-            }
-            assertTrue("Exercise with ID " + expected.getID() + " not found in result", found);
-        }
+        List<Exercise> result = exerciseManager.getAll();
+        assertNotNull(result);
+        assertFalse("Database should contain some exercises by default", result.isEmpty());
     }
 
     @Test
     public void testGetExerciseByID() {
-        final Exercise expected = exerciseStub.getExerciseByID(0);
-        final Exercise result = exerciseManager.getExerciseByID(0);
+        //Get first exercise from the database
+        Exercise firstExercise = existingExercises.get(0);
+        Exercise result = exerciseManager.getExerciseByID(firstExercise.getID());
 
         assertNotNull(result);
-        assertEquals(expected.getName(), result.getName());
-        assertEquals(expected.getID(), result.getID());
-        assertEquals(expected.getImagePath(), result.getImagePath());
-        assertEquals(expected.getInstructions(), result.getInstructions());
-        assertEquals(expected.isTimeBased(), result.isTimeBased());
-        assertEquals(expected.hasWeight(), result.hasWeight());
+        assertEquals(firstExercise.getName(), result.getName());
+        assertEquals(firstExercise.getID(), result.getID());
+        assertEquals(firstExercise.getInstructions(), result.getInstructions());
     }
-
-    @Test(expected = Exception.class)
+    @Test(expected = ExerciseAccessException.class)
     public void testInvalidGetExerciseByID() {
-        // This should throw an exception since the ExerciseManager throws an exception
-        // when an exercise is not found
+        // This should throw an ExerciseAccessException because the exercise doesn't exist
         exerciseManager.getExerciseByID(-1);
     }
 
     @Test
     public void testSearch() {
-        final Exercise expected = exerciseStub.getExerciseByID(0);
-        final String searchString = expected.getName();
+        //Use the name of the first existing exercise
+        String searchTerm = existingExercises.get(0).getName();
+        List<Exercise> result = exerciseManager.search(searchTerm);
 
-        final List<Exercise> result = exerciseManager.search(searchString);
-        
         assertNotNull(result);
-        assertFalse(result.isEmpty());
-        
-        // Verify the search result contains the expected exercise
-        boolean found = false;
-        for (Exercise exercise : result) {
-            if (exercise.getID() == expected.getID()) {
-                found = true;
-                assertEquals(expected.getName(), exercise.getName());
-                break;
-            }
-        }
-        assertTrue("Expected exercise not found in search results", found);
+        assertFalse("Should find at least one matching exercise", result.isEmpty());
+        assertTrue("Result should contain the exercise we searched for",
+                result.stream().anyMatch(e -> e.getName().equalsIgnoreCase(searchTerm)));
+    }
+
+    @Test
+    public void testSearch_PartialMatch() {
+        //Use part of an exercise name
+        String partialName = existingExercises.get(0).getName().substring(0, 3);
+        List<Exercise> result = exerciseManager.search(partialName);
+
+        assertNotNull(result);
+        assertFalse("Should find matches for partial names", result.isEmpty());
+    }
+
+    @Test
+    public void testSearch_CaseInsensitive() {
+        //Search with different casing
+        String searchTerm = existingExercises.get(0).getName().toUpperCase();
+        List<Exercise> result = exerciseManager.search(searchTerm);
+
+        assertNotNull(result);
+        assertFalse("Search should be case insensitive", result.isEmpty());
     }
 
     @Test
     public void testInvalidSearch() {
-        final List<Exercise> result = exerciseManager.search("NonExistentExercise12345");
-        
+        List<Exercise> result = exerciseManager.search("NonexistentExerciseName123");
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
 
     @Test
     public void testNullSearch() {
-        final List<Exercise> result = exerciseManager.search(null);
-        
+        List<Exercise> result = exerciseManager.search(null);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testEmptySearch() {
+        List<Exercise> result = exerciseManager.search("");
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }

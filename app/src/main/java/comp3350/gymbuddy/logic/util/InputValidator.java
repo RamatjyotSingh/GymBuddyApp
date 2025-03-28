@@ -2,7 +2,6 @@ package comp3350.gymbuddy.logic.util;
 
 import java.util.List;
 
-import comp3350.gymbuddy.logic.LogicConfig;
 import comp3350.gymbuddy.logic.exception.InvalidInputException;
 import comp3350.gymbuddy.logic.exception.InvalidNameException;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;

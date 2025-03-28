@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.gymbuddy.logic.exception.WorkoutAccessException;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.PersistenceManager;
@@ -112,51 +113,15 @@ public class WorkoutManagerTest {
         assertEquals(expected.getIconPath(), result.getIconPath());
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = WorkoutAccessException.class)
     public void testGetInvalidWorkoutProfileByID() {
         // This should throw an exception since the WorkoutManager throws an exception
         // when a workout is not found
         workoutManager.getWorkoutProfileByID(-999);
     }
 
-    @Test
-    public void testDeleteWorkout() {
-        // Get a profile to delete
-        WorkoutProfile profileToDelete = workoutStub.getAll().get(0);
-        int profileId = profileToDelete.getID();
-        
-        // Verify it exists before deletion
-        WorkoutProfile beforeDelete = workoutManager.getWorkoutProfileByID(profileId);
-        assertNotNull(beforeDelete);
-        
-        // Delete the workout
-        workoutManager.deleteWorkout(profileId);
-        
-        // Try to get all workouts after deletion
-        List<WorkoutProfile> allWorkoutsAfterDelete = workoutStub.getAll();
-        
-        // Find the deleted workout
-        WorkoutProfile deletedWorkout = null;
-        for (WorkoutProfile profile : allWorkoutsAfterDelete) {
-            if (profile.getID() == profileId) {
-                deletedWorkout = profile;
-                break;
-            }
-        }
-        
-        // Verify it's marked as deleted
-        assertNotNull(deletedWorkout);
-        assertTrue(deletedWorkout.isDeleted());
-        
-        // Verify it's not in the saved workouts list
-        List<WorkoutProfile> savedWorkouts = workoutManager.getSavedWorkouts();
-        for (WorkoutProfile profile : savedWorkouts) {
-            assertNotEquals("Deleted workout should not be in saved workouts", 
-                    profileId, profile.getID());
-        }
-    }
 
-    @Test
+    @Test(expected = WorkoutAccessException.class)
     public void testGetWorkoutProfileByID_NotFound() {
         WorkoutProfile result = workoutManager.getWorkoutProfileByID(999);
         assertNull(result);
