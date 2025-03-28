@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -13,14 +12,17 @@ import androidx.cardview.widget.CardView;
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogDetailBinding;
 import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.logic.exception.BusinessException;
 import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.exception.DBException;
 
-import timber.log.Timber;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
 
 public class WorkoutLogDetailActivity extends AppCompatActivity{
+
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
     private ActivityWorkoutLogDetailBinding binding;
 
     @Override
@@ -30,21 +32,21 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
         setContentView(binding.getRoot());
 
         // Get the session ID passed from WorkoutLogActivity.
-        int id = getIntent().getIntExtra("workoutSessionId", 0);
+        int id = getIntent().getIntExtra(getString(R.string.intent_workout_session_id), -1);
 
+        if (id == -1) {
+            handler.handle(new IllegalArgumentException("No workout session ID passed to WorkoutLogDetailActivity"), handler.getDefaultErrorMessage());
+            finish();
+        }
         // Get session details from persistence.
-        WorkoutSession session = null;
+        WorkoutSession session ;
         try {
             WorkoutSessionManager workoutSessionManager = ApplicationService.getInstance().getWorkoutSessionManager();
             session = workoutSessionManager.getWorkoutSessionByID(id);
             setWorkoutSession(session);
-        } catch (IllegalStateException e) {
-            Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
-            Timber.e(e, "ApplicationService not initialized in WorkoutLogDetailActivity");
-            finish();
-        } catch (DBException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            Timber.e(e, "Database error in WorkoutLogDetailActivity: %s", e.getMessage());
+        }
+        catch (BusinessException e) {
+            handler.handle(e);
         }
     }
 

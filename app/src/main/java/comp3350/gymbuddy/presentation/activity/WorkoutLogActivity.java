@@ -8,39 +8,39 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogBinding;
 import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.logic.exception.BusinessException;
 import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.presentation.adapters.WorkoutLogAdapter;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
 import comp3350.gymbuddy.presentation.util.NavigationHelper;
-import timber.log.Timber;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
+
 
 public class WorkoutLogActivity extends AppCompatActivity {
-    // View binding for accessing UI elements efficiently
-    private ActivityWorkoutLogBinding binding;
-    private NavigationHelper navigationHelper;
 
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
         
         // Initialize navigation helper
-        navigationHelper = new NavigationHelper(this);
+        NavigationHelper navigationHelper = new NavigationHelper(this);
         
         // Inflate the layout using view binding
-        binding = ActivityWorkoutLogBinding.inflate(getLayoutInflater());
+        // View binding for accessing UI elements efficiently
+        comp3350.gymbuddy.databinding.ActivityWorkoutLogBinding binding = ActivityWorkoutLogBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.workoutLogRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Fetch data from persistence using ApplicationService
-        List<WorkoutSession> sessions = new ArrayList<>();
+        List<WorkoutSession> sessions;
         try {
             WorkoutSessionManager workoutSessionManager = ApplicationService.getInstance().getWorkoutSessionManager();
             sessions = workoutSessionManager.getAll();
@@ -67,12 +67,8 @@ public class WorkoutLogActivity extends AppCompatActivity {
                     return false;
                 }
             });
-        } catch (IllegalStateException e) {
-            Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
-            Timber.e(e, "ApplicationService not initialized in WorkoutLogActivity");
-        } catch (DBException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            Timber.e(e, "Database error in WorkoutLogActivity");
+        } catch(BusinessException e){
+            handler.handle(e, getString(R.string.error_loading_workout_log));
         }
 
         // Use the navigation helper instead of inherited method
@@ -81,7 +77,7 @@ public class WorkoutLogActivity extends AppCompatActivity {
 
     private void openWorkoutLogDetail(WorkoutSession workoutSession){
         Intent intent = new Intent(this, WorkoutLogDetailActivity.class);
-        intent.putExtra("workoutSessionId", workoutSession.getId());
+        intent.putExtra(getString(R.string.intent_workout_session_id), workoutSession.getId());
         startActivity(intent);
     }
 }

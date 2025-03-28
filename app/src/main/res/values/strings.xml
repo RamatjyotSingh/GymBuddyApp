@@ -78,5 +78,20 @@
     <string name="error_deleting_workout">Error deleting workout: </string>
         <!--loading text -->
     <string name="initializing_app">Initializing application…</string>
+    <string name="project_script_relative_path">db/Project.script</string>
+    <string name="dbconfig_relative_path">db/DBConfig.properties</string>
+    <string name="project_script">Project.script</string>
+    <string name="dbconfig_properties">DBConfig.properties</string>
+    <string name="script_path_key">scriptPath</string>
+    <string name="config_path_key">configPath</string>
+    <string name="error_loading_exercise">Unable to load exercises please try again later.\ncontact support if the issue persists</string>
+    <string name="error_loading_profile">Unable to retrieve workout profile, please try again later.</string>
+    <string name="error_loading_items">Unable to retrieve workout items, please try again later.</string>
+    <string name="intent_workout_profile_id">workoutProfileId</string>
+    <string name="frag_listner_workout_item">workout_item</string>
+    <string name="error_saving_workout">Failed to save workout profile</string>
+    <string name="intent_exerciseid">exerciseID</string>
+    <string name="error_loading_workout_log">Unexpected error occurred. Unable to load workout log.\nPlease try again or contact support.</string>
+    <string name="intent_workout_session_id">workoutSessionId</string>
 
 </resources>

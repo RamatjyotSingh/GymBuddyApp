@@ -21,10 +21,7 @@ public class ApplicationService implements AutoCloseable {
     
     // Singleton instance
     private static ApplicationService instance;
-    
-    // Configuration
-    private ConfigLoader config;
-    
+
     // Managers
     private ExerciseManager exerciseManager;
     private WorkoutManager workoutManager;
@@ -60,10 +57,10 @@ public class ApplicationService implements AutoCloseable {
             Timber.tag(TAG).w("Application already initialized");
             return;
         }
-        
-        this.config = config;
-        
-        try {
+
+        // Configuration
+
+
             // Initialize database
             PersistenceManager pm = PersistenceManager.getInstance();
             pm.initialize(
@@ -78,10 +75,7 @@ public class ApplicationService implements AutoCloseable {
             
             initialized = true;
             Timber.tag(TAG).i("Application initialized successfully");
-        } catch (DataAccessException e) {
-            Timber.tag(TAG).e(e, "Failed to initialize application");
-            throw new ApplicationInitException("Failed to initialize application: " + e.getMessage(), e);
-        }
+
     }
     
     /**
@@ -165,24 +159,11 @@ public class ApplicationService implements AutoCloseable {
      */
     private void ensureActive() {
         if (closed) {
-            throw new IllegalStateException("Application service has been closed");
+            throw new ApplicationInitException("Application service has been closed");
         }
         if (!initialized) {
-            throw new IllegalStateException("Application service is not initialized");
+            throw new ApplicationInitException("Application service is not initialized");
         }
     }
-    
-    /**
-     * @return true if the application is initialized and not closed
-     */
-    public boolean isActive() {
-        return initialized && !closed;
-    }
-    
-    /**
-     * @return the current configuration
-     */
-    public ConfigLoader getConfig() {
-        return config;
-    }
+
 }

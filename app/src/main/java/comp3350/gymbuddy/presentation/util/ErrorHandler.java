@@ -7,19 +7,25 @@ import timber.log.Timber;
  */
 public class ErrorHandler {
     private final ErrorDisplay errorDisplay;
-    private static final String DEFAULT_ERROR_MESSAGE = 
+    private static final String DEFAULT_ERROR_MESSAGE =
             "An unexpected error occurred. Please contact support.";
     
     public ErrorHandler(ErrorDisplay errorDisplay) {
         this.errorDisplay = errorDisplay;
     }
-    
+
+
     /**
      * Handle any exception and show appropriate user message
      */
-    public void handleException(Exception e) {
+    public void handle(Exception e) {
         String message = extractMessage(e);
         errorDisplay.showError(message);
+        Timber.e(e, "An error occurred: %s", message);
+    }
+    public void handle(Exception e, String displayMessage) {
+        String message = extractMessage(e);
+        errorDisplay.showError(displayMessage);
         Timber.e(e, "An error occurred: %s", message);
     }
     
@@ -35,5 +41,9 @@ public class ErrorHandler {
         return (message != null && !message.trim().isEmpty()) 
                 ? message 
                 : DEFAULT_ERROR_MESSAGE;
+    }
+
+    public String getDefaultErrorMessage() {
+        return DEFAULT_ERROR_MESSAGE;
     }
 }

@@ -22,7 +22,8 @@ public class AssetLoader {
         try (InputStream inputStream = context.getAssets().open(filepath)) {
             result = BitmapFactory.decodeStream(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(context));
+            handler.handle(e);
         }
 
         return result;

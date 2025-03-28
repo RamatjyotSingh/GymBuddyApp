@@ -1,6 +1,8 @@
 package comp3350.gymbuddy.logic.util;
 
 import androidx.annotation.NonNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StringFormatter {
     private final int SECS_IN_MIN = 60;
@@ -68,5 +70,23 @@ public class StringFormatter {
 
         // Trim any trailing space and return the final formatted string
         return result.toString().trim();
+    }
+
+    /**
+     * Formats raw instruction text into a list of individual instruction steps
+     * Handles escape sequences and empty lines
+     *
+     * @param instructions Raw instruction text that might contain escape sequences
+     * @return List of formatted instruction strings ready for display
+     */
+    public List<String> formatInstructions(String instructions) {
+        // Replace escape sequences with actual newlines
+        String processedInstructions = instructions.replace("\\n", "\n");
+        
+        // Split by actual newlines and filter empty lines
+        return processedInstructions.lines()
+                .map(String::trim)
+                .filter(line -> !line.isEmpty())
+                .collect(Collectors.toList());
     }
 }

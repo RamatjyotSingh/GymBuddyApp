@@ -84,9 +84,9 @@ public class WorkoutStub implements IWorkoutDB {
     }
     
     @Override
-    public boolean saveWorkout(WorkoutProfile profile) throws DBException {
+    public void saveWorkout(WorkoutProfile profile) throws DBException {
         if (profile == null) {
-            return false;
+            return;
         }
         
         // Check if profile exists by name
@@ -116,8 +116,7 @@ public class WorkoutStub implements IWorkoutDB {
             } else {
                 profileItems.put(newProfile.getID(), new ArrayList<>());
             }
-            
-            return true;
+
         } else {
             // Update existing profile
             int index = profiles.indexOf(existingProfile);
@@ -138,8 +137,7 @@ public class WorkoutStub implements IWorkoutDB {
             } else {
                 profileItems.put(existingProfile.getID(), new ArrayList<>());
             }
-            
-            return true;
+
         }
     }
     

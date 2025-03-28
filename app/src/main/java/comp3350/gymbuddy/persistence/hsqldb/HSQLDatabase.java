@@ -229,11 +229,14 @@ public class HSQLDatabase implements IDatabase {
         Timber.tag(TAG).d("Executing script from: %s", scriptPath);
         
         try (BufferedReader reader = new BufferedReader(new FileReader(scriptPath))) {
+            Timber.tag(TAG).d("Reading SQL script ");
             StringBuilder sb = new StringBuilder();
             String line;
             int lineCount = 0;
             
             while ((line = reader.readLine()) != null) {
+                Timber.tag(TAG).d("Executing SQL script %s",line);
+
                 lineCount++;
                 // Skip comments and empty lines
                 if (line.trim().startsWith("--") || line.trim().isEmpty()) {

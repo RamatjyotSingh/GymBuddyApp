@@ -70,10 +70,9 @@ public class WorkoutManagerTest {
         WorkoutProfile newProfile = new WorkoutProfile("Test Profile", "icon_path.png", new ArrayList<>());
         
         // Save the profile
-        boolean saveResult = workoutManager.saveWorkout(newProfile);
+        workoutManager.saveWorkout(newProfile);
         
-        // Verify save was successful
-        assertTrue(saveResult);
+
         
         // Get updated list of workouts
         List<WorkoutProfile> updatedProfiles = workoutManager.getSavedWorkouts();

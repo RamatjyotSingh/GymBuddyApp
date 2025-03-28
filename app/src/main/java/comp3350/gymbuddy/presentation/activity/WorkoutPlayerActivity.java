@@ -3,9 +3,10 @@ package comp3350.gymbuddy.presentation.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
+import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutPlayerBinding;
+import comp3350.gymbuddy.logic.exception.BusinessException;
 import comp3350.gymbuddy.logic.util.StringFormatter;
 import comp3350.gymbuddy.logic.util.WorkoutPlaybackController;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
@@ -13,11 +14,13 @@ import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.exception.DBException;
-import timber.log.Timber;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
+
 
 public class WorkoutPlayerActivity extends Activity {
 
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
     private WorkoutPlaybackController controller;
 
     // View binding for accessing UI elements efficiently
@@ -31,10 +34,10 @@ public class WorkoutPlayerActivity extends Activity {
         setContentView(binding.getRoot());
 
         // Get the workout ID passed through the intent.
-        int id = getIntent().getIntExtra("workoutProfileId", 0);
+        int id = getIntent().getIntExtra(getString(R.string.intent_workout_profile_id), -1);
 
         // Fetch the profile from the database.
-        WorkoutProfile workoutProfile = null;
+        WorkoutProfile workoutProfile ;
         try {
             WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
             workoutProfile = workoutManager.getWorkoutProfileByID(id);
@@ -45,13 +48,9 @@ public class WorkoutPlayerActivity extends Activity {
                 // If success, start the workout.
                 startWorkout(workoutProfile);
             }
-        } catch (IllegalStateException e) {
-            Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
-            Timber.e(e, "ApplicationService not initialized in WorkoutPlayerActivity");
-            finish();
-        } catch (DBException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            Timber.e(e, "Database error in WorkoutPlayerActivity: %s", e.getMessage());
+        }
+        catch (BusinessException e) {
+            handler.handle(e);
             finish();
         }
     }

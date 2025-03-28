@@ -19,21 +19,23 @@ import java.util.List;
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding;
 import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.logic.exception.BusinessException;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
 import comp3350.gymbuddy.logic.util.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidInputException;
 import comp3350.gymbuddy.logic.exception.InvalidNameException;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
-import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.presentation.adapters.WorkoutItemAdapter;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseDialogFragment;
 import comp3350.gymbuddy.presentation.util.DSOBundler;
 import comp3350.gymbuddy.presentation.util.NavigationHelper;
-import timber.log.Timber;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
 
 public class WorkoutBuilderActivity extends AppCompatActivity {
 
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
     // View binding for accessing UI elements efficiently
     private ActivityWorkoutBuilderBinding binding;
 
@@ -62,7 +64,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         binding.recyclerWorkoutItems.setLayoutManager(new LinearLayoutManager(this));
 
         // Listen for results from the AddExerciseDialogFragment (workout item details)
-        getSupportFragmentManager().setFragmentResultListener("workout_item", this, this::handleWorkoutItemResult);
+        getSupportFragmentManager().setFragmentResultListener(getString(R.string.frag_listner_workout_item), this, this::handleWorkoutItemResult);
 
         // Initialize the workout items list
         workoutItems = new ArrayList<>();
@@ -126,11 +128,11 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
             try {
                 // Get the workout manager from ApplicationService
                 WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
-                boolean success = workoutManager.saveWorkout(profile);
+                workoutManager.saveWorkout(profile);
 
-                if (success) {
+
                     // Show success message
-                    Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
+               Toast.makeText(this, "Workout profile saved successfully", Toast.LENGTH_SHORT).show();
 
                     // Explicitly navigate to MainActivity
                     Intent intent = new Intent(this, MainActivity.class);
@@ -142,18 +144,14 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
                     android.app.ActivityOptions options = android.app.ActivityOptions.makeCustomAnimation(this, 0, 0);
                     startActivity(intent, options.toBundle());
 
-                    // Still finish this activity to prevent it remaining in the back stack
-                    finish();
-                } else {
-                    Toast.makeText(this, "Failed to save workout profile", Toast.LENGTH_SHORT).show();
-                }
-            } catch (IllegalStateException e) {
-                Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
-                Timber.e(e, "ApplicationService not initialized in WorkoutBuilderActivity");
-            } catch (DBException e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+
+            }
+            catch (BusinessException e) {
+                handler.handle(e, getString(R.string.error_saving_workout));
+            }
+            finally {
+                finish();
             }
         }
     }
@@ -193,7 +191,7 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
     private void handleExerciseListActivityResult(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
             // Get the selected exercise ID from the result data
-            int selectedExerciseId = result.getData().getIntExtra("exerciseID", -1);
+            int selectedExerciseId = result.getData().getIntExtra(getString(R.string.intent_exerciseid), -1);
 
             if (selectedExerciseId >= 0) {
                 // Open the dialog to configure the selected exercise

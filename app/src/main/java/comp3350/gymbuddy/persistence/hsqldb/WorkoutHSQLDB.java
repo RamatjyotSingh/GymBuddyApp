@@ -30,9 +30,9 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     }
 
     @Override
-    public boolean saveWorkout(WorkoutProfile profile) throws DBException {
+    public void saveWorkout(WorkoutProfile profile) throws DBException {
         if (profile == null) {
-            return false;
+            throw new DBException("Workout profile cannot be null");
         }
 
         try {
@@ -115,8 +115,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                 
                 // Commit transaction
                 connection.commit();
-                return true;
-                
+
             } catch (SQLException e) {
                 // Rollback transaction on error
                 connection.rollback();
@@ -153,7 +152,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
         List<WorkoutProfile> profiles = new ArrayList<>();
         
         try (PreparedStatement stmt = connection.prepareStatement(
-                "SELECT * FROM PUBLIC.workout_profile")) {
+                "SELECT * FROM PUBLIC.workout_profile WHERE is_deleted = 0")) {
             
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -187,14 +186,18 @@ public class WorkoutHSQLDB implements IWorkoutDB {
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String name = rs.getString("profile_name");
-                    String iconPath = rs.getString("icon_path");
                     boolean isDeleted = rs.getBoolean("is_deleted");
                     
-                    // Get workout items for this profile
-                    List<WorkoutItem> items = getWorkoutItemsForProfile(id);
-                    
-                    profile = new WorkoutProfile(id, name, iconPath, items, isDeleted);
+                    // Only load and return if not deleted
+                    if (!isDeleted) {
+                        String name = rs.getString("profile_name");
+                        String iconPath = rs.getString("icon_path");
+                        
+                        // Get workout items for this profile
+                        List<WorkoutItem> items = getWorkoutItemsForProfile(id);
+                        
+                        profile = new WorkoutProfile(id, name, iconPath, items, false);
+                    }
                 }
             }
             
@@ -230,7 +233,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
         }
         
         try (PreparedStatement stmt = connection.prepareStatement(
-                "SELECT * FROM PUBLIC.workout_profile WHERE LOWER(profile_name) LIKE ?")) {
+                "SELECT * FROM PUBLIC.workout_profile WHERE LOWER(profile_name) LIKE ? AND is_deleted = 0")) {
             
             stmt.setString(1, "%" + query.toLowerCase() + "%");
             

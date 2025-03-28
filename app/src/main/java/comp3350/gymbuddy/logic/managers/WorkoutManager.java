@@ -1,5 +1,6 @@
 package comp3350.gymbuddy.logic.managers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,9 +35,7 @@ public class WorkoutManager {
     public List<WorkoutProfile> getSavedWorkouts() {
         try {
             // Collect only the workouts that have not been deleted.
-            return workoutDB.getAll().stream()
-                    .filter(w -> !w.isDeleted())
-                    .collect(Collectors.toList());
+            return Collections.unmodifiableList(workoutDB.getAll());
         } catch (DBException e) {
             Timber.tag(TAG).e(e, "Failed to retrieve saved workouts");
             throw new WorkoutAccessException("Failed to retrieve saved workouts", e);
@@ -46,12 +45,11 @@ public class WorkoutManager {
     /**
      * Save a workout profile
      * @param workoutProfile Workout to save
-     * @return True if successful
      * @throws WorkoutAccessException if saving fails
      */
-    public boolean saveWorkout(WorkoutProfile workoutProfile) {
+    public void saveWorkout(WorkoutProfile workoutProfile) {
         try {
-            return workoutDB.saveWorkout(workoutProfile);
+            workoutDB.saveWorkout(workoutProfile);
         } catch (DBException e) {
             Timber.tag(TAG).e(e, "Failed to save workout");
             throw new WorkoutAccessException("Failed to save workout", e);

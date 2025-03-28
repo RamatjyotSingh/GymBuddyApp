@@ -11,8 +11,6 @@ import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
 import timber.log.Timber;
 
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * PersistenceManager handles database initialization and access for the application.
@@ -23,8 +21,7 @@ public class PersistenceManager implements AutoCloseable {
     private static final String TAG = "PersistenceManager";
     private static final PersistenceManager instance = new PersistenceManager();
     
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    
+
     // Database repositories
     private IWorkoutDB workoutDB;
     private IExerciseDB exerciseDB;
@@ -33,10 +30,7 @@ public class PersistenceManager implements AutoCloseable {
     // Database and factory
     private IDatabase database;
     private DatabaseFactory databaseFactory;
-    
-    // Configuration state
-    private String scriptPath;
-    private String configPath;
+
     private boolean isInitialized;
     
     /**
@@ -65,10 +59,9 @@ public class PersistenceManager implements AutoCloseable {
             Timber.tag(TAG).w("Database already initialized, skipping");
             return;
         }
-        
-        this.scriptPath = scriptPath;
-        this.configPath = configPath;
-        
+
+        // Configuration state
+
         // Reset any existing instances
         reset();
         
@@ -239,7 +232,7 @@ public class PersistenceManager implements AutoCloseable {
     
     private void ensureInitialized() {
         if (!isInitialized) {
-            throw new IllegalStateException("Database has not been initialized. Call initialize() first.");
+            throw new DBException("Database has not been initialized. Call initialize() first.");
         }
     }
 }

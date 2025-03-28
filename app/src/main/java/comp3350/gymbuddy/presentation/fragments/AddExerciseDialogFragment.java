@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.DialogAddWorkoutItemBinding;
 import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.logic.exception.BusinessException;
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
 import comp3350.gymbuddy.logic.util.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;
@@ -21,13 +23,16 @@ import comp3350.gymbuddy.logic.exception.InvalidWeightException;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.presentation.util.DSOBundler;
-import timber.log.Timber;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
+
 
 public class AddExerciseDialogFragment extends DialogFragment {
     private static final String TAG = "AddExerciseDialog";
     private static final String ARG_SELECTED_EXERCISE = "selected_exercise";
     private DialogAddWorkoutItemBinding binding;
     private Exercise selectedExercise;
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(getContext()));
 
     /**
      * Creates a new instance of the dialog with the selected exercise ID.
@@ -67,15 +72,10 @@ public class AddExerciseDialogFragment extends DialogFragment {
                 selectedExercise = exerciseManager.getExerciseByID(exerciseId);
                 
                 updateViews();
-            } catch (IllegalStateException e) {
-                // This happens if ApplicationService isn't initialized
-                Toast.makeText(getContext(), "Application not properly initialized", Toast.LENGTH_LONG).show();
-                Timber.tag(TAG).e(e, "ApplicationService not initialized");
-                dismiss(); // Close the dialog as it can't function properly
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Error loading exercise: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                Timber.tag(TAG).e(e, "Error loading exercise");
-                dismiss();
+            }
+            catch (BusinessException e) {
+                // Handle error if exercise not found
+                handler.handle(e, getString(R.string.error_loading_exercise));
             }
         }
     }

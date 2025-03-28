@@ -12,14 +12,14 @@ import timber.log.Timber;
 
 public class DSOBundler {
     private static final String TAG = "DSOBundler";
-    
+   
     /**
      * Converts a WorkoutItem into a Bundle for easy storage and transfer.
      *
      * @param workoutItem The WorkoutItem to be bundled.
      * @return A Bundle containing the workout item data, or null if workoutItem is null.
      */
-    public @Nullable Bundle bundleWorkoutItem(WorkoutItem workoutItem) {
+    public @Nullable Bundle bundleWorkoutItem(WorkoutItem workoutItem)  {
         Bundle result = null;
 
         if (workoutItem != null) {
@@ -51,11 +51,11 @@ public class DSOBundler {
      * @param bundle The Bundle containing workout item data.
      * @return A WorkoutItem object reconstructed from the bundle, or null if invalid data is found.
      */
-    public @Nullable WorkoutItem unbundleWorkoutItem(Bundle bundle) {
+    public @Nullable WorkoutItem unbundleWorkoutItem(Bundle bundle)  {
         WorkoutItem result = null;
 
         if (bundle != null) {
-            try {
+          
                 // Extract stored values from the bundle
                 int exerciseId = bundle.getInt("exerciseID", -1);
                 int sets = bundle.getInt("sets", -1);
@@ -72,12 +72,7 @@ public class DSOBundler {
                 } else {
                     Timber.tag(TAG).e("Failed to unbundle WorkoutItem: Exercise with ID %d not found", exerciseId);
                 }
-            } catch (IllegalStateException e) {
-                // This happens if ApplicationService isn't initialized
-                Timber.tag(TAG).e(e, "ApplicationService not initialized when unbundling WorkoutItem");
-            } catch (Exception e) {
-                Timber.tag(TAG).e(e, "Error unbundling WorkoutItem");
-            }
+           
         }
 
         return result;
