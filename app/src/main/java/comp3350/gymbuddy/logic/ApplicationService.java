@@ -53,29 +53,31 @@ public class ApplicationService implements AutoCloseable {
      * @throws ApplicationInitException if initialization fails
      */
     public synchronized void initialize(ConfigLoader config) throws ApplicationInitException {
-        if (initialized) {
+        if (initialized && !closed) {
             Timber.tag(TAG).w("Application already initialized");
             return;
         }
 
-        // Configuration
+        // Reset closed state if we're reinitializing
+        if (closed) {
+            Timber.tag(TAG).i("Reinitializing previously closed application");
+            closed = false;
+        }
 
-
-            // Initialize database
-            PersistenceManager pm = PersistenceManager.getInstance();
-            pm.initialize(
-                config.getScriptPath(),
-                config.getConfigPath(),
-                config.isTestMode(),
-                config.isDbAlreadyExists()
-            );
-            
-            // Initialize managers
-            initializeManagers();
-            
-            initialized = true;
-            Timber.tag(TAG).i("Application initialized successfully");
-
+        // Initialize database
+        PersistenceManager pm = PersistenceManager.getInstance();
+        pm.initialize(
+            config.getScriptPath(),
+            config.getConfigPath(),
+            config.isTestMode(),
+            config.isDbAlreadyExists()
+        );
+        
+        // Initialize managers
+        initializeManagers();
+        
+        initialized = true;
+        Timber.tag(TAG).i("Application initialized successfully");
     }
     
     /**
@@ -99,7 +101,7 @@ public class ApplicationService implements AutoCloseable {
     
     /**
      * @return ExerciseManager instance
-     * @throws IllegalStateException if application is not initialized or has been closed
+     * @throws ExerciseAccessException if application is not initialized or has been closed
      */
     public ExerciseManager getExerciseManager() {
         ensureActive();
@@ -117,7 +119,7 @@ public class ApplicationService implements AutoCloseable {
     
     /**
      * @return WorkoutSessionManager instance
-     * @throws IllegalStateException if application is not initialized or has been closed
+     * @throws  WorkoutSessionAccessException if application is not initialized or has been closed
      */
     public WorkoutSessionManager getWorkoutSessionManager() {
         ensureActive();
@@ -155,15 +157,14 @@ public class ApplicationService implements AutoCloseable {
     
     /**
      * Ensures the application service is properly initialized and not closed
-     * @throws IllegalStateException if service is not initialized or has been closed
+     * @throws ApplicationInitException if service is not initialized or has been closed
      */
     private void ensureActive() {
-        if (closed) {
-            throw new ApplicationInitException("Application service has been closed");
-        }
         if (!initialized) {
             throw new ApplicationInitException("Application service is not initialized");
         }
+        if (closed) {
+            throw new ApplicationInitException("Application service has been closed");
+        }
     }
-
 }

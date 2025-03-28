@@ -10,5 +10,5 @@ import org.junit.runners.Suite;
         WorkoutPlayerTest.class
 })
 
-public class AllSystemTests {
+public class  AllSystemTests {
 }
