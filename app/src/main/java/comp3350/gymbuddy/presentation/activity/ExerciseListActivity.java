@@ -21,20 +21,17 @@ import comp3350.gymbuddy.presentation.adapters.ExerciseAdapter;
 import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
 
 public class ExerciseListActivity extends AppCompatActivity {
-
     private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_list);
 
-
         // Fetch data from persistence
         List<Exercise> exerciseList;
 
-
         try {
-
             ExerciseManager exerciseManager = ApplicationService.getInstance().getExerciseManager();
             exerciseList = exerciseManager.getAll();
 
@@ -68,6 +65,10 @@ public class ExerciseListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when an exercise has been clicked.
+     * @param exercise the exercise clicked
+     */
     private void onExerciseClicked(Exercise exercise) {
         // Send exercise data back to the previous activity (WorkoutBuilderActivity)
         Intent intent = new Intent();
@@ -76,6 +77,10 @@ public class ExerciseListActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Called when the "View More" button has been clicked on an exercise.
+     * @param exercise the exercise clicked
+     */
     private void onViewMoreClicked(Exercise exercise) {
         // Open ExerciseDetailActivity to show exercise details.
         Intent intent = new Intent(this, ExerciseDetailActivity.class);

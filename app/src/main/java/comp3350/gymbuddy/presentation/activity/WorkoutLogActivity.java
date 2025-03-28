@@ -21,10 +21,9 @@ import comp3350.gymbuddy.presentation.util.ErrorHandler;
 import comp3350.gymbuddy.presentation.util.NavigationHelper;
 import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
 
-
 public class WorkoutLogActivity extends AppCompatActivity {
-
     private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
+
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
