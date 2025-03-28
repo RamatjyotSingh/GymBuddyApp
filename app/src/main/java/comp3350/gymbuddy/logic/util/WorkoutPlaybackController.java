@@ -15,10 +15,10 @@ public class WorkoutPlaybackController {
         void onFinishedWorkout(WorkoutSession workoutSession);
     }
 
-    private WorkoutProfile workoutProfile;
+    private final WorkoutProfile workoutProfile;
     private int currentIndex;
-    private BeginWorkoutItemListener beginWorkoutItemListener;
-    private FinishWorkoutListener finishWorkoutListener;
+    private final BeginWorkoutItemListener beginWorkoutItemListener;
+    private final FinishWorkoutListener finishWorkoutListener;
 
     public WorkoutPlaybackController(WorkoutProfile profile, BeginWorkoutItemListener beginWIListener, FinishWorkoutListener finishWorkoutListener) {
         this.workoutProfile = profile;

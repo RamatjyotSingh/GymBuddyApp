@@ -176,27 +176,7 @@
         android:layout_above="@+id/fabAddSet"
         android:nestedScrollingEnabled="false" />
 
-    <Button
-        android:id="@+id/btnPrevious"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/previous"
-        android:onClick="onClickPrevious"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:backgroundTint="@color/grey_800" />
-
     <!-- Add Set Entry Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddSet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_add"
-        android:onClick="onClickFAB"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:contentDescription="@string/add_set_entry_button_content_description"
-        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/btnNext"

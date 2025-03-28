@@ -68,20 +68,9 @@ public class WorkoutPlayerActivity extends Activity {
         controller.startWorkout();
     }
 
-    /**
-     * Handles the Floating Action Button (FAB) click event.
-     * Creates a new entry in the recycler view.fs
-     */
-    public void onClickFAB(View v) {
 
-    }
 
-    /**
-     * Handles the Previous button click event.
-     */
-    public void onClickPrevious(View v) {
 
-    }
 
     /**
      * Handles the Next button click event.
