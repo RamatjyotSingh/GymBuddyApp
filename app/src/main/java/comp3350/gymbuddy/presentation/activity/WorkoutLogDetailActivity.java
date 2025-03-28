@@ -77,7 +77,6 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
                 TextView exerciseName = newView.findViewById(R.id.workoutItemExerciseName);
                 exerciseName.setText(exercise.getName());
 
-
                 TextView exerciseInfo = newView.findViewById(R.id.workoutItemExerciseInfo);
                 exerciseInfo.setText(item.toString());
 

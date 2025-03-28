@@ -78,8 +78,6 @@ public class StartWorkoutListActivity extends AppCompatActivity {
             // Get the workout profile
             profile = workoutManager.getWorkoutProfileByID(profileId);
             
-
-            
             // Display profile details
             displayProfile();
         } catch(BusinessException e) {
@@ -146,26 +144,27 @@ public class StartWorkoutListActivity extends AppCompatActivity {
         intent.putExtra(getString(R.string.intent_workout_profile_id), profileId);
         startActivity(intent);
     }
-    
+
+
     /**
      * Show loading state
      */
     private void showLoadingState() {
         binding.viewSwitcher.setDisplayedChild(0);
     }
-    
+
+
     /**
      * Show content state
      */
     private void showContentState() {
         binding.viewSwitcher.setDisplayedChild(1);
     }
-    
+
+
     /**
      * Handle errors by showing a message and finishing the activity
      */
-
-    
     @Override
     protected void onDestroy() {
         super.onDestroy();
