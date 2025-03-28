@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.gymbuddy.logic.util.InputValidator;
-import comp3350.gymbuddy.logic.util.LogicConfig;
+import comp3350.gymbuddy.logic.util.ValidationMessages;
 import comp3350.gymbuddy.logic.exception.InvalidInputException;
 import comp3350.gymbuddy.logic.exception.InvalidNameException;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;
@@ -69,28 +69,28 @@ public class InputValidatorTest {
         public void testNewWorkoutProfileInvalidName(){
             name = "";
 
-            newWorkoutProfileCatchException(new InvalidNameException(LogicConfig.invalidNameExceptionMessage));
+            newWorkoutProfileCatchException(new InvalidNameException(ValidationMessages.invalidNameExceptionMessage));
         }
 
         @Test
         public void testNewWorkoutProfileInvalidWorkoutItems(){
             workoutItems = new ArrayList<>();
 
-            newWorkoutProfileCatchException(new InvalidInputException(LogicConfig.invalidInputExceptionMessage));
+            newWorkoutProfileCatchException(new InvalidInputException(ValidationMessages.invalidInputExceptionMessage));
         }
 
         @Test
         public void testNewWorkoutProfileNullName(){
             name = null;
 
-            newWorkoutProfileCatchException(new InvalidNameException(LogicConfig.invalidNameExceptionMessage));
+            newWorkoutProfileCatchException(new InvalidNameException(ValidationMessages.invalidNameExceptionMessage));
         }
 
         @Test
         public void testNewWorkoutProfileNullWorkoutItems(){
             workoutItems = null;
 
-            newWorkoutProfileCatchException(new InvalidInputException(LogicConfig.invalidInputExceptionMessage));
+            newWorkoutProfileCatchException(new InvalidInputException(ValidationMessages.invalidInputExceptionMessage));
         }
 
     }
@@ -159,7 +159,7 @@ public class InputValidatorTest {
                 fail("InvalidInputException not thrown.");
             }
             catch(InvalidInputException e){
-                assertEquals(LogicConfig.invalidInputExceptionMessage, e.getMessage());
+                assertEquals(ValidationMessages.invalidInputExceptionMessage, e.getMessage());
             }
             catch(Exception e){
                 fail("Incorrect exception thrown: " + e.getClass());
@@ -181,14 +181,14 @@ public class InputValidatorTest {
         public void testNewWorkoutItemInvalidSetsFormat(){
             String setsField = "///";
 
-            newWorkoutItemCatchException(setsField, ""+1, ""+1.0, ""+1.0, new InvalidSetsException(LogicConfig.integerFormatExceptionMessage));
+            newWorkoutItemCatchException(setsField, ""+1, ""+1.0, ""+1.0, new InvalidSetsException(ValidationMessages.integerFormatExceptionMessage));
         }
 
         @Test
         public void testNewWorkoutItemInvalidSetsValue(){
             String setsField = "-10";
 
-            newWorkoutItemCatchException(setsField, ""+1, ""+1.0, ""+1.0, new InvalidSetsException(LogicConfig.invalidNonzeroValueMessage));
+            newWorkoutItemCatchException(setsField, ""+1, ""+1.0, ""+1.0, new InvalidSetsException(ValidationMessages.invalidNonzeroValueMessage));
         }
 
         @Test
@@ -196,7 +196,7 @@ public class InputValidatorTest {
             exercise = new Exercise(0, "Push-up", null, null, null, true, false);
             String timeField = "///";
 
-            newWorkoutItemCatchException(""+1, ""+1, ""+1.0, timeField, new InvalidTimeException(LogicConfig.doubleFormatExceptionMessage));
+            newWorkoutItemCatchException(""+1, ""+1, ""+1.0, timeField, new InvalidTimeException(ValidationMessages.doubleFormatExceptionMessage));
         }
 
         @Test
@@ -204,21 +204,21 @@ public class InputValidatorTest {
             exercise = new Exercise(0, "Push-up", null, null, null, true, false);
             String timeField = "-10";
 
-            newWorkoutItemCatchException(""+1, ""+1, ""+1.0, timeField, new InvalidTimeException(LogicConfig.invalidNonnegativeValueMessage));
+            newWorkoutItemCatchException(""+1, ""+1, ""+1.0, timeField, new InvalidTimeException(ValidationMessages.invalidNonnegativeValueMessage));
         }
 
         @Test
         public void testNewWorkoutItemInvalidRepsFormat(){
             String repsField = "///";
 
-            newWorkoutItemCatchException(""+1, repsField, ""+1.0, ""+1.0, new InvalidRepsException(LogicConfig.integerFormatExceptionMessage));
+            newWorkoutItemCatchException(""+1, repsField, ""+1.0, ""+1.0, new InvalidRepsException(ValidationMessages.integerFormatExceptionMessage));
         }
 
         @Test
         public void testNewWorkoutItemInvalidRepsValue(){
             String repsField = "-10";
 
-            newWorkoutItemCatchException(""+1, repsField, ""+1.0, ""+1.0, new InvalidRepsException(LogicConfig.invalidNonzeroValueMessage));
+            newWorkoutItemCatchException(""+1, repsField, ""+1.0, ""+1.0, new InvalidRepsException(ValidationMessages.invalidNonzeroValueMessage));
         }
 
         @Test
@@ -226,7 +226,7 @@ public class InputValidatorTest {
             exercise = new Exercise(0, "Push-up", null, null, null, false, true);
             String weightField = "///";
 
-            newWorkoutItemCatchException(""+1, ""+1, weightField, ""+1.0, new InvalidWeightException(LogicConfig.doubleFormatExceptionMessage));
+            newWorkoutItemCatchException(""+1, ""+1, weightField, ""+1.0, new InvalidWeightException(ValidationMessages.doubleFormatExceptionMessage));
         }
 
         @Test
@@ -234,7 +234,7 @@ public class InputValidatorTest {
             exercise = new Exercise(0, "Push-up", null, null, null, false, true);
             String weightField = "-10";
 
-            newWorkoutItemCatchException(""+1, ""+1, weightField, ""+1.0, new InvalidWeightException(LogicConfig.invalidNonnegativeValueMessage));
+            newWorkoutItemCatchException(""+1, ""+1, weightField, ""+1.0, new InvalidWeightException(ValidationMessages.invalidNonnegativeValueMessage));
         }
     }
 }

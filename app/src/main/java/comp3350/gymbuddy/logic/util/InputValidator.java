@@ -30,12 +30,12 @@ public class InputValidator {
     public WorkoutProfile newWorkoutProfile(String name, String iconPath, List<WorkoutItem> workoutItems) throws InvalidInputException {
         // Validate workout name.
         if (name == null || name.isEmpty()) {
-            throw new InvalidNameException(LogicConfig.invalidNameExceptionMessage);
+            throw new InvalidNameException(ValidationMessages.invalidNameExceptionMessage);
         }
 
         // Validate workout items.
         if (workoutItems == null || workoutItems.isEmpty()) {
-            throw new InvalidInputException(LogicConfig.invalidInputExceptionMessage);
+            throw new InvalidInputException(ValidationMessages.invalidInputExceptionMessage);
         }
 
         return new WorkoutProfile(name, iconPath, workoutItems);
@@ -77,7 +77,7 @@ public class InputValidator {
             }
         }
         else{
-            throw new InvalidInputException(LogicConfig.invalidInputExceptionMessage);
+            throw new InvalidInputException(ValidationMessages.invalidInputExceptionMessage);
         }
 
         // Return the new workout item object.
@@ -98,10 +98,10 @@ public class InputValidator {
         try {
             sets = Integer.parseInt(setsField);
         } catch (NumberFormatException e) {
-            throw new InvalidSetsException(LogicConfig.integerFormatExceptionMessage);
+            throw new InvalidSetsException(ValidationMessages.integerFormatExceptionMessage);
         }
         if (sets < 1) {
-            throw new InvalidSetsException(LogicConfig.invalidNonzeroValueMessage);
+            throw new InvalidSetsException(ValidationMessages.invalidNonzeroValueMessage);
         }
 
         return sets;
@@ -121,10 +121,10 @@ public class InputValidator {
         try {
             time = Double.parseDouble(timeField);
         } catch (NumberFormatException e) {
-            throw new InvalidTimeException(LogicConfig.doubleFormatExceptionMessage);
+            throw new InvalidTimeException(ValidationMessages.doubleFormatExceptionMessage);
         }
         if (time < 1.0) {
-            throw new InvalidTimeException(LogicConfig.invalidNonnegativeValueMessage);
+            throw new InvalidTimeException(ValidationMessages.invalidNonnegativeValueMessage);
         }
 
         return time;
@@ -144,10 +144,10 @@ public class InputValidator {
         try {
             reps = Integer.parseInt(repsField);
         } catch (NumberFormatException e) {
-            throw new InvalidRepsException(LogicConfig.integerFormatExceptionMessage);
+            throw new InvalidRepsException(ValidationMessages.integerFormatExceptionMessage);
         }
         if (reps < 1) {
-            throw new InvalidRepsException(LogicConfig.invalidNonzeroValueMessage);
+            throw new InvalidRepsException(ValidationMessages.invalidNonzeroValueMessage);
         }
 
         return reps;
@@ -167,10 +167,10 @@ public class InputValidator {
         try {
             weight = Double.parseDouble(weightField);
         } catch (NumberFormatException e) {
-            throw new InvalidWeightException(LogicConfig.doubleFormatExceptionMessage);
+            throw new InvalidWeightException(ValidationMessages.doubleFormatExceptionMessage);
         }
         if (weight < 0) {
-            throw new InvalidWeightException(LogicConfig.invalidNonnegativeValueMessage);
+            throw new InvalidWeightException(ValidationMessages.invalidNonnegativeValueMessage);
         }
 
         return weight;

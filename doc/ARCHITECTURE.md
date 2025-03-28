@@ -1,26 +1,31 @@
-# GymBuddy - Architecture Documentation
+# GymBuddy - Comprehensive Architecture Documentation
+
+## Executive Summary
+
+GymBuddy is an Android fitness application built on a robust three-tier architecture that enables users to browse exercises, create custom workouts, track workout sessions, and view workout history. This document details the architectural design, component interactions, and implementation patterns that provide the foundation for the application's maintainability, testability, and extensibility.
 
 ## Table of Contents
 
-1. Overview
-2. Architectural Pattern
-3. Component Architecture
-4. Layer Details
+1. Architecture Overview
+2. Core Architecture Principles
+3. Architectural Layers
    - Presentation Layer
    - Business Logic Layer
    - Data Access Layer
    - Domain Objects
-5. Key Workflows
-6. Design Patterns
-7. Dependency Management
+4. Component Interactions
+5. Data Flows
+6. Code Organization
+7. Exception Handling Strategy
+8. Design Patterns
+9. Testing Strategy
+10. Future Enhancements
+11. Technical Glossary
 
-## Overview
+## Architecture Overview
 
-GymBuddy is an Android application that follows a three-tier architecture pattern with clear separation of concerns. The application allows users to browse exercises, create custom workouts, track workout sessions, and view workout history.
 
-## Architectural Pattern
-
-The application follows a **Three-Tier Architecture** with the following layers:
+GymBuddy follows a **strict three-tier architecture** with clear separation of concerns:
 
 ```
 ┌─────────────────────┐
@@ -37,104 +42,79 @@ The application follows a **Three-Tier Architecture** with the following layers:
 └─────────────────────┘
 ```
 
-This architecture provides:
-- **Clear separation of concerns**: Each layer has a specific responsibility
-- **Maintainability**: Changes to one layer have minimal impact on others
-- **Testability**: Layers can be tested independently with mocks/stubs
-- **Flexibility**: Database implementations can be switched without affecting business logic
+This architecture enables:
+- **Independent evolution** of each layer
+- **Simplified testing** through clear interfaces
+- **Consistent data flow** throughout the application
+- **Technology independence** for each architectural concern
 
-## Component Architecture
+## Core Architecture Principles
 
-### High-Level Components
+### 1. Unidirectional Dependencies
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                       Presentation Layer                          │
-│                                                                  │
-│  ┌─────────────┐  ┌───────────┐  ┌─────────┐  ┌──────────────┐  │
-│  │  Activities │  │ Fragments │  │ Adapters│  │ UI Utilities │  │
-│  └─────────────┘  └───────────┘  └─────────┘  └──────────────┘  │
-└──────────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                     Business Logic Layer                          │
-│                                                                  │
-│  ┌─────────────────┐  ┌──────────┐  ┌────────────┐  ┌─────────┐ │
-│  │ ApplicationService│ │ Managers │  │ Validators │  │ Utilities│ │
-│  └─────────────────┘  └──────────┘  └────────────┘  └─────────┘ │
-└──────────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                       Data Access Layer                           │
-│                                                                  │
-│  ┌──────────────────┐  ┌─────────────────┐  ┌────────────────┐  │
-│  │ Database Interfaces│ │ DB Implementations│ │ Database Factory│  │
-│  └──────────────────┘  └─────────────────┘  └────────────────┘  │
-└──────────────────────────────────────────────────────────────────┘
-                            │
-                            ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                        Domain Objects                             │
-│                                                                  │
-│  ┌─────────┐  ┌───┐  ┌───────────────┐  ┌────────────┐  ┌──────┐│
-│  │ Exercise │  │Tag│  │ WorkoutProfile │  │ WorkoutItem │  │ Session││
-│  └─────────┘  └───┘  └───────────────┘  └────────────┘  └──────┘│
-└──────────────────────────────────────────────────────────────────┘
-```
+Dependencies always flow **downward** from Presentation to Business Logic to Data Access. Higher layers depend on lower layers, never the reverse.
 
-## Layer Details
+### 2. Interface-Based Communication
+
+Layers communicate through interfaces, enabling:
+- Multiple implementations (production, testing)
+- Loose coupling between components
+- Easier mocking for unit tests
+
+### 3. Shared Domain Model
+
+Domain objects are shared across all layers to maintain consistency and avoid duplication.
+
+### 4. Centralized Error Handling
+
+A comprehensive exception hierarchy with layer-specific exceptions ensures:
+- Appropriate error translation between layers
+- Consistent error handling at the UI level
+- Detailed error information for debugging
+
+### 5. Service Locator Pattern
+
+The `ApplicationService` provides centralized access to all managers, ensuring consistent state and simplified access.
+
+## Architectural Layers
 
 ### Presentation Layer
 
-The Presentation Layer contains all UI components and is responsible for displaying data to the user and capturing user input.
+The Presentation Layer handles user interface rendering and user interactions.
 
-#### Activities
+#### Components
 
-Activities represent the main screens of the application:
+1. **Activities**
+   - `MainActivity`: Home screen with workout list
+   - `WorkoutBuilderActivity`: Create and edit workout profiles
+   - `WorkoutPlayerActivity`: Execute workout sessions
+   - `ExerciseDetailActivity`: Display exercise details
+   - `ExerciseListActivity`: Browse and search exercises
+   - `WorkoutLogActivity`: View workout history
+   - `WorkoutLogDetailActivity`: View session details
+   - `StartWorkoutListActivity`: Preview before starting workout
 
-- **MainActivity**: Home screen with workout list
-- **WorkoutBuilderActivity**: Create and edit workout profiles
-- **WorkoutPlayerActivity**: Execute workout sessions
-- **ExerciseDetailActivity**: Display exercise details
-- **ExerciseListActivity**: Browse and search exercises
-- **WorkoutLogActivity**: View history of completed workouts
-- **WorkoutLogDetailActivity**: View details of a specific workout log
-- **StartWorkoutListActivity**: Intermediate screen before starting a workout
+2. **Fragments**
+   - `AddExerciseDialogFragment`: Configure exercise parameters
 
-#### Fragments
+3. **Adapters**
+   - `WorkoutProfileAdapter`: Display workout profiles in lists
+   - `WorkoutItemAdapter`: Display exercises within a workout
+   - `ExerciseAdapter`: Display exercise list
+   - `WorkoutLogAdapter`: Display workout history
 
-Modular UI components that can be reused across activities:
+4. **UI Utilities**
+   - `ErrorHandler`: Centralized error handling
+   - `ErrorDisplay`: Interface for error display strategies
+   - `ToastErrorDisplay`: Toast-based error display
+   - `DSOBundler`: Bundle domain objects for intent transfers
+   - `NavigationHelper`: Handle screen navigation
+   - `AssetLoader`: Load images from assets
+   - `FileHandler`: Handle file operations
 
-- **AddExerciseDialogFragment**: Dialog for configuring exercise parameters
+#### Implementation Example
 
-#### Adapters
-
-Connect domain objects to UI components (RecyclerViews):
-
-- **WorkoutProfileAdapter**: Display workout profiles
-- **WorkoutItemAdapter**: Display exercises within a workout
-- **ExerciseAdapter**: Display exercise list
-- **WorkoutLogAdapter**: Display workout history
-
-#### UI Utilities
-
-Helper classes for the UI layer:
-
-- **ErrorHandler**: Centralized error handling
-- **NavigationHelper**: Handle screen navigation
-- **ToastErrorDisplay**: Display errors as toasts
-- **AssetLoader**: Load images from assets
-- **FileHandler**: Handle file operations
-
-#### Data Flow in Presentation Layer
-
-```
-User Action → Activity/Fragment → Manager Call → Update UI with Result
-```
-
-Example from `ExerciseDetailActivity`:
+Fetching and displaying exercise details in `ExerciseDetailActivity`:
 
 ```java
 // Get the exercise details using the manager
@@ -142,45 +122,50 @@ ExerciseManager exerciseManager = ApplicationService.getInstance().getExerciseMa
 Exercise exercise = exerciseManager.getExerciseByID(exerciseID);
 
 // Update the views with exercise info
-setExercise(exercise);
+binding.exerciseName.setText(exercise.getName());
+binding.exerciseInstructions.setText(exercise.getInstructions());
+
+// Load exercise image
+AssetLoader.loadImageFromPath(this, binding.exerciseImage, exercise.getImagePath());
+
+// Display exercise tags
+displayTags(exercise.getTags());
 ```
 
 ### Business Logic Layer
 
-The Business Logic Layer contains the application's core logic, validation rules, and orchestrates operations between the UI and data access layers.
+The Business Logic Layer contains application logic, validations, and orchestrates operations.
 
-#### ApplicationService
+#### Components
 
-Central service locator that provides access to all managers:
+1. **Application Service**
+   - `ApplicationService`: Central service locator (Singleton)
+   - Provides access to all managers
+   - Manages system initialization and lifecycle
 
-```java
-// Singleton pattern
-public class ApplicationService {
-    private static ApplicationService instance;
-    
-    public static ApplicationService getInstance() {
-        if (instance == null) {
-            instance = new ApplicationService();
-        }
-        return instance;
-    }
-    
-    // Provides access to managers
-    public ExerciseManager getExerciseManager() { ... }
-    public WorkoutManager getWorkoutManager() { ... }
-    public WorkoutSessionManager getWorkoutSessionManager() { ... }
-}
-```
+2. **Managers**
+   - `ExerciseManager`: Handle exercise-related operations
+   - `WorkoutManager`: Handle workout profile operations
+   - `WorkoutSessionManager`: Handle workout session operations
 
-#### Managers
+3. **Business Utilities**
+   - `InputValidator`: Validate user inputs
+   - `StringFormatter`: Format data for display
+   - `ConfigLoader`: Load configuration data
+   - `ValidationMessages`: Centralize validation messages
+   - `WorkoutPlaybackController`: Control workout execution flow
 
-Implement business rules and orchestrate operations:
+4. **Business Exceptions**
+   - `BusinessException`: Base exception 
+   - `DataAccessException`: Database errors
+   - `ExerciseAccessException`: Exercise-specific errors
+   - `WorkoutAccessException`: Workout-specific errors
+   - `InvalidInputException`: Input validation errors
+   - `ApplicationInitException`: Initialization errors
 
-- **ExerciseManager**: Handle exercise-related operations
-- **WorkoutManager**: Handle workout profile operations
-- **WorkoutSessionManager**: Handle workout session (history) operations
+#### Implementation Example
 
-Example from `ExerciseManager`:
+Exercise retrieval with error handling in `ExerciseManager`:
 
 ```java
 public Exercise getExerciseByID(int id) {
@@ -191,183 +176,513 @@ public Exercise getExerciseByID(int id) {
         }
         return exercise;
     } catch (DBException e) {
-        throw new ExerciseAccessException("Failed to retrieve exercise", e);
+        Timber.tag(TAG).e(e, "Failed to retrieve exercise with ID %d", id);
+        throw new ExerciseAccessException("Failed to retrieve exercise with ID: " + id, e);
     }
 }
 ```
 
-#### Validators & Utilities
-
-- **InputValidator**: Validate user input
-- **StringFormatter**: Format strings for display
-- **ConfigLoader**: Load configuration data
-- **WorkoutPlaybackController**: Control workout execution flow
-
-#### Business Exceptions
-
-Custom exceptions for different error scenarios:
-
-- **BusinessException**: Base exception class
-- **DataAccessException**: Database access errors
-- **ExerciseAccessException**: Exercise-specific errors
-- **InvalidInputException**: Input validation errors
-
 ### Data Access Layer
 
-The Data Access Layer handles data persistence and retrieval, abstracting the database details from the business layer.
+The Data Access Layer handles data persistence and retrieval, abstracting the database details.
 
-#### Database Interfaces
+#### Components
 
-Define data operations without implementation details:
+1. **Database Interfaces**
+   - `IDatabase`: Base database operations
+   - `IExerciseDB`: Exercise database operations
+   - `IWorkoutDB`: Workout profile operations
+   - `IWorkoutSessionDB`: Workout session operations
 
-- **IExerciseDB**: Exercise database operations
-- **IWorkoutDB**: Workout profile operations
-- **IWorkoutSessionDB**: Workout session operations
+2. **Database Implementations**
+   - `HSQLDatabase`: Database connection management
+   - `ExerciseHSQLDB`: HSQL implementation for exercises
+   - `WorkoutHSQLDB`: HSQL implementation for workouts
+   - `WorkoutSessionHSQLDB`: HSQL implementation for sessions
+   - Various stubs for testing (e.g., `ExerciseStub`)
 
-#### Database Implementations
+3. **Factory & Management**
+   - `DatabaseFactory`: Create appropriate DB implementations
+   - `PersistenceManager`: Manage database lifecycle
 
-Concrete implementations of database interfaces:
+#### Implementation Example
 
-- **ExerciseHSQLDB**: HSQL implementation for exercises
-- **WorkoutHSQLDB**: HSQL implementation for workouts
-- **ExerciseStub**: Test stub for exercises
-
-#### Database Factory
-
-Creates appropriate database implementations:
+Saving a workout in `WorkoutDAO`:
 
 ```java
-public class DatabaseFactory {
-    public static IExerciseDB getExerciseDB() {
-        // Return HSQL or stub implementation based on configuration
-    }
-    
-    public static IWorkoutDB getWorkoutDB() {
-        // Return appropriate implementation
+@Override
+public void saveWorkout(WorkoutProfile profile) throws DBException {
+    try {
+        connection.setAutoCommit(false);
+        
+        if (profile.getID() == -1) {
+            // Insert new profile
+            int profileId = insertNewProfile(profile);
+            insertWorkoutItems(profileId, profile.getWorkoutItems());
+        } else {
+            // Update existing profile
+            updateProfile(profile);
+            updateWorkoutItems(profile.getID(), profile.getWorkoutItems());
+        }
+        
+        connection.commit();
+    } catch (SQLException e) {
+        try {
+            connection.rollback();
+        } catch (SQLException rollbackEx) {
+            throw new DBException("Failed to rollback transaction: " + rollbackEx.getMessage(), rollbackEx);
+        }
+        throw new DBException("Failed to save workout: " + e.getMessage(), e);
+    } finally {
+        try {
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            throw new DBException("Failed to reset auto-commit: " + e.getMessage(), e);
+        }
     }
 }
 ```
 
 ### Domain Objects
 
-Core business entities shared across all layers:
+Domain Objects represent core business entities shared across all layers.
 
-- **Exercise**: Represents a physical exercise with name, instructions, properties
-- **Tag**: Categories or labels for exercises (e.g., "Upper Body", "Beginner")
-- **WorkoutProfile**: A collection of workout items forming a complete workout
-- **WorkoutItem**: An exercise with specific parameters (sets, reps, weight)
-- **WorkoutSession**: A recorded instance of completing a workout
-- **SessionItem**: A record of completing a specific exercise in a session
+#### Core Domain Objects
 
-## Key Workflows
+- **Exercise**: Physical exercise with name, instructions, properties
+  - Properties: id, name, instructions, imagePath, tags, isTimeBased, hasWeight
+  
+- **Tag**: Categories for exercises with display properties
+  - Properties: type (enum: DIFFICULTY, MUSCLE_GROUP, etc.), name, textColor, bgColor
+  
+- **WorkoutProfile**: Complete workout definition
+  - Properties: id, name, iconPath, workoutItems, isDeleted
+  
+- **WorkoutItem**: Exercise with specific parameters
+  - Properties: exercise, sets, reps, weight, time
+  
+- **WorkoutSession**: Record of a completed workout
+  - Properties: id, startTime, endTime, sessionItems, profile
+
+#### Implementation Example
+
+Domain object relationships in `WorkoutItem`:
+
+```java
+// Constructor for rep-based workout with weight
+public WorkoutItem(Exercise exercise, int sets, int reps, double weight) {
+    this(exercise, sets, reps, weight, 0.0);
+}
+
+// Constructor for time-based workout
+public WorkoutItem(Exercise exercise, int sets, double time) {
+    this(exercise, sets, 0, 0.0, time);
+}
+
+// Returns whether this is a time-based exercise
+public boolean isTimeBased() {
+    return exercise.isTimeBased();
+}
+
+// Returns whether this exercise has weight
+public boolean hasWeight() { 
+    return exercise.hasWeight(); 
+}
+```
+
+## Component Interactions
+
+### Detailed Component Diagram
+
+```mermaid
+flowchart TD
+    %% Styles
+    classDef presentation fill:#d4f1f9,stroke:#05386B,stroke-width:2px
+    classDef business fill:#f9f1c6,stroke:#05386B,stroke-width:2px
+    classDef data fill:#e8d8f7,stroke:#05386B,stroke-width:2px
+    classDef domain fill:#c9e6d1,stroke:#05386B,stroke-width:2px
+    
+    %% USER ENTRY
+    User((User))
+    
+    %% PRESENTATION LAYER
+    subgraph PL[Presentation Layer]
+        Activities[Activities]
+        Fragments[Fragments]
+        Adapters[Adapters]
+        UIUtils[UI Utilities]
+    end
+    
+    %% BUSINESS LOGIC LAYER
+    subgraph BL[Business Logic Layer]
+        AppService[ApplicationService]
+        Managers[Managers]
+        BLUtils[Business Utilities]
+        Exceptions[Exceptions]
+    end
+    
+    %% DATA ACCESS LAYER
+    subgraph DL[Data Access Layer]
+        DBInterfaces[Database Interfaces]
+        DBImplementations[Database Implementations]
+        Factory[Database Factory]
+    end
+    
+    %% DOMAIN OBJECTS
+    subgraph DO[Domain Objects]
+        Exercise
+        Tag
+        WorkoutProfile
+        WorkoutItem
+        WorkoutSession
+    end
+    
+    %% KEY RELATIONSHIPS
+    User --> Activities
+    
+    Activities --> Fragments
+    Activities --> Adapters
+    Activities --> UIUtils
+    
+    Activities --> AppService
+    AppService --> Managers
+    
+    Managers --> BLUtils
+    Managers --> Exceptions
+    
+    Managers --> DBInterfaces
+    DBInterfaces --> DO
+    Factory --> DBImplementations
+    DBImplementations -.-> DBInterfaces
+    
+    UIUtils --> Exceptions
+    
+    %% DOMAIN OBJECT USAGE
+    Activities -.-> DO
+    Managers -.-> DO
+    DBInterfaces -.-> DO
+    
+    %% APPLY STYLES
+    class PL presentation
+    class BL business
+    class DL data
+    class DO domain
+```
+
+### Key Interaction Patterns
+
+1. **Service Locator Access**
+   - Activities/Fragments access managers through `ApplicationService.getInstance()`
+   - Ensures consistent access to business logic components
+
+2. **Manager-Repository Communication**
+   - Managers use database interfaces to perform data operations
+   - Errors from data layer are translated to business exceptions
+
+3. **Domain Object Flow**
+   - Domain objects flow up from data layer to business layer to presentation
+   - Domain objects flow down during create/update operations
+
+4. **Error Propagation**
+   - Low-level exceptions are caught and wrapped in domain-specific exceptions
+   - Presentation layer catches business exceptions via centralized ErrorHandler
+
+## Data Flows
 
 ### 1. Viewing Exercise Details
 
 ```
-ExerciseListActivity
-    ↓ onViewMoreClicked(Exercise)
-    ↓ starts
-ExerciseDetailActivity
-    ↓ onCreate()
-    ↓ gets exercise ID from intent
-    ↓ calls
-ExerciseManager.getExerciseByID(id)
-    ↓ calls
-IExerciseDB.getExerciseByID(id)
-    ↓ returns Exercise
-    ↓ back to
-ExerciseDetailActivity
-    ↓ setExercise(exercise)
-    ↓ displays details
+User selects exercise in ExerciseListActivity
+  │
+  ▼
+ExerciseDetailActivity created with exerciseID
+  │
+  ▼
+ExerciseDetailActivity calls ApplicationService.getInstance().getExerciseManager()
+  │
+  ▼
+ExerciseManager.getExerciseByID(exerciseID) called
+  │
+  ▼
+ExerciseManager calls IExerciseDB.getExerciseByID(id)
+  │
+  ▼
+Database implementation retrieves exercise data
+  │
+  ▼
+Exercise object flows back up through the layers
+  │
+  ▼
+ExerciseDetailActivity displays exercise details
 ```
 
 ### 2. Building a Workout
 
 ```
-WorkoutBuilderActivity
-    ↓ onClickFAB()
-    ↓ launches
-ExerciseListActivity
-    ↓ user selects exercise
-    ↓ onExerciseClicked(Exercise)
-    ↓ returns to
-WorkoutBuilderActivity
-    ↓ handles exercise selection
-    ↓ shows
-AddExerciseDialogFragment
-    ↓ user configures exercise parameters
-    ↓ onClickBtnAddWorkoutItem()
-    ↓ returns workout item to
-WorkoutBuilderActivity
-    ↓ adds to adapter
-    ↓ user clicks Save
-    ↓ onClickSave()
-    ↓ generates WorkoutProfile
-    ↓ calls
-WorkoutManager.saveWorkout(profile)
-    ↓ calls
-IWorkoutDB.insertWorkoutProfile(profile)
-    ↓ stores in database
+User creates workout in WorkoutBuilderActivity
+  │
+  ▼
+User clicks FAB to add exercise → ExerciseListActivity launched
+  │
+  ▼
+User selects exercise → Returns to WorkoutBuilderActivity
+  │
+  ▼
+AddExerciseDialogFragment opened to configure parameters
+  │
+  ▼
+User submits parameters → WorkoutItem created and added to list
+  │
+  ▼
+User saves workout → WorkoutBuilderActivity validates input
+  │
+  ▼
+WorkoutProfile created with name, icon, and workout items
+  │
+  ▼
+ApplicationService.getInstance().getWorkoutManager().saveWorkout(profile) called
+  │
+  ▼
+WorkoutManager calls IWorkoutDB.saveWorkout(profile)
+  │
+  ▼
+Database implementation stores workout in database
+  │
+  ▼
+Confirmation shown to user and navigation to home screen
 ```
 
-### 3. Starting and Completing a Workout
+### 3. Executing a Workout
 
 ```
-MainActivity
-    ↓ user selects workout
-    ↓ launches
-StartWorkoutListActivity
-    ↓ displays workout details
-    ↓ user clicks Start Workout
-    ↓ launches
-WorkoutPlayerActivity
-    ↓ creates
-WorkoutPlaybackController
-    ↓ manages workout flow
-    ↓ user completes workout
-    ↓ onFinishedWorkout(WorkoutSession)
-    ↓ session saved to database
+User selects workout in MainActivity
+  │
+  ▼
+StartWorkoutListActivity shows workout details
+  │
+  ▼
+User clicks Start Workout → WorkoutPlayerActivity launched
+  │
+  ▼
+WorkoutPlaybackController created to manage workout flow
+  │
+  ▼
+User completes exercises one by one
+  │
+  ▼
+On completion, WorkoutSession created with start/end times
+  │
+  ▼
+WorkoutSessionManager.saveSession(session) called
+  │
+  ▼
+Database implementation stores session history
+  │
+  ▼
+Confirmation shown and navigation back to home screen
+```
+
+## Code Organization
+
+The codebase is organized into packages that align with the architectural layers:
+
+```
+comp3350.gymbuddy/
+├── logic/                      # Business Logic Layer
+│   ├── ApplicationService.java # Central service locator
+│   ├── exception/              # Business exceptions
+│   ├── managers/               # Business managers
+│   └── util/                   # Business utilities
+├── objects/                    # Domain Objects
+│   ├── Exercise.java
+│   ├── Tag.java
+│   ├── WorkoutItem.java
+│   ├── WorkoutProfile.java
+│   └── WorkoutSession.java
+├── persistence/                # Data Access Layer
+│   ├── PersistenceManager.java
+│   ├── exception/              # Database exceptions
+│   ├── factory/                # Database factory
+│   ├── hsqldb/                 # HSQL implementations
+│   ├── interfaces/             # Database interfaces
+│   ├── stubs/                  # Test stubs
+│   └── util/                   # Persistence utilities
+└── presentation/               # Presentation Layer
+    ├── activity/               # Activities
+    ├── adapters/               # RecyclerView adapters
+    ├── fragments/              # Fragments
+    └── util/                   # UI utilities
+```
+
+## Exception Handling Strategy
+
+GymBuddy uses a comprehensive exception handling strategy that ensures:
+
+1. **Layer-Appropriate Exceptions**
+   - Data layer: `DBException` for database issues
+   - Business layer: `BusinessException` hierarchy for domain-specific errors
+   - Presentation layer: User-friendly error displays
+
+2. **Exception Translation**
+   - Lower-layer exceptions are caught and wrapped in higher-level exceptions
+   - Additional context is added at each level
+
+3. **Centralized Error Handling**
+   - `ErrorHandler` provides consistent error handling at UI level
+   - Pluggable error display strategies (e.g., `ToastErrorDisplay`)
+
+4. **Structured Exception Hierarchy**
+
+```
+BusinessException
+  ├── DataAccessException
+  │     ├── ExerciseAccessException
+  │     ├── WorkoutAccessException
+  │     └── WorkoutSessionAccessException
+  ├── InvalidInputException
+  │     ├── InvalidNameException
+  │     ├── InvalidRepsException
+  │     ├── InvalidSetsException
+  │     ├── InvalidTimeException
+  │     └── InvalidWeightException
+  └── ApplicationInitException
 ```
 
 ## Design Patterns
 
-1. **Service Locator Pattern**
-   - `ApplicationService` provides centralized access to managers
-   - Simplifies access to services without direct dependencies
+GymBuddy implements several design patterns to ensure maintainability and extensibility:
 
-2. **Repository Pattern**
-   - Database interfaces abstract data access
-   - Allows for multiple implementations (production, testing)
+### 1. Service Locator Pattern
 
-3. **Factory Pattern**
-   - `DatabaseFactory` creates appropriate database implementations
-   - Centralizes creation logic
-
-4. **Adapter Pattern**
-   - RecyclerView adapters convert domain objects to UI representations
-
-5. **Strategy Pattern**
-   - Error handling with different display strategies
-
-6. **MVC/MVP Pattern**
-   - Activities/Fragments as Controllers/Presenters
-   - XML layouts as Views
-   - Domain objects as Models
-
-## Dependency Management
-
-The application uses a centralized dependency management approach:
-
-1. **Top-down dependencies**: Higher layers depend on lower layers, not vice versa
-2. **Inversion of Control**: Lower layers define interfaces that higher layers implement
-3. **Service Locator**: ApplicationService provides central access to managers
-
-Dependencies flow:
-```
-Presentation → Business Logic → Data Access
-      ↓             ↓               ↓
-      └─────────────┴───────────────┘
-                    ↓
-               Domain Objects
+```java
+// Access point for all managers
+public class ApplicationService {
+    private static ApplicationService instance;
+    
+    public static ApplicationService getInstance() {
+        if (instance == null) {
+            instance = new ApplicationService();
+        }
+        return instance;
+    }
+    
+    // Access to managers
+    public ExerciseManager getExerciseManager() { ... }
+}
 ```
 
+### 2. Repository Pattern
+
+```java
+// Interface defining data operations
+public interface IWorkoutDB {
+    List<WorkoutProfile> getAll() throws DBException;
+    WorkoutProfile getWorkoutProfileById(int id) throws DBException;
+    void saveWorkout(WorkoutProfile profile) throws DBException;
+    void deleteWorkout(int id) throws DBException;
+}
+```
+
+### 3. Factory Pattern
+
+```java
+public class DatabaseFactory {
+    public IExerciseDB createExerciseDB() {
+        return new ExerciseHSQLDB(getConnection());
+    }
+    
+    public IWorkoutDB createWorkoutDB() {
+        return new WorkoutHSQLDB(getConnection(), createExerciseDB());
+    }
+}
+```
+
+### 4. Builder Pattern
+
+```java
+// Configuration builder
+ConfigLoader config = ConfigLoader.builder()
+    .scriptPath("db/create_tables.sql")
+    .configPath("db/db.properties")
+    .testMode(false)
+    .dbAlreadyExists(false)
+    .build();
+```
+
+### 5. Strategy Pattern
+
+```java
+// Different error display strategies
+ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(context));
+// Could also use: new DialogErrorDisplay(context)
+```
+
+### 6. MVC/MVP Pattern
+
+- Activities/Fragments as Controllers/Presenters
+- XML layouts as Views
+- Domain objects as Models
+
+## Testing Strategy
+
+The architecture enables comprehensive testing at each layer:
+
+### 1. Unit Testing
+
+- **Business Layer**: Test managers with mocked repositories
+- **Data Layer**: Test implementations with in-memory database
+- **Domain Objects**: Test domain object behavior directly
+
+### 2. Integration Testing
+
+- Test interaction between managers and actual database implementations
+- Test complete workflows across layers
+
+### 3. UI Testing
+
+- Test UI components with Espresso
+- Mock business layer dependencies
+
+### 4. Test Doubles
+
+- **Stubs**: `ExerciseStub`, `WorkoutStub`, etc. for testing
+- Configurable via PersistenceManager for testing environments
+
+## Future Enhancements
+
+The architecture is designed to accommodate several possible enhancements:
+
+### 1. Remote Data Source
+
+- Add remote data sources behind existing interfaces
+- Implement caching strategy in repositories
+
+### 2. Dependency Injection
+
+- Replace Service Locator with proper DI framework (Dagger/Hilt)
+- Improve testability and reduce coupling
+
+### 3. Reactive Programming
+
+- Implement LiveData/Flow for reactive data streams
+- Improve UI responsiveness and state management
+
+### 4. Modular Architecture
+
+- Split into feature modules for better team collaboration
+- Improve build times with parallel compilation
+
+## Technical Glossary
+
+- **Service Locator**: Design pattern that provides a central registry for services
+- **Repository**: Mediates between domain and data mapping layers
+- **Factory**: Creates objects without specifying concrete class
+- **Strategy**: Defines family of algorithms, encapsulates each one, makes them interchangeable
+- **HSQLDB**: HyperSQL Database, a lightweight relational database engine
+- **Domain Object**: Core business entities that represent the problem domain
+- **DAO**: Data Access Object, provides abstract interface to database
+- **Stub**: Simplified implementation used for testing
+
+## Architecture Diagram
+
+![Architecture Diagram](./architecture.svg)

@@ -1,6 +1,6 @@
 package comp3350.gymbuddy.logic.util;
 
-public class LogicConfig {
+public class ValidationMessages {
     public final static String invalidNameExceptionMessage = "Name must be provided.";
     public final static String invalidInputExceptionMessage = "Exercises must be provided.";
     public final static String integerFormatExceptionMessage = "Must be a valid integer.";
