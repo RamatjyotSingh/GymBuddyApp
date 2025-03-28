@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import comp3350.gymbuddy.logic.util.StringFormatter;
 
 public class StringFormatterTest {
@@ -52,5 +55,33 @@ public class StringFormatterTest {
     public void testFormatWeight_LargeValue() {
         assertEquals("999 lbs", formatter.formatWeight(999.4));
         assertEquals("1000 lbs", formatter.formatWeight(999.9));
+    }
+
+    @Test
+    public void testFormatInstructions_BasicCase() {
+        String input = "Step 1\\nStep 2\\nStep 3";
+        List<String> expected = Arrays.asList("Step 1", "Step 2", "Step 3");
+        assertEquals(expected, formatter.formatInstructions(input));
+    }
+
+    @Test
+    public void testFormatInstructions_SingleLine() {
+        String input = "Single instruction";
+        List<String> expected = Arrays.asList("Single instruction");
+        assertEquals(expected, formatter.formatInstructions(input));
+    }
+
+    @Test
+    public void testFormatInstructions_EmptyInput() {
+        String input = "";
+        List<String> expected = Arrays.asList();
+        assertEquals(expected, formatter.formatInstructions(input));
+    }
+
+    @Test
+    public void testFormatInstructions_OnlyWhitespace() {
+        String input = "   \\n  \\n  \\n   ";
+        List<String> expected = Arrays.asList();
+        assertEquals(expected, formatter.formatInstructions(input));
     }
 }

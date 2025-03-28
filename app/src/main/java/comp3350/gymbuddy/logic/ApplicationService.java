@@ -1,7 +1,6 @@
 package comp3350.gymbuddy.logic;
 
 import comp3350.gymbuddy.logic.exception.ApplicationInitException;
-import comp3350.gymbuddy.logic.exception.DataAccessException;
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
@@ -166,5 +165,20 @@ public class ApplicationService {
         if (closed) {
             throw new ApplicationInitException("Application service has been closed");
         }
+    }
+
+    //For testing purposes only
+    public static synchronized void resetInstanceForTesting() {
+        instance = null;
+    }
+
+    //For testing purposes only
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    //For testing purposes only
+    public boolean isClosed() {
+        return closed;
     }
 }
