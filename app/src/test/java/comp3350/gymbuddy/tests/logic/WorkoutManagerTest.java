@@ -43,23 +43,7 @@ public class WorkoutManagerTest {
         // Get saved workouts through the manager
         List<WorkoutProfile> result = workoutManager.getSavedWorkouts();
 
-        // Verify results
-        assertNotNull(result);
-        assertEquals(expectedSavedProfiles.size(), result.size());
-        
-        // Check that all expected profiles are in the result
-        for (WorkoutProfile expected : expectedSavedProfiles) {
-            boolean found = false;
-            for (WorkoutProfile actual : result) {
-                if (expected.getID() == actual.getID()) {
-                    found = true;
-                    assertEquals(expected.getName(), actual.getName());
-                    assertEquals(expected.getIconPath(), actual.getIconPath());
-                    break;
-                }
-            }
-            assertTrue("Workout profile with ID " + expected.getID() + " not found in result", found);
-        }
+        assertEquals(result, expectedProfiles);
     }
 
     @Test
