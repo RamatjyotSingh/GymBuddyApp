@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class WorkoutSessionHSQLDBTest {
+public class WorkoutSessionDAOTest {
     private static HSQLDBTestHelper dbHelper;
     private IWorkoutSessionDB sessionDB;
     private IWorkoutDB workoutDB;

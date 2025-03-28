@@ -9,9 +9,9 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ExerciseHSQLDBTest.class,
-    WorkoutHSQLDBTest.class,
-    WorkoutSessionHSQLDBTest.class
+    ExerciseDAOTest.class,
+    WorkoutDAOTest.class,
+    WorkoutSessionDAOTest.class
 })
 public class DatabaseIntegrationTestSuite {
     // This class remains empty, it's just a holder for the annotations

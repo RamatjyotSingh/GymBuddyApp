@@ -4,7 +4,6 @@ import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
@@ -16,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * WorkoutSessionHSQLDB implements IWorkoutSessionDB, providing database operations for workout sessions.
+ * WorkoutSessionDAO implements IWorkoutSessionDB, providing database operations for workout sessions.
  */
-public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
-    private static final String TAG = "WorkoutSessionHSQLDB";
+public class WorkoutSessionDAO implements IWorkoutSessionDB {
+    private static final String TAG = "WorkoutSessionDAO";
     private final Connection connection;
     private final IWorkoutDB workoutDB;
     private final IExerciseDB exerciseDB;
@@ -30,7 +29,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * @param workoutDB Workout database implementation
      * @param exerciseDB Exercise database implementation
      */
-    public WorkoutSessionHSQLDB(Connection connection, IWorkoutDB workoutDB, IExerciseDB exerciseDB) {
+    public WorkoutSessionDAO(Connection connection, IWorkoutDB workoutDB, IExerciseDB exerciseDB) {
         this.connection = connection;
         this.workoutDB = workoutDB;
         this.exerciseDB = exerciseDB;
@@ -460,10 +459,10 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
-            Timber.tag(TAG).d("WorkoutSessionHSQLDB closed successfully");
+            Timber.tag(TAG).d("WorkoutSessionDAO closed successfully");
         } catch (SQLException e) {
-            Timber.tag(TAG).e(e, "Error during WorkoutSessionHSQLDB close operation");
-            throw new DBException("Failed to close WorkoutSessionHSQLDB: " + e.getMessage(), e);
+            Timber.tag(TAG).e(e, "Error during WorkoutSessionDAO close operation");
+            throw new DBException("Failed to close WorkoutSessionDAO: " + e.getMessage(), e);
         }
     }
 }

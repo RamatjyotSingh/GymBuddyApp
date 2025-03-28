@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class WorkoutHSQLDBTest {
+public class WorkoutDAOTest {
     private static HSQLDBTestHelper dbHelper;
     private IWorkoutDB workoutDB;
     private IExerciseDB exerciseDB;

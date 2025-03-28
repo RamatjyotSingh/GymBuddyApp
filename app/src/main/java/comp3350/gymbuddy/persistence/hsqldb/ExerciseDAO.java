@@ -14,17 +14,17 @@ import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 import timber.log.Timber;
 
 /**
- * ExerciseHSQLDB implements IExerciseDB, providing methods to interact with the exercise database.
+ * ExerciseDAO implements IExerciseDB, providing methods to interact with the exercise database.
  */
-public class ExerciseHSQLDB implements IExerciseDB {
-    private static final String TAG = "ExerciseHSQLDB";
+public class ExerciseDAO implements IExerciseDB {
+    private static final String TAG = "ExerciseDAO";
     private final Connection connection;
     
     /**
      * Constructor that initializes the database with provided paths
      * @param connection connection to interact with db
      */
-    public ExerciseHSQLDB(Connection connection) {
+    public ExerciseDAO(Connection connection) {
         this.connection = connection;
     }
     

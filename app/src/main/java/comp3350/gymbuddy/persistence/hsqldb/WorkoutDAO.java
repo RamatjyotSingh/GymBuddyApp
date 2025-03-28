@@ -14,11 +14,10 @@ import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
-import comp3350.gymbuddy.persistence.PersistenceManager;
 import timber.log.Timber;
 
-public class WorkoutHSQLDB implements IWorkoutDB {
-    private static final String TAG = "WorkoutHSQLDB";
+public class WorkoutDAO implements IWorkoutDB {
+    private static final String TAG = "WorkoutDAO";
     private final Connection connection;
     private final IExerciseDB exerciseDB;
     
@@ -27,7 +26,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
      * @param connection Database connection
      * @param exerciseDB Exercise database implementation
      */
-    public WorkoutHSQLDB(Connection connection, IExerciseDB exerciseDB) {
+    public WorkoutDAO(Connection connection, IExerciseDB exerciseDB) {
         this.connection = connection;
         this.exerciseDB = exerciseDB;
     }
@@ -335,9 +334,9 @@ public class WorkoutHSQLDB implements IWorkoutDB {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
-            Timber.tag(TAG).d("WorkoutHSQLDB closed successfully");
+            Timber.tag(TAG).d("WorkoutDAO closed successfully");
         } catch (Exception e) {
-            Timber.tag(TAG).e(e, "Error during WorkoutHSQLDB close operation");
+            Timber.tag(TAG).e(e, "Error during WorkoutDAO close operation");
             throw e;
         }
     }
