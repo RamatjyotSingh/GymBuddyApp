@@ -155,4 +155,27 @@ public class WorkoutManagerTest {
                     profileId, profile.getID());
         }
     }
+
+    @Test
+    public void testGetWorkoutProfileByID_NotFound() {
+        WorkoutProfile result = workoutManager.getWorkoutProfileByID(999);
+        assertNull(result);
+    }
+
+    @Test
+    public void testDeleteWorkout() {
+        int initialSize = workoutStub.getAll().size();
+        workoutManager.deleteWorkout(1);
+
+        assertEquals(initialSize - 1, workoutStub.getAll().size());
+        assertNull(workoutStub.getWorkoutProfileById(1));
+    }
+
+    @Test
+    public void testDeleteWorkout_NonExistent() {
+        int initialSize = workoutStub.getAll().size();
+        workoutManager.deleteWorkout(999); //Should not throw exception
+        assertEquals(initialSize, workoutStub.getAll().size());
+    }
+
 }
