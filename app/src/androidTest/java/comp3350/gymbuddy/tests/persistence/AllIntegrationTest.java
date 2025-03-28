@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
     WorkoutDAOTest.class,
     WorkoutSessionDAOTest.class
 })
-public class DatabaseIntegrationTestSuite {
+public class AllIntegrationTest {
     // This class remains empty, it's just a holder for the annotations
     // The @RunWith and @Suite.SuiteClasses annotations tell JUnit to run
     // all the test classes listed in the @Suite.SuiteClasses annotation
