@@ -11,6 +11,7 @@ import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
 
 import java.sql.Connection;
+import timber.log.Timber;
 
 /**
  * Factory for creating HSQLDB implementations
@@ -19,12 +20,13 @@ public class HSQLDBFactory implements DatabaseFactory {
     private final String scriptPath;
     private final String configPath;
     private HSQLDatabase database;
-    
+    private static final String TAG = "HSQLDBFactory";
+
     public HSQLDBFactory(String scriptPath, String configPath) {
         this.scriptPath = scriptPath;
         this.configPath = configPath;
     }
-    
+
     @Override
     public IDatabase createDatabase() throws DBException {
         if (database == null) {
@@ -33,37 +35,33 @@ public class HSQLDBFactory implements DatabaseFactory {
         }
         return database;
     }
-    
+
     @Override
-    public IWorkoutDB createWorkoutDB() {
-        try {
-            Connection connection = getConnection();
-            return new WorkoutHSQLDB(connection);
-        } catch (DBException e) {
-            throw new RuntimeException("Failed to create WorkoutHSQLDB", e);
-        }
+    public IWorkoutDB createWorkoutDB() throws DBException {
+       
+            Connection conn = database.getConnection();
+            IExerciseDB exerciseDB = createExerciseDB();
+            return new WorkoutHSQLDB(conn, exerciseDB);
+        
     }
-    
+
     @Override
-    public IExerciseDB createExerciseDB() {
-        try {
-            Connection connection = getConnection();
-            return new ExerciseHSQLDB(connection);
-        } catch (DBException e) {
-            throw new RuntimeException("Failed to create ExerciseHSQLDB", e);
-        }
+    public IExerciseDB createExerciseDB() throws DBException {
+       
+            return new ExerciseHSQLDB(database.getConnection());
+       
     }
-    
+
     @Override
-    public IWorkoutSessionDB createWorkoutSessionDB() {
-        try {
-            Connection connection = getConnection();
-            return new WorkoutSessionHSQLDB(connection);
-        } catch (DBException e) {
-            throw new RuntimeException("Failed to create WorkoutSessionHSQLDB", e);
-        }
+    public IWorkoutSessionDB createWorkoutSessionDB() throws DBException {
+       
+            Connection conn = database.getConnection();
+            IExerciseDB exerciseDB = createExerciseDB();
+            IWorkoutDB workoutDB = new WorkoutHSQLDB(conn, exerciseDB);
+            return new WorkoutSessionHSQLDB(conn, workoutDB, exerciseDB);
+       
     }
-    
+
     private Connection getConnection() throws DBException {
         if (database == null) {
             createDatabase();

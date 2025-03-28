@@ -20,13 +20,16 @@ import timber.log.Timber;
 public class WorkoutHSQLDB implements IWorkoutDB {
     private static final String TAG = "WorkoutHSQLDB";
     private final Connection connection;
+    private final IExerciseDB exerciseDB;
     
     /**
-     * Constructor that initializes with a database connection
-     * @param connection connection to interact with db
+     * Constructor with dependency injection for better architecture
+     * @param connection Database connection
+     * @param exerciseDB Exercise database implementation
      */
-    public WorkoutHSQLDB(Connection connection) {
+    public WorkoutHSQLDB(Connection connection, IExerciseDB exerciseDB) {
         this.connection = connection;
+        this.exerciseDB = exerciseDB;
     }
 
     @Override
@@ -209,6 +212,35 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     }
     
     @Override
+    public WorkoutProfile getWorkoutProfileByIdIncludingDeleted(int id) throws DBException {
+        WorkoutProfile profile = null;
+        
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT * FROM PUBLIC.workout_profile WHERE profile_id = ?")) {
+            
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String name = rs.getString("profile_name");
+                    String iconPath = rs.getString("icon_path");
+                    boolean isDeleted = rs.getBoolean("is_deleted");
+                    
+                    // Get workout items for this profile
+                    List<WorkoutItem> items = getWorkoutItemsForProfile(id);
+                    
+                    profile = new WorkoutProfile(id, name, iconPath, items, isDeleted);
+                }
+            }
+            
+        } catch (SQLException e) {
+            throw new DBException("Error retrieving workout profile: " + e.getMessage(), e);
+        }
+        
+        return profile;
+    }
+    
+    @Override
     public void deleteWorkout(int id) throws DBException {
         // Mark the profile as deleted (This keeps it stored in the DB for the logs).
         try (PreparedStatement stmt = connection.prepareStatement(
@@ -263,7 +295,6 @@ public class WorkoutHSQLDB implements IWorkoutDB {
      */
     private List<WorkoutItem> getWorkoutItemsForProfile(int profileId) throws SQLException {
         List<WorkoutItem> items = new ArrayList<>();
-        IExerciseDB exerciseDB = PersistenceManager.getExerciseDB(true);
         
         try (PreparedStatement stmt = connection.prepareStatement(
                 "SELECT * FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
@@ -278,12 +309,18 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     double weight = rs.getDouble("weight");
                     double duration = rs.getDouble("duration");
                     
-                    Exercise exercise = exerciseDB.getExerciseByID(exerciseId);
-                    if (exercise != null) {
-                        WorkoutItem item = duration > 0 ? 
-                            new WorkoutItem(exercise, sets, reps, weight, duration) : 
-                            new WorkoutItem(exercise, sets, reps, weight);
-                        items.add(item);
+                    try {
+                        // Use the injected exerciseDB dependency
+                        Exercise exercise = exerciseDB.getExerciseByID(exerciseId);
+                        if (exercise != null) {
+                            WorkoutItem item = duration > 0 ? 
+                                new WorkoutItem(exercise, sets, reps, weight, duration) : 
+                                new WorkoutItem(exercise, sets, reps, weight);
+                            items.add(item);
+                        }
+                    } catch (DBException e) {
+                        Timber.tag(TAG).e(e, "Error fetching exercise with ID %d", exerciseId);
+                        // Continue with other items even if one fails
                     }
                 }
             }

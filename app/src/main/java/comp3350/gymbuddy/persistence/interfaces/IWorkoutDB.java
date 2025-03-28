@@ -44,4 +44,5 @@ public interface IWorkoutDB extends AutoCloseable {
      */
     List<WorkoutProfile> search(String query) throws DBException;
 
+    WorkoutProfile getWorkoutProfileByIdIncludingDeleted(int profileId);
 }

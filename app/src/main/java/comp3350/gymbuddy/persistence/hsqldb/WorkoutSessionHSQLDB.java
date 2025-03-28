@@ -7,6 +7,8 @@ import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
+import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
+import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 import timber.log.Timber;
 
 import java.sql.*;
@@ -19,13 +21,19 @@ import java.util.List;
 public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     private static final String TAG = "WorkoutSessionHSQLDB";
     private final Connection connection;
+    private final IWorkoutDB workoutDB;
+    private final IExerciseDB exerciseDB;
     
     /**
-     * Constructor that initializes with a database connection
-     * @param connection connection to interact with db
+     * Constructor with dependency injection for better architecture
+     * @param connection Database connection
+     * @param workoutDB Workout database implementation
+     * @param exerciseDB Exercise database implementation
      */
-    public WorkoutSessionHSQLDB(Connection connection) {
+    public WorkoutSessionHSQLDB(Connection connection, IWorkoutDB workoutDB, IExerciseDB exerciseDB) {
         this.connection = connection;
+        this.workoutDB = workoutDB;
+        this.exerciseDB = exerciseDB;
     }
 
     /**
@@ -82,39 +90,81 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
      * Extracts workout session data from a ResultSet and constructs a WorkoutSession object.
      * @param rs The ResultSet containing the workout session data.
      * @return A new WorkoutSession object populated with the retrieved data.
-     * @throws SQLException If an error occurs while reading the result set.
+     * @throws DBException If an error occurs while reading the result set.
      */
-    private WorkoutSession extractWorkoutSession(ResultSet rs) throws SQLException {
-        int sessionId = rs.getInt("session_id");
-        long startTime = rs.getLong("start_time");
-        long endTime = rs.getLong("end_time");
-        int profileId = rs.getInt("profile_id");
+    private WorkoutSession extractWorkoutSession(ResultSet rs) throws DBException {
+        try {
+            int sessionId = rs.getInt("session_id");
+            long startTime = rs.getLong("start_time");
+            long endTime = rs.getLong("end_time");
+            int profileId = rs.getInt("profile_id");
 
-        // Fetch associated WorkoutProfile
-        WorkoutProfile profile = PersistenceManager.getWorkoutDB(true).getWorkoutProfileById(profileId);
+            // Get profile - use placeholder if deleted or not found
+            WorkoutProfile profile = workoutDB.getWorkoutProfileByIdIncludingDeleted(profileId);
+            if (profile == null) {
+                profile = createPlaceholderProfile(profileId);
+                Timber.tag(TAG).w("Using placeholder for missing workout profile with ID %d", profileId);
+            }
 
-        // Fetch all workout items related to this session
-        List<WorkoutItem> workoutItems = getWorkoutItemsBySessionId(sessionId);
+            // Fetch items
+            List<WorkoutItem> workoutItems = getWorkoutItemsBySessionId(sessionId);
+            
+            return new WorkoutSession(sessionId, startTime, endTime, workoutItems, profile);
+        } catch (SQLException e) {
+            throw new DBException("Failed to extract workout session data: " + e.getMessage(), e);
+        }
+    }
 
-        return new WorkoutSession(sessionId, startTime, endTime, workoutItems, profile);
+    /**
+     * Creates a placeholder for missing workout profiles
+     */
+    private WorkoutProfile createPlaceholderProfile(int profileId) {
+        return new WorkoutProfile(
+                profileId,
+                "[Deleted Workout]",
+                null,
+                new ArrayList<>(),
+                true
+        );
     }
 
     /**
      * Extracts session item data from a ResultSet and constructs a WorkoutItem object.
      * @param rs The ResultSet containing the session item data.
      * @return A new WorkoutItem object populated with the retrieved data.
-     * @throws SQLException If an error occurs while reading the result set.
+     * @throws DBException If an error occurs while reading the result set.
      */
-    private WorkoutItem extractSessionItem(ResultSet rs) throws SQLException {
-        int exerciseId = rs.getInt("exercise_id");
-        int reps = rs.getInt("reps");
-        double weight = rs.getDouble("weight");
-        double time = rs.getDouble("duration");
+    private WorkoutItem extractSessionItem(ResultSet rs) throws DBException {
+        try {
+            int exerciseId = rs.getInt("exercise_id");
+            int reps = rs.getInt("reps");
+            double weight = rs.getDouble("weight");
+            double time = rs.getDouble("duration");
 
-        // Retrieve the corresponding exercise
-        Exercise exercise = PersistenceManager.getExerciseDB(true).getExerciseByID(exerciseId);
+            // Get the exercise
+            Exercise exercise = exerciseDB.getExerciseByID(exerciseId);
+            if (exercise == null) {
+                Timber.tag(TAG).w("Exercise with ID %d not found, creating placeholder", exerciseId);
+                exercise = createPlaceholderExercise(exerciseId);
+            }
+            
+            return new WorkoutItem(exercise, 1, reps, weight, time);
+        } catch (SQLException e) {
+            throw new DBException("Failed to extract session item data: " + e.getMessage(), e);
+        }
+    }
 
-        return new WorkoutItem(exercise, 1, reps, weight, time); // Each item represents only one set.
+    /**
+     * Creates a placeholder for missing exercises
+     */
+    private Exercise createPlaceholderExercise(int exerciseId) {
+        return new Exercise(
+                exerciseId,
+                "[Missing Exercise]",
+                new ArrayList<>(),
+                "This exercise has been removed from the database.",
+                null, false, false
+        );
     }
 
     /**
@@ -136,6 +186,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
                 }
             }
         } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error fetching workout items for session ID %d", id);
             throw new DBException("Failed to load workout exercises: " + e.getMessage(), e);
         }
 
@@ -176,6 +227,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return false;
             
         } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error inserting workout session with ID %d", session.getId());
             throw new DBException("Failed to insert workout session: " + e.getMessage(), e);
         }
     }
@@ -204,6 +256,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error adding exercise to session ID %d", sessionId);
             throw new DBException("Failed to add exercise to session: " + e.getMessage(), e);
         }
     }
@@ -231,6 +284,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error updating workout session with ID %d", session.getId());
             throw new DBException("Failed to update workout session: " + e.getMessage(), e);
         }
     }
@@ -256,6 +310,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error updating end time for session ID %d", sessionId);
             throw new DBException("Failed to update workout session end time: " + e.getMessage(), e);
         }
     }
@@ -275,33 +330,54 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
         
         try {
             // Set autocommit to false for transaction
+            boolean originalAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
             
-            try (PreparedStatement deleteItemsStmt = connection.prepareStatement(deleteItemsQuery);
-                 PreparedStatement deleteSessionStmt = connection.prepareStatement(deleteSessionQuery)) {
-                 
+            try {
                 // Delete related items first to maintain referential integrity
-                deleteItemsStmt.setInt(1, sessionId);
-                deleteItemsStmt.executeUpdate();
+                try (PreparedStatement deleteItemsStmt = connection.prepareStatement(deleteItemsQuery)) {
+                    deleteItemsStmt.setInt(1, sessionId);
+                    deleteItemsStmt.executeUpdate();
+                }
                 
                 // Then delete the session
-                deleteSessionStmt.setInt(1, sessionId);
-                int rowsAffected = deleteSessionStmt.executeUpdate();
+                int rowsAffected;
+                try (PreparedStatement deleteSessionStmt = connection.prepareStatement(deleteSessionQuery)) {
+                    deleteSessionStmt.setInt(1, sessionId);
+                    rowsAffected = deleteSessionStmt.executeUpdate();
+                }
                 
                 // Commit transaction
                 connection.commit();
-                
                 return rowsAffected > 0;
+                
             } catch (SQLException e) {
                 // Rollback transaction on error
-                connection.rollback();
+                safeRollback();
                 throw new DBException("Failed to delete workout session: " + e.getMessage(), e);
             } finally {
-                // Restore auto-commit
-                connection.setAutoCommit(true);
+                // Restore original auto-commit setting
+                safeSetAutoCommit(originalAutoCommit);
             }
         } catch (SQLException e) {
-            throw new DBException("Transaction error while deleting session: " + e.getMessage(), e);
+            throw new DBException("Transaction setup error while deleting session: " + e.getMessage(), e);
+        }
+    }
+
+    // Helper methods for safer transaction management
+    private void safeRollback() {
+        try {
+            connection.rollback();
+        } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error during transaction rollback");
+        }
+    }
+
+    private void safeSetAutoCommit(boolean value) {
+        try {
+            connection.setAutoCommit(value);
+        } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error setting auto-commit to %s", value);
         }
     }
     
@@ -326,6 +402,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error removing exercise ID %d from session ID %d", exerciseId, sessionId);
             throw new DBException("Failed to remove exercise from session: " + e.getMessage(), e);
         }
     }
@@ -358,6 +435,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             }
             
         } catch (SQLException e) {
+            Timber.tag(TAG).e(e, "Error searching workout sessions with query: %s", query);
             throw new DBException("Failed to search workout sessions: " + e.getMessage(), e);
         }
         
@@ -377,15 +455,15 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws DBException {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
             Timber.tag(TAG).d("WorkoutSessionHSQLDB closed successfully");
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Timber.tag(TAG).e(e, "Error during WorkoutSessionHSQLDB close operation");
-            throw e;
+            throw new DBException("Failed to close WorkoutSessionHSQLDB: " + e.getMessage(), e);
         }
     }
 }

@@ -11,6 +11,7 @@ import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
+import timber.log.Timber;
 
 public class WorkoutStub implements IWorkoutDB {
     private final List<WorkoutProfile> profiles;
@@ -25,38 +26,39 @@ public class WorkoutStub implements IWorkoutDB {
         // Add some sample profiles
         addSampleProfiles();
     }
-    
+
     private void addSampleProfiles() {
-        ExerciseStub exerciseStub = new ExerciseStub();
-        
-        // Create some sample workout items
-        List<WorkoutItem> items1 = new ArrayList<>();
-        List<WorkoutItem> items2 = new ArrayList<>();
-        
-        // Get sample exercises
-        Exercise pushUp = exerciseStub.getExerciseByID(1);
-        Exercise squat = exerciseStub.getExerciseByID(2);
-        Exercise plank = exerciseStub.getExerciseByID(3);
-        
-        if (pushUp != null && squat != null && plank != null) {
-            items1.add(new WorkoutItem(pushUp, 3, 10, 0));
-            items1.add(new WorkoutItem(squat, 3, 12, 40));
-            
-            items2.add(new WorkoutItem(pushUp, 4, 15, 0));
-            items2.add(new WorkoutItem(plank, 3, 0, 0, 60));
+        try (ExerciseStub exerciseStub = new ExerciseStub()) {
+            // Create some sample workout items
+            List<WorkoutItem> items1 = new ArrayList<>();
+            List<WorkoutItem> items2 = new ArrayList<>();
+
+            // Get sample exercises
+            Exercise pushUp = exerciseStub.getExerciseByID(1);
+            Exercise squat = exerciseStub.getExerciseByID(2);
+            Exercise plank = exerciseStub.getExerciseByID(3);
+
+            if (pushUp != null && squat != null && plank != null) {
+                items1.add(new WorkoutItem(pushUp, 3, 10, 0));
+                items1.add(new WorkoutItem(squat, 3, 12, 40));
+
+                items2.add(new WorkoutItem(pushUp, 4, 15, 0));
+                items2.add(new WorkoutItem(plank, 3, 0, 0, 60));
+            }
+
+            WorkoutProfile profile1 = new WorkoutProfile(nextId++, "Full Body Workout", "workout_icon.png", items1, false);
+            WorkoutProfile profile2 = new WorkoutProfile(nextId++, "Upper Body Focus", "upper_body_icon.png", items2, false);
+
+            profiles.add(profile1);
+            profiles.add(profile2);
+
+            // Store items by profile ID
+            profileItems.put(profile1.getID(), new ArrayList<>(items1));
+            profileItems.put(profile2.getID(), new ArrayList<>(items2));
+        } catch (Exception e) {
+            Timber.e("Error creating sample profiles: " + e.getMessage());
         }
-        
-        WorkoutProfile profile1 = new WorkoutProfile(nextId++, "Full Body Workout", "workout_icon.png", items1, false);
-        WorkoutProfile profile2 = new WorkoutProfile(nextId++, "Upper Body Focus", "upper_body_icon.png", items2, false);
-        
-        profiles.add(profile1);
-        profiles.add(profile2);
-        
-        // Store items by profile ID
-        profileItems.put(profile1.getID(), new ArrayList<>(items1));
-        profileItems.put(profile2.getID(), new ArrayList<>(items2));
     }
-    
     @Override
     public List<WorkoutProfile> getAll() throws DBException {
         return Collections.unmodifiableList(profiles);
@@ -143,12 +145,7 @@ public class WorkoutStub implements IWorkoutDB {
     
     @Override
     public void deleteWorkout(int id) throws DBException {
-        for (int i = 0; i < profiles.size(); i++) {
-            if (profiles.get(i).getID() == id) {
-                profiles.remove(i);
-                profileItems.remove(id);
-            }
-        }
+       profiles.removeIf(profile -> profile.getID() == id);
     }
     
     @Override
@@ -167,6 +164,11 @@ public class WorkoutStub implements IWorkoutDB {
         }
         
         return results;
+    }
+
+    @Override
+    public WorkoutProfile getWorkoutProfileByIdIncludingDeleted(int profileId) {
+        return getWorkoutProfileById(profileId);
     }
 
     @Override

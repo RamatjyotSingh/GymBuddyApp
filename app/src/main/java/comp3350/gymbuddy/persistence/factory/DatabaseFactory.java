@@ -21,17 +21,17 @@ public interface DatabaseFactory {
      * Creates a workout database implementation
      * @return The IWorkoutDB implementation
      */
-    IWorkoutDB createWorkoutDB();
+    IWorkoutDB createWorkoutDB() throws DBException;
     
     /**
      * Creates an exercise database implementation
      * @return The IExerciseDB implementation
      */
-    IExerciseDB createExerciseDB();
+    IExerciseDB createExerciseDB() throws DBException;
     
     /**
      * Creates a workout session database implementation
      * @return The IWorkoutSessionDB implementation
      */
-    IWorkoutSessionDB createWorkoutSessionDB();
+    IWorkoutSessionDB createWorkoutSessionDB() throws DBException;
 }
