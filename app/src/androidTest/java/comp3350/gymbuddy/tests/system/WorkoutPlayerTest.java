@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import comp3350.gymbuddy.R;
-import comp3350.gymbuddy.logic.StringFormatter;
+import comp3350.gymbuddy.logic.util.StringFormatter;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.presentation.activity.MainActivity;

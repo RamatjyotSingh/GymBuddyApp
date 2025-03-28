@@ -4,14 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.DialogAddWorkoutItemBinding;
+import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.logic.exception.BusinessException;
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
-import comp3350.gymbuddy.logic.InputValidator;
+import comp3350.gymbuddy.logic.util.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;
 import comp3350.gymbuddy.logic.exception.InvalidSetsException;
 import comp3350.gymbuddy.logic.exception.InvalidTimeException;
@@ -19,11 +23,16 @@ import comp3350.gymbuddy.logic.exception.InvalidWeightException;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.presentation.util.DSOBundler;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
+
 
 public class AddExerciseDialogFragment extends DialogFragment {
+    private static final String TAG = "AddExerciseDialog";
     private static final String ARG_SELECTED_EXERCISE = "selected_exercise";
     private DialogAddWorkoutItemBinding binding;
     private Exercise selectedExercise;
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(getContext()));
 
     /**
      * Creates a new instance of the dialog with the selected exercise ID.
@@ -57,11 +66,17 @@ public class AddExerciseDialogFragment extends DialogFragment {
         if (getArguments() != null) {
             int exerciseId = getArguments().getInt(ARG_SELECTED_EXERCISE, -1);
 
-            // Retrieve the selected exercise from storage
-            var exerciseManager = new ExerciseManager(true);
-            selectedExercise = exerciseManager.getExerciseByID(exerciseId);
-
-            updateViews();
+            try {
+                // Get ExerciseManager from ApplicationService
+                ExerciseManager exerciseManager = ApplicationService.getInstance().getExerciseManager();
+                selectedExercise = exerciseManager.getExerciseByID(exerciseId);
+                
+                updateViews();
+            }
+            catch (BusinessException e) {
+                // Handle error if exercise not found
+                handler.handle(e, getString(R.string.error_loading_exercise));
+            }
         }
     }
 

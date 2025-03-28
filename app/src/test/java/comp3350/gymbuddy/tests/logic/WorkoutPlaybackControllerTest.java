@@ -11,13 +11,12 @@ import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.logic.WorkoutPlaybackController;
+import comp3350.gymbuddy.logic.util.WorkoutPlaybackController;
 
 public class WorkoutPlaybackControllerTest {
     private WorkoutPlaybackController controller;
     private WorkoutPlaybackController.BeginWorkoutItemListener beginListener;
     private WorkoutPlaybackController.FinishWorkoutListener finishListener;
-    private WorkoutProfile profile;
     private List<WorkoutItem> items;
 
     @Before
@@ -28,7 +27,7 @@ public class WorkoutPlaybackControllerTest {
 
         //test data
         items = new ArrayList<>();
-        profile = new WorkoutProfile("Test", "path", items);
+        WorkoutProfile profile = new WorkoutProfile("Test", "path", items);
         controller = new WorkoutPlaybackController(profile, beginListener, finishListener);
     }
 

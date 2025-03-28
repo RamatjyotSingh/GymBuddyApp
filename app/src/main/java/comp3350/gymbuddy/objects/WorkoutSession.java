@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class WorkoutSession {
         this.profile = profile;
     }
 
-    public String getDate(){
+    public String getDate() {
         ZonedDateTime dateTime = Instant.ofEpochMilli(this.startTime).atZone(ZoneId.systemDefault());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d yyyy");
@@ -42,16 +43,16 @@ public class WorkoutSession {
         return endTime - startTime;
     }
 
-    public String getDurationString(){
+    public String getDurationString() {
         double duration = getDuration();
         duration /= 60000; // convert to minutes
-        int durationMin = (int)duration;
-        int durationSec = (int)((duration - durationMin) * 60);
+        int durationMin = (int) duration;
+        int durationSec = (int) ((duration - durationMin) * 60);
 
         return durationMin + " min " + durationSec + " sec ";
     }
 
-    public List<WorkoutItem> getWorkoutItems() {
+    public List<WorkoutItem> getSessionItems() {
         return Collections.unmodifiableList(this.workoutItems);
     }
 
@@ -62,6 +63,7 @@ public class WorkoutSession {
     public long getEndTime() {
         return endTime;
     }
-
-
 }
+
+
+

@@ -7,60 +7,84 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
+import comp3350.gymbuddy.logic.exception.ApplicationInitException;
+import comp3350.gymbuddy.logic.exception.DataAccessException;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.objects.WorkoutProfile;
-import comp3350.gymbuddy.persistence.exception.DBException;
-import comp3350.gymbuddy.persistence.hsqldb.HSQLDBHelper;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
 import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
+import comp3350.gymbuddy.presentation.util.FileHandler;
 import comp3350.gymbuddy.presentation.util.NavigationHelper;
+import comp3350.gymbuddy.logic.util.ConfigLoader;
+import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
+
     private WorkoutProfileAdapter workoutProfileAdapter;
-    private List<WorkoutProfile> workoutProfiles;
-    private NavigationHelper navigationHelper;
+    private final List<WorkoutProfile> workoutProfiles = new ArrayList<>();
+    private static final String TAG = "MainActivity";
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Timber.plant(new Timber.DebugTree());
-        initializeDatabase();
-        
-        // Initialize navigation helper
-        navigationHelper = new NavigationHelper(this);
+        // Set up Timber for logging
+        if (Timber.forest().isEmpty()) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
-        // Initialize View Binding
-        comp3350.gymbuddy.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // Set up view binding first
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Set up BottomNavigationView using the navigation helper
-        navigationHelper.setupBottomNavigation(binding.bottomNavigationView, R.id.home);
 
-        // Initialize RecyclerView
-        RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
-        recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
+        try {
+            initializeApplication();
+        } catch (ApplicationInitException e) {
+            handler.handle(e);
+        }
+        setupUI();
 
-        // Initialize data structures
-        workoutProfiles = new ArrayList<>();
-        workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
+        
 
-        // Set up delete functionality only in this activity
-        workoutProfileAdapter.setShowDeleteButtons(true);
-        workoutProfileAdapter.setOnProfileDeleteListener((profile, position) -> {
-            WorkoutManager workoutManager = new WorkoutManager(true);
+    }
 
-            // Delete the workout profile
-            try {
+    /**
+     * Set up UI components after initialization
+     */
+    private void setupUI() throws DataAccessException {
+
+            // Initialize navigation helper
+            NavigationHelper navigationHelper = new NavigationHelper(this);
+
+            // Set up BottomNavigationView using the navigation helper
+            navigationHelper.setupBottomNavigation(binding.bottomNavigationView, R.id.home);
+
+            // Initialize RecyclerView
+            RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
+            recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
+
+            // Initialize adapter with already created list
+            workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
+
+            // Set up delete functionality only in this activity
+            workoutProfileAdapter.setShowDeleteButtons(true);
+            workoutProfileAdapter.setOnProfileDeleteListener((profile, position) -> {
+
+                WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
+
+                // Delete the workout profile
                 workoutManager.deleteWorkout(profile.getID());
 
                 // Show success toast
@@ -70,119 +94,113 @@ public class MainActivity extends AppCompatActivity {
 
                 // Refresh the list
                 loadWorkoutProfiles();
-            } catch (DBException e) {
-                Toast.makeText(MainActivity.this,
-                        getString(R.string.error_deleting_workout) + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
 
-        recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
+            });
 
-        // Load workout profiles
-        loadWorkoutProfiles();
+            recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
+
+
+
+            // Load workout profiles at the end
+            loadWorkoutProfiles();
+
     }
-
 
     /**
      * Loads workout profiles from the database
      */
-    private void loadWorkoutProfiles() {
-        try {
-            WorkoutManager workoutManager = new WorkoutManager(true);
+    private void loadWorkoutProfiles() throws DataAccessException {
+        // Safety check for all required elements
+
+
+        
+            WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
+
+            // Just clear the existing list
             workoutProfiles.clear();
-            workoutProfiles.addAll(workoutManager.getSavedWorkouts());
 
-            workoutProfileAdapter.notifyDataSetChanged();
-        } catch (DBException e) {
-            Toast.makeText(this, getString(R.string.error_loading_workout_profiles) + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        }
+            // Get profiles and add them to the list
+            List<WorkoutProfile> profiles = workoutManager.getSavedWorkouts();
+
+            if (profiles != null) {
+                workoutProfiles.addAll(profiles);
+            }
+
+            // Update the adapter
+            if (workoutProfileAdapter != null) {
+                workoutProfileAdapter.notifyDataSetChanged();
+            }
+       
     }
-
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        
-        // Clear any highlighted items when returning to the activity
-        if (workoutProfileAdapter != null) {
-            workoutProfileAdapter.clearHighlight();
-        }
-        
-        // Reload data when returning to this activity
+
+                // Reload data when returning to this activity
         loadWorkoutProfiles();
-    }
-
-    private void initializeDatabase() {
-        // Create DB directory
-        File dbDir = new File(getFilesDir(), getString(R.string.db_dir));
-        if (!dbDir.exists() && !dbDir.mkdirs()) {
-            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to create DB directory");
-            return;
-        }
 
 
-        File dbFile = new File(dbDir, getString(R.string.db_script));
-
-        if(dbFile.exists() && dbFile.length() > 0) {
-            Timber.tag(getString(R.string.tag_mainactivity)).d("Database already exists");
-            HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
-            return;
-        }
-
-        Timber.tag(getString(R.string.tag_mainactivity)).d("Database needs to be initialized");
-
-        // Extract required files
-        String[] dbFiles = {"db/Project.script", "db/DBConfig.properties"};
-        for (String filepath : dbFiles) {
-            String filename = new File(filepath).getName();
-            extractFile(filepath, dbDir, filename);
-        }
-
-        // Set path and initialize database
-        HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
-        try {
-            HSQLDBHelper.init();
-            Timber.tag(getString(R.string.tag_mainactivity)).d("Database initialized successfully");
-        } catch (Exception e) {
-            Toast.makeText(this, getString(R.string.error_loading_db), Toast.LENGTH_LONG).show();
-            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to initialize database: %s", e.getMessage());
-        }
     }
 
     /**
-     * Extract a specific file from assets to the destination directory
-     *
-     * @param assetPath Source path in assets
-     * @param destDir Destination directory
-     * @param destFilename Destination filename
+     * Initialize the application
      */
-    private void extractFile(String assetPath, File destDir, String destFilename) {
-        File outputFile = new File(destDir, destFilename);
-        timber.log.Timber.tag("Main").d("Extracting file: %s → %s", assetPath, outputFile.getAbsolutePath());
+    private void initializeApplication() throws ApplicationInitException{
+        // Create error display for toast messages
 
-        // Skip if file already exists and is not empty
-        if (outputFile.exists() && outputFile.length() > 0) {
-            Timber.tag(getString(R.string.tag_mainactivity)).d("File already exists: %s", destFilename);
-            return;
-        }
+        String dbDirPath = getString(R.string.db_dir);
 
-        try (InputStream is = getAssets().open(assetPath);
-             FileOutputStream fos = new FileOutputStream(outputFile)) {
+        // Check if both required files exist
+        boolean scriptExists = FileHandler.fileExists(this, dbDirPath, getString(R.string.project_script));
+        boolean configExists = FileHandler.fileExists(this, dbDirPath, getString(R.string.dbconfig_properties));
+        boolean dbFilesExist = scriptExists && configExists;
 
-            byte[] buffer = new byte[8192]; // 8KB buffer for better performance
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                fos.write(buffer, 0, length);
+        Map<String, String> paths = new HashMap<>();
+
+        if (dbFilesExist) {
+            // Files exist, just get their paths
+            Timber.tag(TAG).i("Database files already exist");
+            paths.put(getString(R.string.script_path_key), FileHandler.getFilePath(this, dbDirPath, getString(R.string.project_script)));
+            paths.put(getString(R.string.config_path_key), FileHandler.getFilePath(this, dbDirPath, getString(R.string.dbconfig_properties)));
+        } else {
+            // Extract files
+            Timber.tag(TAG).i("Extracting database files");
+            String[] filesToExtract = { getString(R.string.project_script_relative_path), getString(R.string.dbconfig_relative_path) };
+            Map<String, String> extractedPaths = FileHandler.extractAssetFiles(this, filesToExtract, dbDirPath,handler);
+
+            if (extractedPaths == null) {
+                throw new ApplicationInitException("Failed to extract database files");
             }
-
-            Timber.tag(getString(R.string.tag_mainactivity)).d("Extracted file: %s → %s", assetPath, outputFile.getAbsolutePath());
-        } catch (IOException e) {
-            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to extract file: %s - %s", assetPath, e.getMessage());
+            paths.put(getString(R.string.script_path_key), extractedPaths.get(getString(R.string.project_script)));
+            paths.put(getString(R.string.config_path_key), extractedPaths.get(getString(R.string.dbconfig_properties)));
         }
+            // Create config with dbFilesExist flag
+            ConfigLoader config = ConfigLoader.builder()
+                    .scriptPath(paths.get(getString(R.string.script_path_key)))
+                    .configPath(paths.get(getString(R.string.config_path_key)))
+                    .testMode(false)
+                    .dbAlreadyExists(dbFilesExist)
+                    .build();
+
+            // Initialize application
+            ApplicationService.getInstance().initialize(config);
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        // Only close ApplicationService if we're finishing the activity completely
+        if (isFinishing()) {
+
+            ApplicationService.getInstance().close();
+
+        }
+
+        // Clear references
+        binding = null;
+
+        super.onDestroy();
     }
 }

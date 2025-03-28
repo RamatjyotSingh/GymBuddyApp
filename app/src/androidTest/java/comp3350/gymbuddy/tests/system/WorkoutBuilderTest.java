@@ -9,6 +9,8 @@ import comp3350.gymbuddy.presentation.activity.MainActivity;
 import comp3350.gymbuddy.presentation.activity.WorkoutBuilderActivity;
 import comp3350.gymbuddy.R;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,14 +31,17 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 @RunWith(AndroidJUnit4.class)
 public class WorkoutBuilderTest {
 
+    @Before
+    public void setup() {
+        Intents.init();
+    }
     @Rule
     public ActivityScenarioRule<MainActivity> activityRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
     @Test
     public void testAddExerciseToWorkout() throws InterruptedException {
-        // Step 1: Initialize Intents for verifying navigation
-        Intents.init();
+
 
         // Step 2: Ensure RecyclerView has data before proceeding
         onView(withId(R.id.recyclerViewWorkouts)).check(matches(hasMinimumChildCount(1)));
@@ -85,9 +90,13 @@ public class WorkoutBuilderTest {
         // Step 16: Verify workout appears in RecyclerView
         onView(withId(R.id.recyclerViewWorkouts)).check(matches(isDisplayed()));
 
-        // Step 17: Release Intents
-        Intents.release();
 
+
+    }
+
+    @After
+    public void teardown() {
+        Intents.release();
     }
 
 

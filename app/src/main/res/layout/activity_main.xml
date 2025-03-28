@@ -7,6 +7,7 @@
 
     <!-- Main content -->
     <LinearLayout
+        android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomNavigationView"
@@ -32,4 +33,7 @@
         app:itemIconTint="@drawable/bottom_nav_icon_colour"
         style="@style/MyBottomNavigationStyle"
         app:menu="@menu/nav_bar" />
+        
+    <!-- Loading Overlay -->
+
 </RelativeLayout>

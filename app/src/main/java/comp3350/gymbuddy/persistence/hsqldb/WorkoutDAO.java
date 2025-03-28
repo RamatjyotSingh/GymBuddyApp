@@ -14,19 +14,32 @@ import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutDB;
-import comp3350.gymbuddy.persistence.PersistenceManager;
+import timber.log.Timber;
 
-public class WorkoutHSQLDB implements IWorkoutDB {
+public class WorkoutDAO implements IWorkoutDB {
+    private static final String TAG = "WorkoutDAO";
+    private final Connection connection;
+    private final IExerciseDB exerciseDB;
+    
+    /**
+     * Constructor with dependency injection for better architecture
+     * @param connection Database connection
+     * @param exerciseDB Exercise database implementation
+     */
+    public WorkoutDAO(Connection connection, IExerciseDB exerciseDB) {
+        this.connection = connection;
+        this.exerciseDB = exerciseDB;
+    }
 
     @Override
-    public boolean saveWorkout(WorkoutProfile profile) throws DBException {
+    public void saveWorkout(WorkoutProfile profile) throws DBException {
         if (profile == null) {
-            return false;
+            throw new DBException("Workout profile cannot be null");
         }
 
-        try (Connection conn = HSQLDBHelper.getConnection()) {
+        try {
             // Begin transaction
-            conn.setAutoCommit(false);
+            connection.setAutoCommit(false);
             
             try {
                 // First, check if profile already exists
@@ -34,7 +47,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                 int profileId;
                 
                 // Check by name
-                try (PreparedStatement stmt = conn.prepareStatement(
+                try (PreparedStatement stmt = connection.prepareStatement(
                         "SELECT * FROM PUBLIC.workout_profile WHERE profile_name = ?")) {
                     stmt.setString(1, profile.getName());
                     try (ResultSet rs = stmt.executeQuery()) {
@@ -53,7 +66,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                 
                 if (existingProfile == null) {
                     // Insert new profile
-                    try (PreparedStatement stmt = conn.prepareStatement(
+                    try (PreparedStatement stmt = connection.prepareStatement(
                             "INSERT INTO PUBLIC.workout_profile (profile_id, profile_name, icon_path) VALUES (?, ?, ?)",
                             Statement.RETURN_GENERATED_KEYS)) {
                         
@@ -70,7 +83,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     profileId = existingProfile.getID();
                     
                     // Update existing profile
-                    try (PreparedStatement stmt = conn.prepareStatement(
+                    try (PreparedStatement stmt = connection.prepareStatement(
                             "UPDATE PUBLIC.workout_profile SET icon_path = ? WHERE profile_id = ?")) {
                         stmt.setString(1, profile.getIconPath());
                         stmt.setInt(2, profileId);
@@ -78,7 +91,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     }
                     
                     // Delete existing workout items to replace with new ones
-                    try (PreparedStatement stmt = conn.prepareStatement(
+                    try (PreparedStatement stmt = connection.prepareStatement(
                             "DELETE FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
                         stmt.setInt(1, profileId);
                         stmt.executeUpdate();
@@ -87,7 +100,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                 
                 // Now insert workout items
                 if (profile.getWorkoutItems() != null && !profile.getWorkoutItems().isEmpty()) {
-                    try (PreparedStatement stmt = conn.prepareStatement(
+                    try (PreparedStatement stmt = connection.prepareStatement(
                             "INSERT INTO PUBLIC.profile_exercise (profile_id, exercise_id, sets, reps, weight, duration) VALUES (?, ?, ?, ?, ?, ?)")) {
                         
                         for (WorkoutItem item : profile.getWorkoutItems()) {
@@ -103,20 +116,19 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                 }
                 
                 // Commit transaction
-                conn.commit();
-                return true;
-                
+                connection.commit();
+
             } catch (SQLException e) {
                 // Rollback transaction on error
-                conn.rollback();
-                throw new DBException("Error saving workout profile: " + e.getMessage());
+                connection.rollback();
+                throw new DBException("Error saving workout profile: " + e.getMessage(), e);
             } finally {
                 // Restore auto-commit
-                conn.setAutoCommit(true);
+                connection.setAutoCommit(true);
             }
             
         } catch (SQLException e) {
-            throw new DBException("Error connecting to database: " + e.getMessage());
+            throw new DBException("Error connecting to database: " + e.getMessage(), e);
         }
     }
 
@@ -124,9 +136,8 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     private int getNextProfileId() throws SQLException {
         int nextId = 1;
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT MAX(profile_id) AS max_id FROM PUBLIC.workout_profile")) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT MAX(profile_id) AS max_id FROM PUBLIC.workout_profile")) {
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -142,9 +153,8 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     public List<WorkoutProfile> getAll() throws DBException {
         List<WorkoutProfile> profiles = new ArrayList<>();
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM PUBLIC.workout_profile")) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT * FROM PUBLIC.workout_profile WHERE is_deleted = 0")) {
             
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -161,7 +171,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
             }
             
         } catch (SQLException e) {
-            throw new DBException("Error retrieving workout profiles: " + e.getMessage());
+            throw new DBException("Error retrieving workout profiles: " + e.getMessage(), e);
         }
         
         return profiles;
@@ -171,9 +181,41 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     public WorkoutProfile getWorkoutProfileById(int id) throws DBException {
         WorkoutProfile profile = null;
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM PUBLIC.workout_profile WHERE profile_id = ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT * FROM PUBLIC.workout_profile WHERE profile_id = ?")) {
+            
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    boolean isDeleted = rs.getBoolean("is_deleted");
+                    
+                    // Only load and return if not deleted
+                    if (!isDeleted) {
+                        String name = rs.getString("profile_name");
+                        String iconPath = rs.getString("icon_path");
+                        
+                        // Get workout items for this profile
+                        List<WorkoutItem> items = getWorkoutItemsForProfile(id);
+                        
+                        profile = new WorkoutProfile(id, name, iconPath, items, false);
+                    }
+                }
+            }
+            
+        } catch (SQLException e) {
+            throw new DBException("Error retrieving workout profile: " + e.getMessage(), e);
+        }
+        
+        return profile;
+    }
+    
+    @Override
+    public WorkoutProfile getWorkoutProfileByIdIncludingDeleted(int id) throws DBException {
+        WorkoutProfile profile = null;
+        
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT * FROM PUBLIC.workout_profile WHERE profile_id = ?")) {
             
             stmt.setInt(1, id);
             
@@ -191,7 +233,7 @@ public class WorkoutHSQLDB implements IWorkoutDB {
             }
             
         } catch (SQLException e) {
-            throw new DBException("Error retrieving workout profile: " + e.getMessage());
+            throw new DBException("Error retrieving workout profile: " + e.getMessage(), e);
         }
         
         return profile;
@@ -200,9 +242,8 @@ public class WorkoutHSQLDB implements IWorkoutDB {
     @Override
     public void deleteWorkout(int id) throws DBException {
         // Mark the profile as deleted (This keeps it stored in the DB for the logs).
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "UPDATE PUBLIC.workout_profile SET is_deleted = 1 WHERE profile_id = ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "UPDATE PUBLIC.workout_profile SET is_deleted = 1 WHERE profile_id = ?")) {
             stmt.setInt(1, id);
 
             int affectedRows = stmt.executeUpdate();
@@ -222,9 +263,8 @@ public class WorkoutHSQLDB implements IWorkoutDB {
             return results;
         }
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM PUBLIC.workout_profile WHERE LOWER(profile_name) LIKE ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT * FROM PUBLIC.workout_profile WHERE LOWER(profile_name) LIKE ? AND is_deleted = 0")) {
             
             stmt.setString(1, "%" + query.toLowerCase() + "%");
             
@@ -249,18 +289,14 @@ public class WorkoutHSQLDB implements IWorkoutDB {
         return results;
     }
 
- 
-
     /**
      * Helper method to get workout items for a specific profile
      */
     private List<WorkoutItem> getWorkoutItemsForProfile(int profileId) throws SQLException {
         List<WorkoutItem> items = new ArrayList<>();
-        IExerciseDB exerciseDB = PersistenceManager.getExerciseDB(true);
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT * FROM PUBLIC.profile_exercise WHERE profile_id = ?")) {
             
             stmt.setInt(1, profileId);
             
@@ -272,12 +308,18 @@ public class WorkoutHSQLDB implements IWorkoutDB {
                     double weight = rs.getDouble("weight");
                     double duration = rs.getDouble("duration");
                     
-                    Exercise exercise = exerciseDB.getExerciseByID(exerciseId);
-                    if (exercise != null) {
-                        WorkoutItem item = duration > 0 ? 
-                            new WorkoutItem(exercise, sets, reps, weight, duration) : 
-                            new WorkoutItem(exercise, sets, reps, weight);
-                        items.add(item);
+                    try {
+                        // Use the injected exerciseDB dependency
+                        Exercise exercise = exerciseDB.getExerciseByID(exerciseId);
+                        if (exercise != null) {
+                            WorkoutItem item = duration > 0 ? 
+                                new WorkoutItem(exercise, sets, reps, weight, duration) : 
+                                new WorkoutItem(exercise, sets, reps, weight);
+                            items.add(item);
+                        }
+                    } catch (DBException e) {
+                        Timber.tag(TAG).e(e, "Error fetching exercise with ID %d", exerciseId);
+                        // Continue with other items even if one fails
                     }
                 }
             }
@@ -288,14 +330,14 @@ public class WorkoutHSQLDB implements IWorkoutDB {
 
     @Override
     public void close() throws Exception {
-        try (Connection conn = HSQLDBHelper.getConnection();
-             Statement stmt = conn.createStatement()) {
-            // CHECKPOINT ensures all data is written to disk files
-            stmt.execute("CHECKPOINT");
-            timber.log.Timber.d("WorkoutHSQLDB closed successfully with CHECKPOINT");
-        } catch (SQLException e) {
-            timber.log.Timber.e(e, "Error during WorkoutHSQLDB close operation");
-            throw new DBException("Error during database cleanup: " + e.getMessage());
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+            Timber.tag(TAG).d("WorkoutDAO closed successfully");
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "Error during WorkoutDAO close operation");
+            throw e;
         }
     }
 }

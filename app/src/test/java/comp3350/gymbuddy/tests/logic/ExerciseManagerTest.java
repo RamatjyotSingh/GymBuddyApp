@@ -7,8 +7,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import comp3350.gymbuddy.logic.exception.ExerciseAccessException;
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
 import comp3350.gymbuddy.objects.Exercise;
+import comp3350.gymbuddy.persistence.factory.StubDatabaseFactory;
+import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
 
 public class ExerciseManagerTest {
     private ExerciseManager exerciseManager;
@@ -16,7 +19,10 @@ public class ExerciseManagerTest {
 
     @Before
     public void setup() {
-        exerciseManager = new ExerciseManager(false);
+        StubDatabaseFactory factory = new StubDatabaseFactory();
+        IExerciseDB exerciseDB = factory.createExerciseDB();
+        // Initialize the database with a stub implementation
+        exerciseManager = new ExerciseManager(exerciseDB);
         existingExercises = exerciseManager.getAll();
     }
 
@@ -38,11 +44,10 @@ public class ExerciseManagerTest {
         assertEquals(firstExercise.getID(), result.getID());
         assertEquals(firstExercise.getInstructions(), result.getInstructions());
     }
-
-    @Test
+    @Test(expected = ExerciseAccessException.class)
     public void testInvalidGetExerciseByID() {
-        Exercise result = exerciseManager.getExerciseByID(-1);
-        assertNull(result);
+        // This should throw an ExerciseAccessException because the exercise doesn't exist
+        exerciseManager.getExerciseByID(-1);
     }
 
     @Test

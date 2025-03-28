@@ -1,11 +1,10 @@
-package comp3350.gymbuddy.logic;
+package comp3350.gymbuddy.logic.util;
 
 import java.util.ArrayList;
 
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.exception.DBException;
 
 public class WorkoutPlaybackController {
     public interface BeginWorkoutItemListener {

@@ -3,19 +3,24 @@ package comp3350.gymbuddy.presentation.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
+import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutPlayerBinding;
-import comp3350.gymbuddy.logic.StringFormatter;
-import comp3350.gymbuddy.logic.WorkoutPlaybackController;
+import comp3350.gymbuddy.logic.exception.BusinessException;
+import comp3350.gymbuddy.logic.util.StringFormatter;
+import comp3350.gymbuddy.logic.util.WorkoutPlaybackController;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
+import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.exception.DBException;
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
+
 
 public class WorkoutPlayerActivity extends Activity {
 
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
     private WorkoutPlaybackController controller;
 
     // View binding for accessing UI elements efficiently
@@ -29,25 +34,24 @@ public class WorkoutPlayerActivity extends Activity {
         setContentView(binding.getRoot());
 
         // Get the workout ID passed through the intent.
-        int id = getIntent().getIntExtra("workoutProfileId", 0);
+        int id = getIntent().getIntExtra(getString(R.string.intent_workout_profile_id), -1);
 
         // Fetch the profile from the database.
-        var workoutManager = new WorkoutManager(true);
-        WorkoutProfile workoutProfile = null;
+        WorkoutProfile workoutProfile ;
         try {
+            WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
             workoutProfile = workoutManager.getWorkoutProfileByID(id);
-        } catch (DBException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            
+            controller = null;
 
-            // Go back to the previous screen if profile can't be loaded.
-            finish();
+            if (workoutProfile != null) {
+                // If success, start the workout.
+                startWorkout(workoutProfile);
+            }
         }
-
-        controller = null;
-
-        if (workoutProfile != null) {
-            // If success, start the workout.
-            startWorkout(workoutProfile);
+        catch (BusinessException e) {
+            handler.handle(e);
+            finish();
         }
     }
 

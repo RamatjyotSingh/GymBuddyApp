@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.logic;
+package comp3350.gymbuddy.logic.util;
 
 public class LogicConfig {
     public final static String invalidNameExceptionMessage = "Name must be provided.";

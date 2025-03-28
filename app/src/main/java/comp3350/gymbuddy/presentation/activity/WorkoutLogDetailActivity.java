@@ -5,40 +5,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogDetailBinding;
+import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.logic.exception.BusinessException;
 import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutSession;
-import comp3350.gymbuddy.persistence.exception.DBException;
+
+import comp3350.gymbuddy.presentation.util.ErrorHandler;
+import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
 
 public class WorkoutLogDetailActivity extends AppCompatActivity{
+
+    private final ErrorHandler handler = new ErrorHandler(new ToastErrorDisplay(this));
     private ActivityWorkoutLogDetailBinding binding;
 
     @Override
-    public void onCreate(Bundle savedInstanceBundle){
+    public void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
         binding = ActivityWorkoutLogDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Get the session ID passed from WorkoutLogActivity.
-        int id = getIntent().getIntExtra("workoutSessionId", 0);
+        int id = getIntent().getIntExtra(getString(R.string.intent_workout_session_id), -1);
 
-        // Get session details from persistence.
-        var workoutSessionManager = new WorkoutSessionManager(true);
-        WorkoutSession session = null;
-        try {
-            session = workoutSessionManager.getWorkoutSessionByID(id);
-        } catch (DBException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        if (id == -1) {
+            handler.handle(new IllegalArgumentException("No workout session ID passed to WorkoutLogDetailActivity"), handler.getDefaultErrorMessage());
+            finish();
         }
-
-        setWorkoutSession(session);
+        // Get session details from persistence.
+        WorkoutSession session ;
+        try {
+            WorkoutSessionManager workoutSessionManager = ApplicationService.getInstance().getWorkoutSessionManager();
+            session = workoutSessionManager.getWorkoutSessionByID(id);
+            setWorkoutSession(session);
+        }
+        catch (BusinessException e) {
+            handler.handle(e);
+        }
     }
 
     private void setWorkoutSession(WorkoutSession session) {
@@ -57,7 +66,7 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
             LayoutInflater layoutInflater = getLayoutInflater();
             LinearLayout insertPoint = binding.workoutLogDetailLayout;
 
-            for (var item : workoutSession.getWorkoutItems()) {
+            for (var item : workoutSession.getSessionItems()) {
                 // Get view without setting its root, in order to set layout parameters before insertion.
                 View newView = layoutInflater.inflate(R.layout.item_workout_session_profile_item, null);
 
