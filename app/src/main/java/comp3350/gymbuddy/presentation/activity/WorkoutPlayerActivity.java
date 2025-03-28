@@ -6,13 +6,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import comp3350.gymbuddy.databinding.ActivityWorkoutPlayerBinding;
-import comp3350.gymbuddy.logic.StringFormatter;
-import comp3350.gymbuddy.logic.WorkoutPlaybackController;
+import comp3350.gymbuddy.logic.util.StringFormatter;
+import comp3350.gymbuddy.logic.util.WorkoutPlaybackController;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
+import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.exception.DBException;
+import timber.log.Timber;
 
 public class WorkoutPlayerActivity extends Activity {
 
@@ -32,22 +34,25 @@ public class WorkoutPlayerActivity extends Activity {
         int id = getIntent().getIntExtra("workoutProfileId", 0);
 
         // Fetch the profile from the database.
-        var workoutManager = new WorkoutManager(true);
         WorkoutProfile workoutProfile = null;
         try {
+            WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
             workoutProfile = workoutManager.getWorkoutProfileByID(id);
+            
+            controller = null;
+
+            if (workoutProfile != null) {
+                // If success, start the workout.
+                startWorkout(workoutProfile);
+            }
+        } catch (IllegalStateException e) {
+            Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
+            Timber.e(e, "ApplicationService not initialized in WorkoutPlayerActivity");
+            finish();
         } catch (DBException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-
-            // Go back to the previous screen if profile can't be loaded.
+            Timber.e(e, "Database error in WorkoutPlayerActivity: %s", e.getMessage());
             finish();
-        }
-
-        controller = null;
-
-        if (workoutProfile != null) {
-            // If success, start the workout.
-            startWorkout(workoutProfile);
         }
     }
 

@@ -1,188 +1,276 @@
 package comp3350.gymbuddy.presentation.activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityMainBinding;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.persistence.exception.DBException;
-import comp3350.gymbuddy.persistence.hsqldb.HSQLDBHelper;
 import comp3350.gymbuddy.presentation.adapters.WorkoutProfileAdapter;
 import comp3350.gymbuddy.presentation.util.NavigationHelper;
+import comp3350.gymbuddy.presentation.util.ErrorDisplay;
+import comp3350.gymbuddy.presentation.util.FileExtractor;
+import comp3350.gymbuddy.logic.util.ConfigLoader;
+import comp3350.gymbuddy.logic.ApplicationService;
+import comp3350.gymbuddy.logic.exception.ApplicationInitException;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
     private WorkoutProfileAdapter workoutProfileAdapter;
-    private List<WorkoutProfile> workoutProfiles;
-    private NavigationHelper navigationHelper;
+    private final List<WorkoutProfile> workoutProfiles = new ArrayList<>();
+    private static final String TAG = "MainActivity";
+    private boolean applicationInitialized = false;
+    private boolean uiInitialized = false;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Timber.plant(new Timber.DebugTree());
-        initializeDatabase();
+        // Set up Timber for logging
+        if (Timber.forest().isEmpty()) {
+            Timber.plant(new Timber.DebugTree());
+        }
         
-        // Initialize navigation helper
-        navigationHelper = new NavigationHelper(this);
-
-        // Initialize View Binding
-        comp3350.gymbuddy.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // Set up view binding first
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        
+        try {
+            // Show loading state
+            binding.loadingOverlay.setVisibility(View.VISIBLE);
+            binding.mainContent.setVisibility(View.GONE);
+            binding.bottomNavigationView.setVisibility(View.GONE);
+    
+            // Initialize application directly
+            boolean success = initializeApplication();
+            applicationInitialized = success;
+            
+            if (success) {
+                // Hide loading overlay and show content
+                binding.loadingOverlay.setVisibility(View.GONE);
+                binding.mainContent.setVisibility(View.VISIBLE);
+                binding.bottomNavigationView.setVisibility(View.VISIBLE);
 
-        // Set up BottomNavigationView using the navigation helper
-        navigationHelper.setupBottomNavigation(binding.bottomNavigationView, R.id.home);
-
-        // Initialize RecyclerView
-        RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
-        recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
-
-        // Initialize data structures
-        workoutProfiles = new ArrayList<>();
-        workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
-
-        // Set up delete functionality only in this activity
-        workoutProfileAdapter.setShowDeleteButtons(true);
-        workoutProfileAdapter.setOnProfileDeleteListener((profile, position) -> {
-            WorkoutManager workoutManager = new WorkoutManager(true);
-
-            // Delete the workout profile
-            try {
-                workoutManager.deleteWorkout(profile.getID());
-
-                // Show success toast
-                Toast.makeText(MainActivity.this,
-                        R.string.workout_deleted,
-                        Toast.LENGTH_SHORT).show();
-
-                // Refresh the list
-                loadWorkoutProfiles();
-            } catch (DBException e) {
-                Toast.makeText(MainActivity.this,
-                        getString(R.string.error_deleting_workout) + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                // Set up UI after successful initialization
+                setupUI();
+            } else {
+                // Show error and retry option
+                Toast.makeText(this, getString(R.string.error_loading_db), Toast.LENGTH_LONG).show();
+                binding.loadingOverlay.setOnClickListener(v -> recreate());
             }
-        });
-
-        recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
-
-        // Load workout profiles
-        loadWorkoutProfiles();
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "Error in onCreate");
+            Toast.makeText(this, "Failed to initialize application", Toast.LENGTH_LONG).show();
+        }
     }
+    
+    /**
+     * Set up UI components after initialization
+     */
+    private void setupUI() {
+        try {
+            // Initialize navigation helper
+            NavigationHelper navigationHelper = new NavigationHelper(this);
+    
+            // Set up BottomNavigationView using the navigation helper
+            navigationHelper.setupBottomNavigation(binding.bottomNavigationView, R.id.home);
+    
+            // Initialize RecyclerView
+            RecyclerView recyclerViewWorkouts = binding.recyclerViewWorkouts;
+            recyclerViewWorkouts.setLayoutManager(new LinearLayoutManager(this));
+    
+            // Initialize adapter with already created list
+            workoutProfileAdapter = new WorkoutProfileAdapter(workoutProfiles);
+    
+            // Set up delete functionality only in this activity
+            workoutProfileAdapter.setShowDeleteButtons(true);
+            workoutProfileAdapter.setOnProfileDeleteListener((profile, position) -> {
+                try {
+                    WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
+                    
+                    // Delete the workout profile
+                    workoutManager.deleteWorkout(profile.getID());
 
+                    // Show success toast
+                    Toast.makeText(MainActivity.this,
+                            R.string.workout_deleted,
+                            Toast.LENGTH_SHORT).show();
+
+                    // Refresh the list
+                    loadWorkoutProfiles();
+                } catch (IllegalStateException e) {
+                    Toast.makeText(MainActivity.this, 
+                            "Application not properly initialized. Please restart the app.", 
+                            Toast.LENGTH_LONG).show();
+                } catch (DBException e) {
+                    Toast.makeText(MainActivity.this,
+                            getString(R.string.error_deleting_workout) + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+
+            recyclerViewWorkouts.setAdapter(workoutProfileAdapter);
+            
+            // Mark UI as initialized
+            uiInitialized = true;
+    
+            // Load workout profiles at the end
+            loadWorkoutProfiles();
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "Error in setupUI");
+        }
+    }
 
     /**
      * Loads workout profiles from the database
      */
     private void loadWorkoutProfiles() {
+        // Safety check for all required elements
+        if (!applicationInitialized || workoutProfiles == null || 
+                workoutProfileAdapter == null || !uiInitialized) {
+            Timber.tag(TAG).w("Cannot load profiles: App initialization incomplete");
+            return;
+        }
+        
         try {
-            WorkoutManager workoutManager = new WorkoutManager(true);
+            WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
+            
+            // Just clear the existing list
             workoutProfiles.clear();
-            workoutProfiles.addAll(workoutManager.getSavedWorkouts());
+            
+            // Get profiles and add them to the list
+            List<WorkoutProfile> profiles = workoutManager.getSavedWorkouts();
+            if (profiles != null) {
+                workoutProfiles.addAll(profiles);
+            }
 
-            workoutProfileAdapter.notifyDataSetChanged();
+            // Update the adapter
+            if (workoutProfileAdapter != null) {
+                workoutProfileAdapter.notifyDataSetChanged();
+            }
+        } catch (IllegalStateException e) {
+            Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
+            Timber.tag(TAG).e(e, "ApplicationService not initialized in MainActivity");
         } catch (DBException e) {
-            Toast.makeText(this, getString(R.string.error_loading_workout_profiles) + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_loading_workout_profiles), Toast.LENGTH_LONG).show();
+            Timber.tag(TAG).e(e, "Database error in MainActivity: %s", e.getMessage());
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "Unexpected error loading workout profiles: %s", e.getMessage());
+            Toast.makeText(this, "Error loading workout profiles", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     @Override
     protected void onResume() {
         super.onResume();
         
-        // Clear any highlighted items when returning to the activity
-        if (workoutProfileAdapter != null) {
-            workoutProfileAdapter.clearHighlight();
-        }
-        
-        // Reload data when returning to this activity
-        loadWorkoutProfiles();
-    }
-
-    private void initializeDatabase() {
-        // Create DB directory
-        File dbDir = new File(getFilesDir(), getString(R.string.db_dir));
-        if (!dbDir.exists() && !dbDir.mkdirs()) {
-            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to create DB directory");
-            return;
-        }
-
-
-        File dbFile = new File(dbDir, getString(R.string.db_script));
-
-        if(dbFile.exists() && dbFile.length() > 0) {
-            Timber.tag(getString(R.string.tag_mainactivity)).d("Database already exists");
-            HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
-            return;
-        }
-
-        Timber.tag(getString(R.string.tag_mainactivity)).d("Database needs to be initialized");
-
-        // Extract required files
-        String[] dbFiles = {"db/Project.script", "db/DBConfig.properties"};
-        for (String filepath : dbFiles) {
-            String filename = new File(filepath).getName();
-            extractFile(filepath, dbDir, filename);
-        }
-
-        // Set path and initialize database
-        HSQLDBHelper.setDatabaseDirectoryPath(dbDir.getAbsolutePath());
-        try {
-            HSQLDBHelper.init();
-            Timber.tag(getString(R.string.tag_mainactivity)).d("Database initialized successfully");
-        } catch (Exception e) {
-            Toast.makeText(this, getString(R.string.error_loading_db), Toast.LENGTH_LONG).show();
-            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to initialize database: %s", e.getMessage());
+        // Only update UI if both application and UI are fully initialized
+        if (applicationInitialized && uiInitialized && workoutProfileAdapter != null) {
+            try {
+                // Clear any highlighted items when returning to the activity
+                workoutProfileAdapter.clearHighlight();
+                
+                // Reload data when returning to this activity
+                loadWorkoutProfiles();
+            } catch (Exception e) {
+                Timber.tag(TAG).e(e, "Error in onResume");
+            }
+        } else {
+            Timber.tag(TAG).d("Skipping onResume updates: initialization incomplete");
         }
     }
 
     /**
-     * Extract a specific file from assets to the destination directory
-     *
-     * @param assetPath Source path in assets
-     * @param destDir Destination directory
-     * @param destFilename Destination filename
+     * Initialize the application
+     * @return true if initialization was successful
      */
-    private void extractFile(String assetPath, File destDir, String destFilename) {
-        File outputFile = new File(destDir, destFilename);
-        timber.log.Timber.tag("Main").d("Extracting file: %s → %s", assetPath, outputFile.getAbsolutePath());
-
-        // Skip if file already exists and is not empty
-        if (outputFile.exists() && outputFile.length() > 0) {
-            Timber.tag(getString(R.string.tag_mainactivity)).d("File already exists: %s", destFilename);
-            return;
-        }
-
-        try (InputStream is = getAssets().open(assetPath);
-             FileOutputStream fos = new FileOutputStream(outputFile)) {
-
-            byte[] buffer = new byte[8192]; // 8KB buffer for better performance
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                fos.write(buffer, 0, length);
+    private boolean initializeApplication() {
+        // Create error display for toast messages
+        ErrorDisplay errorDisplay = message -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+     
+        
+        try {
+            // Get database directory path
+            String dbDirPath = getString(R.string.db_dir);
+            
+            // Check if both required files exist
+            boolean scriptExists = FileExtractor.fileExists(this, dbDirPath, "Project.script");
+            boolean configExists = FileExtractor.fileExists(this, dbDirPath, "DBConfig.properties");
+            boolean dbFilesExist = false;
+            
+            Map<String, String> paths = new HashMap<>();
+            
+            if (dbFilesExist) {
+                // Files exist, just get their paths
+                Timber.tag(TAG).i("Database files already exist");
+                paths.put("scriptPath", FileExtractor.getFilePath(this, dbDirPath, "Project.script"));
+                paths.put("configPath", FileExtractor.getFilePath(this, dbDirPath, "DBConfig.properties"));
+            } else {
+                // Extract files
+                Timber.tag(TAG).i("Extracting database files");
+                String[] filesToExtract = {"db/Project.script", "db/DBConfig.properties"};
+                Map<String, String> extractedPaths = FileExtractor.extractAssetFiles(
+                    this, filesToExtract, dbDirPath, errorDisplay);
+                    
+                if (extractedPaths == null) {
+                    errorDisplay.showError(getString(R.string.error_loading_db));
+                    Timber.tag(TAG).e("Failed to extract files");
+                    return false;
+                }
+                
+                paths.put("scriptPath", extractedPaths.get("Project.script"));
+                paths.put("configPath", extractedPaths.get("DBConfig.properties"));
             }
-
-            Timber.tag(getString(R.string.tag_mainactivity)).d("Extracted file: %s → %s", assetPath, outputFile.getAbsolutePath());
-        } catch (IOException e) {
-            Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-            Timber.tag(getString(R.string.tag_mainactivity)).e("Failed to extract file: %s - %s", assetPath, e.getMessage());
+            
+            // Create config with dbFilesExist flag
+            ConfigLoader config = ConfigLoader.builder()
+                    .scriptPath(paths.get("scriptPath"))
+                    .configPath(paths.get("configPath"))
+                    .testMode(false)
+                    .dbAlreadyExists(dbFilesExist)
+                    .build();
+            
+            // Initialize application
+            ApplicationService.getInstance().initialize(config);
+            return ApplicationService.getInstance().isActive();
+        } catch (ApplicationInitException e) {
+            errorDisplay.showError(getString(R.string.error_loading_db));
+            Timber.tag(TAG).e(e, "Application initialization failed");
+            return false;
+        } catch (Exception e) {
+            errorDisplay.showError(getString(R.string.error_loading_db));
+            Timber.tag(TAG).e(e, "Unexpected error during initialization: %s", e.getMessage());
+            return false;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Only close ApplicationService if we're finishing the activity completely
+        if (isFinishing()) {
+            try {
+                ApplicationService.getInstance().close();
+            } catch (Exception e) {
+                Timber.tag(TAG).e(e, "Error while closing application service");
+            }
+        }
+        
+        // Clear references
+        binding = null;
+        
+        super.onDestroy();
     }
 }

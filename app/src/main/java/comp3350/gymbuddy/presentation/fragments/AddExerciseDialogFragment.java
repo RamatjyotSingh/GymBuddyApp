@@ -4,14 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import comp3350.gymbuddy.databinding.DialogAddWorkoutItemBinding;
+import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
-import comp3350.gymbuddy.logic.InputValidator;
+import comp3350.gymbuddy.logic.util.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidRepsException;
 import comp3350.gymbuddy.logic.exception.InvalidSetsException;
 import comp3350.gymbuddy.logic.exception.InvalidTimeException;
@@ -19,8 +21,10 @@ import comp3350.gymbuddy.logic.exception.InvalidWeightException;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.presentation.util.DSOBundler;
+import timber.log.Timber;
 
 public class AddExerciseDialogFragment extends DialogFragment {
+    private static final String TAG = "AddExerciseDialog";
     private static final String ARG_SELECTED_EXERCISE = "selected_exercise";
     private DialogAddWorkoutItemBinding binding;
     private Exercise selectedExercise;
@@ -57,11 +61,22 @@ public class AddExerciseDialogFragment extends DialogFragment {
         if (getArguments() != null) {
             int exerciseId = getArguments().getInt(ARG_SELECTED_EXERCISE, -1);
 
-            // Retrieve the selected exercise from storage
-            var exerciseManager = new ExerciseManager(true);
-            selectedExercise = exerciseManager.getExerciseByID(exerciseId);
-
-            updateViews();
+            try {
+                // Get ExerciseManager from ApplicationService
+                ExerciseManager exerciseManager = ApplicationService.getInstance().getExerciseManager();
+                selectedExercise = exerciseManager.getExerciseByID(exerciseId);
+                
+                updateViews();
+            } catch (IllegalStateException e) {
+                // This happens if ApplicationService isn't initialized
+                Toast.makeText(getContext(), "Application not properly initialized", Toast.LENGTH_LONG).show();
+                Timber.tag(TAG).e(e, "ApplicationService not initialized");
+                dismiss(); // Close the dialog as it can't function properly
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Error loading exercise: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Timber.tag(TAG).e(e, "Error loading exercise");
+                dismiss();
+            }
         }
     }
 

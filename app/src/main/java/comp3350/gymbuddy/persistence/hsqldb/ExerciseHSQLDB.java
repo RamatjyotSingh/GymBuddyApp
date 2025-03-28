@@ -11,12 +11,23 @@ import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IExerciseDB;
+import timber.log.Timber;
 
 /**
  * ExerciseHSQLDB implements IExerciseDB, providing methods to interact with the exercise database.
  */
 public class ExerciseHSQLDB implements IExerciseDB {
-
+    private static final String TAG = "ExerciseHSQLDB";
+    private final Connection connection;
+    
+    /**
+     * Constructor that initializes the database with provided paths
+     * @param connection connection to interact with db
+     */
+    public ExerciseHSQLDB(Connection connection) {
+        this.connection = connection;
+    }
+    
     /**
      * Retrieves all exercises from the database.
      * @return A list of all exercises.
@@ -27,8 +38,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
         List<Exercise> exercises = new ArrayList<>();
         String query = "SELECT * FROM exercise";
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
+        try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             // Iterate through the result set and extract exercises
@@ -36,7 +46,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
                 exercises.add(extractExercise(rs));
             }
         } catch (SQLException e) {
-            throw new DBException("Failed to load exercises.");
+            throw new DBException("Failed to load exercises: " + e.getMessage(), e);
         }
 
         return exercises;
@@ -49,13 +59,11 @@ public class ExerciseHSQLDB implements IExerciseDB {
      * @throws DBException If an error occurs while accessing the database.
      */
     @Override
-    public Exercise getExerciseByID(int id) {
+    public Exercise getExerciseByID(int id) throws DBException {
         Exercise exercise = null;
         String query = "SELECT * FROM exercise WHERE exercise_id = ?";
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -63,7 +71,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
                 }
             }
         } catch (SQLException e) {
-            throw new DBException("Failed to load exercise.");
+            throw new DBException("Failed to load exercise with ID " + id + ": " + e.getMessage(), e);
         }
 
         return exercise;
@@ -79,7 +87,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
         int exerciseId = rs.getInt("exercise_id");
         String name = rs.getString("name");
         String instructions = rs.getString("instructions");
-        String imagePath = rs.getNString("image_path");
+        String imagePath = rs.getString("image_path");
         boolean isTimeBased = rs.getBoolean("is_time_based");
         boolean hasWeight = rs.getBoolean("has_weight");
 
@@ -118,9 +126,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
                 "JOIN tag t ON et.tag_id = t.tag_id " +
                 "WHERE et.exercise_id = ?";
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, exerciseID);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -128,7 +134,7 @@ public class ExerciseHSQLDB implements IExerciseDB {
                 }
             }
         } catch (SQLException e) {
-            throw new DBException("Failed to load exercise tags.");
+            throw new DBException("Failed to load exercise tags: " + e.getMessage(), e);
         }
 
         return tags;
@@ -136,6 +142,13 @@ public class ExerciseHSQLDB implements IExerciseDB {
 
     @Override
     public void close() throws Exception {
-
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "Error closing database connection");
+            throw e;
+        }
     }
 }

@@ -12,16 +12,19 @@ import androidx.cardview.widget.CardView;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutLogDetailBinding;
+import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.logic.managers.WorkoutSessionManager;
 import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.exception.DBException;
 
+import timber.log.Timber;
+
 public class WorkoutLogDetailActivity extends AppCompatActivity{
     private ActivityWorkoutLogDetailBinding binding;
 
     @Override
-    public void onCreate(Bundle savedInstanceBundle){
+    public void onCreate(Bundle savedInstanceBundle) {
         super.onCreate(savedInstanceBundle);
         binding = ActivityWorkoutLogDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -30,15 +33,19 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
         int id = getIntent().getIntExtra("workoutSessionId", 0);
 
         // Get session details from persistence.
-        var workoutSessionManager = new WorkoutSessionManager(true);
         WorkoutSession session = null;
         try {
+            WorkoutSessionManager workoutSessionManager = ApplicationService.getInstance().getWorkoutSessionManager();
             session = workoutSessionManager.getWorkoutSessionByID(id);
+            setWorkoutSession(session);
+        } catch (IllegalStateException e) {
+            Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
+            Timber.e(e, "ApplicationService not initialized in WorkoutLogDetailActivity");
+            finish();
         } catch (DBException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Timber.e(e, "Database error in WorkoutLogDetailActivity: %s", e.getMessage());
         }
-
-        setWorkoutSession(session);
     }
 
     private void setWorkoutSession(WorkoutSession session) {
@@ -57,7 +64,7 @@ public class WorkoutLogDetailActivity extends AppCompatActivity{
             LayoutInflater layoutInflater = getLayoutInflater();
             LinearLayout insertPoint = binding.workoutLogDetailLayout;
 
-            for (var item : workoutSession.getWorkoutItems()) {
+            for (var item : workoutSession.getSessionItems()) {
                 // Get view without setting its root, in order to set layout parameters before insertion.
                 View newView = layoutInflater.inflate(R.layout.item_workout_session_profile_item, null);
 

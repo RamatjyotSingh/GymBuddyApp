@@ -7,6 +7,7 @@ import comp3350.gymbuddy.objects.WorkoutSession;
 import comp3350.gymbuddy.persistence.PersistenceManager;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.persistence.interfaces.IWorkoutSessionDB;
+import timber.log.Timber;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,6 +17,16 @@ import java.util.List;
  * WorkoutSessionHSQLDB implements IWorkoutSessionDB, providing database operations for workout sessions.
  */
 public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
+    private static final String TAG = "WorkoutSessionHSQLDB";
+    private final Connection connection;
+    
+    /**
+     * Constructor that initializes with a database connection
+     * @param connection connection to interact with db
+     */
+    public WorkoutSessionHSQLDB(Connection connection) {
+        this.connection = connection;
+    }
 
     /**
      * Retrieves all workout sessions from the database.
@@ -27,8 +38,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
         List<WorkoutSession> workoutSessions = new ArrayList<>();
         String query = "SELECT * FROM workout_session";
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             // Iterate through the result set and extract workout sessions
@@ -36,7 +46,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
                 workoutSessions.add(extractWorkoutSession(rs));
             }
         } catch (SQLException e) {
-            throw new DBException("Failed to load workout sessions.");
+            throw new DBException("Failed to load workout sessions: " + e.getMessage(), e);
         }
 
         return workoutSessions;
@@ -53,8 +63,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
         WorkoutSession workoutSession = null;
         String query = "SELECT * FROM workout_session WHERE session_id = ?";
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -63,7 +72,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
                 }
             }
         } catch (SQLException e) {
-            throw new DBException("Failed to load workout session");
+            throw new DBException("Failed to load workout session: " + e.getMessage(), e);
         }
 
         return workoutSession;
@@ -118,8 +127,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
         List<WorkoutItem> workoutItems = new ArrayList<>();
         String query = "SELECT * FROM session_item WHERE session_id = ?";
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -128,7 +136,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
                 }
             }
         } catch (SQLException e) {
-            throw new DBException("Failed to load workout exercises.");
+            throw new DBException("Failed to load workout exercises: " + e.getMessage(), e);
         }
 
         return workoutItems;
@@ -145,8 +153,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     public boolean insertSession(WorkoutSession session) throws DBException {
         String query = "INSERT INTO workout_session (session_id, start_time, end_time, profile_id) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             
             stmt.setInt(1, session.getId());
             stmt.setLong(2, session.getStartTime());
@@ -157,7 +164,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             
             if (rowsInserted > 0) {
                 // Insert all workout items if we have any
-                List<WorkoutItem> items = session.getWorkoutItems();
+                List<WorkoutItem> items = session.getSessionItems();
                 if (items != null && !items.isEmpty()) {
                     for (WorkoutItem item : items) {
                         addExerciseToSession(session.getId(), item);
@@ -169,7 +176,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return false;
             
         } catch (SQLException e) {
-            throw new DBException("Failed to insert workout session: " + e.getMessage());
+            throw new DBException("Failed to insert workout session: " + e.getMessage(), e);
         }
     }
     
@@ -185,8 +192,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     public boolean addExerciseToSession(int sessionId, WorkoutItem item) throws DBException {
         String query = "INSERT INTO session_item (session_id, exercise_id, reps, weight, duration) VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
              
             stmt.setInt(1, sessionId);
             stmt.setInt(2, item.getExercise().getID());
@@ -198,7 +204,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            throw new DBException("Failed to add exercise to session: " + e.getMessage());
+            throw new DBException("Failed to add exercise to session: " + e.getMessage(), e);
         }
     }
     
@@ -214,8 +220,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     public boolean updateSession(WorkoutSession session) throws DBException {
         String query = "UPDATE workout_session SET start_time = ?, end_time = ?, profile_id = ? WHERE session_id = ?";
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
              
             stmt.setLong(1, session.getStartTime());
             stmt.setLong(2, session.getEndTime());
@@ -226,7 +231,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            throw new DBException("Failed to update workout session: " + e.getMessage());
+            throw new DBException("Failed to update workout session: " + e.getMessage(), e);
         }
     }
 
@@ -242,8 +247,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     public boolean updateSessionEndTime(int sessionId, long endTime) throws DBException {
         String query = "UPDATE workout_session SET end_time = ? WHERE session_id = ?";
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
              
             stmt.setLong(1, endTime);
             stmt.setInt(2, sessionId);
@@ -252,7 +256,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            throw new DBException("Failed to update workout session end time: " + e.getMessage());
+            throw new DBException("Failed to update workout session end time: " + e.getMessage(), e);
         }
     }
     
@@ -269,22 +273,35 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
         String deleteItemsQuery = "DELETE FROM session_item WHERE session_id = ?";
         String deleteSessionQuery = "DELETE FROM workout_session WHERE session_id = ?";
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement deleteItemsStmt = conn.prepareStatement(deleteItemsQuery);
-             PreparedStatement deleteSessionStmt = conn.prepareStatement(deleteSessionQuery)) {
-             
-            // Delete related items first to maintain referential integrity
-            deleteItemsStmt.setInt(1, sessionId);
-            deleteItemsStmt.executeUpdate();
+        try {
+            // Set autocommit to false for transaction
+            connection.setAutoCommit(false);
             
-            // Then delete the session
-            deleteSessionStmt.setInt(1, sessionId);
-            int rowsAffected = deleteSessionStmt.executeUpdate();
-            
-            return rowsAffected > 0;
-            
+            try (PreparedStatement deleteItemsStmt = connection.prepareStatement(deleteItemsQuery);
+                 PreparedStatement deleteSessionStmt = connection.prepareStatement(deleteSessionQuery)) {
+                 
+                // Delete related items first to maintain referential integrity
+                deleteItemsStmt.setInt(1, sessionId);
+                deleteItemsStmt.executeUpdate();
+                
+                // Then delete the session
+                deleteSessionStmt.setInt(1, sessionId);
+                int rowsAffected = deleteSessionStmt.executeUpdate();
+                
+                // Commit transaction
+                connection.commit();
+                
+                return rowsAffected > 0;
+            } catch (SQLException e) {
+                // Rollback transaction on error
+                connection.rollback();
+                throw new DBException("Failed to delete workout session: " + e.getMessage(), e);
+            } finally {
+                // Restore auto-commit
+                connection.setAutoCommit(true);
+            }
         } catch (SQLException e) {
-            throw new DBException("Failed to delete workout session: " + e.getMessage());
+            throw new DBException("Transaction error while deleting session: " + e.getMessage(), e);
         }
     }
     
@@ -300,8 +317,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
     public boolean removeExerciseFromSession(int sessionId, int exerciseId) throws DBException {
         String query = "DELETE FROM session_item WHERE session_id = ? AND exercise_id = ?";
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
              
             stmt.setInt(1, sessionId);
             stmt.setInt(2, exerciseId);
@@ -310,7 +326,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            throw new DBException("Failed to remove exercise from session: " + e.getMessage());
+            throw new DBException("Failed to remove exercise from session: " + e.getMessage(), e);
         }
     }
     
@@ -329,8 +345,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             "JOIN workout_profile wp ON ws.profile_id = wp.profile_id " +
             "WHERE LOWER(wp.profile_name) LIKE ? OR CAST(ws.start_time AS VARCHAR(100)) LIKE ?";
         
-        try (Connection conn = HSQLDBHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(searchQuery)) {
+        try (PreparedStatement stmt = connection.prepareStatement(searchQuery)) {
              
             String searchParam = "%" + query.toLowerCase() + "%";
             stmt.setString(1, searchParam);
@@ -343,7 +358,7 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
             }
             
         } catch (SQLException e) {
-            throw new DBException("Failed to search workout sessions: " + e.getMessage());
+            throw new DBException("Failed to search workout sessions: " + e.getMessage(), e);
         }
         
         return results;
@@ -363,6 +378,14 @@ public class WorkoutSessionHSQLDB implements IWorkoutSessionDB {
 
     @Override
     public void close() throws Exception {
-
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+            Timber.tag(TAG).d("WorkoutSessionHSQLDB closed successfully");
+        } catch (Exception e) {
+            Timber.tag(TAG).e(e, "Error during WorkoutSessionHSQLDB close operation");
+            throw e;
+        }
     }
 }

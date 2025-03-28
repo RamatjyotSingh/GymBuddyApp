@@ -13,6 +13,7 @@ import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityStartWorkoutListBinding;
+import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
@@ -49,9 +50,6 @@ public class StartWorkoutListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false); // Hide default title
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         
-        // Initialize managers
-        workoutManager = new WorkoutManager(true);
-
         // Show loading state
         showLoadingState();
         
@@ -76,16 +74,29 @@ public class StartWorkoutListActivity extends AppCompatActivity {
      */
     private void loadProfile() {
         try {
+            // Get the workout manager from ApplicationService
+            workoutManager = ApplicationService.getInstance().getWorkoutManager();
+            
+            // Get the workout profile
             profile = workoutManager.getWorkoutProfileByID(profileId);
             
-            if (profile != null) {
-                displayProfile();
-            } else {
-                handleError("Profile not found with ID: " + profileId);
+            if (profile == null) {
+                handleError(ERROR_MESSAGE_PROFILE);
+                return;
             }
+            
+            // Display profile details
+            displayProfile();
+        } catch (IllegalStateException e) {
+            // This happens if ApplicationService isn't initialized
+            handleError("Application not properly initialized. Please restart the app.");
+            Timber.e(e, "ApplicationService not initialized when accessing StartWorkoutListActivity");
         } catch (DBException e) {
-            Timber.tag(TAG).e(e, "Error loading profile with ID: %d", profileId);
-            handleError(ERROR_MESSAGE_ITEMS);
+            handleError(ERROR_MESSAGE_PROFILE + " " + e.getMessage());
+            Timber.e(e, "Error loading workout profile");
+        } catch (Exception e) {
+            handleError(ERROR_MESSAGE_PROFILE);
+            Timber.e(e, "Unexpected error loading workout profile: %s", e.getMessage());
         }
     }
     

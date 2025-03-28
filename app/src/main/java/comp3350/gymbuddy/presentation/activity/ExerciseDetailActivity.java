@@ -24,6 +24,9 @@ import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.Tag;
 import comp3350.gymbuddy.persistence.exception.DBException;
 import comp3350.gymbuddy.presentation.util.AssetLoader;
+import comp3350.gymbuddy.logic.ApplicationService;
+
+import timber.log.Timber;
 
 public class ExerciseDetailActivity extends AppCompatActivity {
 
@@ -46,17 +49,24 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int exerciseID = intent.getIntExtra(getString(R.string.exerciseid), 0);
 
-        // Get the exercise details from persistence.
-        var exerciseManager = new ExerciseManager(true);
-        Exercise exercise = null;
         try {
-            exercise = exerciseManager.getExerciseByID(exerciseID);
-        } catch (DBException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            // Get the exercise manager from ApplicationService
+            ExerciseManager exerciseManager = ApplicationService.getInstance().getExerciseManager();
+            
+            // Get the exercise details using the manager
+            Exercise exercise = exerciseManager.getExerciseByID(exerciseID);
+            
+            // Update the views with exercise info
+            setExercise(exercise);
+        } catch (IllegalStateException e) {
+            // This happens if ApplicationService isn't initialized
+            Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
+            Timber.e(e, "ApplicationService not initialized when accessing ExerciseDetailActivity");
+            finish(); // Close the activity as it can't function properly
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to load exercise details: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Timber.e(e, "Error loading exercise details");
         }
-
-        // Update the views with exercise info.
-        setExercise(exercise);
     }
 
     private void setExercise(Exercise exercise) {

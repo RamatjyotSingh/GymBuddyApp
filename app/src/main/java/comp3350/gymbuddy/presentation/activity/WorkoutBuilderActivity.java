@@ -18,8 +18,9 @@ import java.util.List;
 
 import comp3350.gymbuddy.R;
 import comp3350.gymbuddy.databinding.ActivityWorkoutBuilderBinding;
+import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.logic.managers.WorkoutManager;
-import comp3350.gymbuddy.logic.InputValidator;
+import comp3350.gymbuddy.logic.util.InputValidator;
 import comp3350.gymbuddy.logic.exception.InvalidInputException;
 import comp3350.gymbuddy.logic.exception.InvalidNameException;
 import comp3350.gymbuddy.objects.WorkoutItem;
@@ -29,14 +30,12 @@ import comp3350.gymbuddy.presentation.adapters.WorkoutItemAdapter;
 import comp3350.gymbuddy.presentation.fragments.AddExerciseDialogFragment;
 import comp3350.gymbuddy.presentation.util.DSOBundler;
 import comp3350.gymbuddy.presentation.util.NavigationHelper;
+import timber.log.Timber;
 
 public class WorkoutBuilderActivity extends AppCompatActivity {
 
     // View binding for accessing UI elements efficiently
     private ActivityWorkoutBuilderBinding binding;
-
-    // Navigation helper component
-    private NavigationHelper navigationHelper;
 
     // Launcher for starting the ExerciseListActivity and handling its result
     private final ActivityResultLauncher<Intent> exerciseListLauncher = registerForActivityResult(
@@ -52,7 +51,8 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         
         // Initialize navigation helper
-        navigationHelper = new NavigationHelper(this);
+        // Navigation helper component
+        NavigationHelper navigationHelper = new NavigationHelper(this);
         
         // Inflate the layout using view binding
         binding = ActivityWorkoutBuilderBinding.inflate(getLayoutInflater());
@@ -124,7 +124,8 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
 
         if (profile != null) {
             try {
-                WorkoutManager workoutManager = new WorkoutManager(true);
+                // Get the workout manager from ApplicationService
+                WorkoutManager workoutManager = ApplicationService.getInstance().getWorkoutManager();
                 boolean success = workoutManager.saveWorkout(profile);
 
                 if (success) {
@@ -146,6 +147,9 @@ public class WorkoutBuilderActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, "Failed to save workout profile", Toast.LENGTH_SHORT).show();
                 }
+            } catch (IllegalStateException e) {
+                Toast.makeText(this, "Application not properly initialized. Please restart the app.", Toast.LENGTH_LONG).show();
+                Timber.e(e, "ApplicationService not initialized in WorkoutBuilderActivity");
             } catch (DBException e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             } catch (Exception e) {

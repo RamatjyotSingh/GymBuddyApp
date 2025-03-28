@@ -1,4 +1,4 @@
-package comp3350.gymbuddy.logic;
+package comp3350.gymbuddy.logic.util;
 
 import java.util.List;
 

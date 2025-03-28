@@ -4,9 +4,15 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.logic.managers.ExerciseManager;
+import comp3350.gymbuddy.objects.Exercise;
 import comp3350.gymbuddy.objects.WorkoutItem;
+import timber.log.Timber;
+
 public class DSOBundler {
+    private static final String TAG = "DSOBundler";
+    
     /**
      * Converts a WorkoutItem into a Bundle for easy storage and transfer.
      *
@@ -49,18 +55,29 @@ public class DSOBundler {
         WorkoutItem result = null;
 
         if (bundle != null) {
-            // Extract stored values from the bundle
-            int exerciseId = bundle.getInt("exerciseID", -1);
-            int sets = bundle.getInt("sets", -1);
-            int reps = bundle.getInt("reps", -1);
-            double weight = bundle.getDouble("weight", 0.0);
-            double time = bundle.getDouble("time", 0.0);
+            try {
+                // Extract stored values from the bundle
+                int exerciseId = bundle.getInt("exerciseID", -1);
+                int sets = bundle.getInt("sets", -1);
+                int reps = bundle.getInt("reps", -1);
+                double weight = bundle.getDouble("weight", 0.0);
+                double time = bundle.getDouble("time", 0.0);
 
-            // Retrieve the exercise object using the exercise ID
-            var exerciseManager = new ExerciseManager(true);
-            var exercise = exerciseManager.getExerciseByID(exerciseId);
+                // Retrieve the exercise object using ApplicationService
+                ExerciseManager exerciseManager = ApplicationService.getInstance().getExerciseManager();
+                Exercise exercise = exerciseManager.getExerciseByID(exerciseId);
 
-            result = new WorkoutItem(exercise, sets, reps, weight, time);
+                if (exercise != null) {
+                    result = new WorkoutItem(exercise, sets, reps, weight, time);
+                } else {
+                    Timber.tag(TAG).e("Failed to unbundle WorkoutItem: Exercise with ID %d not found", exerciseId);
+                }
+            } catch (IllegalStateException e) {
+                // This happens if ApplicationService isn't initialized
+                Timber.tag(TAG).e(e, "ApplicationService not initialized when unbundling WorkoutItem");
+            } catch (Exception e) {
+                Timber.tag(TAG).e(e, "Error unbundling WorkoutItem");
+            }
         }
 
         return result;

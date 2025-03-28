@@ -44,7 +44,7 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
         for (int i = 0; i < NUM_SESSIONS; i++) {
             WorkoutSession session = createWorkoutSession();
             sessions.add(session);
-            sessionExercises.put(session.getId(), new ArrayList<>(session.getWorkoutItems()));
+            sessionExercises.put(session.getId(), new ArrayList<>(session.getSessionItems()));
         }
     }
 
@@ -139,7 +139,7 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
         sessions.add(session);
         
         // Store workout items by session ID
-        sessionExercises.put(session.getId(), new ArrayList<>(session.getWorkoutItems()));
+        sessionExercises.put(session.getId(), new ArrayList<>(session.getSessionItems()));
         
         // Update nextId if necessary
         if (session.getId() >= nextId) {
@@ -218,7 +218,7 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
         sessions.set(index, session);
         
         // Update workout items
-        sessionExercises.put(session.getId(), new ArrayList<>(session.getWorkoutItems()));
+        sessionExercises.put(session.getId(), new ArrayList<>(session.getSessionItems()));
         
         return true;
     }
@@ -244,7 +244,7 @@ public class WorkoutSessionStub implements IWorkoutSessionDB {
             existingSession.getId(),
             existingSession.getStartTime(),
             endTime,
-            existingSession.getWorkoutItems(),
+            existingSession.getSessionItems(),
             existingSession.getWorkoutProfile()
         );
         
