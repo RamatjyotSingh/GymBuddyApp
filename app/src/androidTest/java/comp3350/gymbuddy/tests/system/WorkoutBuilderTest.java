@@ -77,7 +77,7 @@ public class WorkoutBuilderTest {
         // Step 12: Click "Add" to confirm selection
         onView(withId(R.id.btnAddWorkoutItem)).perform(click());
 
-        Thread.sleep(1000);  // ✅ Wait 1 second to allow UI updates
+        Thread.sleep(3000);  // ✅ Wait 1 second to allow UI updates
         onView(withId(R.id.recyclerWorkoutItems))
                 .check(matches(hasDescendant(withText("Push-Up"))));
 
