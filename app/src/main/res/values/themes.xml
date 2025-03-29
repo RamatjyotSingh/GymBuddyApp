@@ -1,0 +1,44 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme using Material 3 -->
+    <style name="Base.Theme.GymBuddy" parent="Theme.Material3.DayNight">
+        <!-- Color scheme -->
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorPrimaryContainer">@color/blue_100</item>
+        <item name="colorOnPrimaryContainer">@color/blue_900</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryContainer">@color/teal_50</item>
+        <item name="colorOnSecondaryContainer">@color/teal_900</item>
+        <item name="colorTertiary">@color/purple_500</item>
+        <item name="colorTertiaryContainer">@color/purple_100</item>
+        <item name="colorOnTertiaryContainer">@color/purple_900</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurfaceVariant">@color/grey_100</item>
+        <item name="colorOnSurfaceVariant">@color/grey_700</item>
+        <item name="colorOutline">@color/grey_400</item>
+        
+        <!-- System bars -->
+    
+    </style>
+    
+    <!-- Main app theme with action bar -->
+    <style name="Theme.GymBuddy" parent="Base.Theme.GymBuddy">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+    </style>
+    
+    <!-- No action bar variant -->
+    <style name="Theme.GymBuddy.NoActionBar" parent="Base.Theme.GymBuddy">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    
+
+  
+    
+    <!-- Shape appearances -->
+    <style name="roundedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

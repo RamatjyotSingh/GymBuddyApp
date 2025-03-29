@@ -1,0 +1,177 @@
+flowchart TD
+    %% Style definitions for better visualization
+    classDef presentationLayer fill:#d4f1f9,stroke:#05386B,stroke-width:2px,rx:10,ry:10
+    classDef businessLayer fill:#f9f1c6,stroke:#05386B,stroke-width:2px,rx:10,ry:10
+    classDef dataLayer fill:#e8d8f7,stroke:#05386B,stroke-width:2px,rx:10,ry:10
+    classDef domainLayer fill:#c9e6d1,stroke:#05386B,stroke-width:2px,rx:10,ry:10
+    classDef userNode fill:#ffffff,stroke:#05386B,stroke-width:2px,rx:25,ry:25
+    classDef groupHeader text-align:center,font-size:20px,fill:none,stroke:none
+    
+    %% Entry point
+    User((User)):::userNode
+    
+    %% PRESENTATION LAYER with components
+    subgraph PresentationLayer["Presentation Layer"]
+        direction TB
+        
+        subgraph Activities["Activities"]
+            MainActivity["MainActivity<br>Home screen/Workout list"]
+            WorkoutBuilderActivity["WorkoutBuilderActivity<br>Create & edit workouts"]
+            WorkoutPlayerActivity["WorkoutPlayerActivity<br>Execute workout session"]
+            ExerciseDetailActivity["ExerciseDetailActivity<br>View exercise details"]
+            ExerciseListActivity["ExerciseListActivity<br>Browse & search exercises"]
+            WorkoutLogActivity["WorkoutLogActivity<br>View workout history"]
+            StartWorkoutListActivity["StartWorkoutListActivity<br>Preview before starting"]
+        end
+        
+        subgraph FragmentsGroup["Fragments"]
+            AddExerciseFragment["AddExerciseDialogFragment<br>Configure exercise parameters"]
+        end
+        
+        subgraph AdaptersGroup["Adapters"]
+            WorkoutProfileAdapter["WorkoutProfileAdapter"]
+            WorkoutItemAdapter["WorkoutItemAdapter"]
+            ExerciseAdapter["ExerciseAdapter"]
+            WorkoutLogAdapter["WorkoutLogAdapter"]
+        end
+        
+        subgraph UIUtilities["UI Utilities"]
+            ErrorHandler["ErrorHandler<br>Centralized error handling"]
+            ToastErrorDisplay["ToastErrorDisplay<br>Display error toasts"]
+            NavigationHelper["NavigationHelper<br>Screen navigation"]
+            AssetLoader["AssetLoader<br>Image loading"]
+            FileHandler["FileHandler<br>File operations"]
+            DSOBundler["DSOBundler<br>Bundle domain objects"]
+        end
+    end
+    
+    %% BUSINESS LOGIC LAYER with components
+    subgraph BusinessLayer["Business Logic Layer"]
+        direction TB
+        
+        subgraph ServiceGroup["Application Service"]
+            ApplicationService["ApplicationService<br>Central service locator (Singleton)"]
+        end
+        
+        subgraph ManagersGroup["Managers"]
+            ExerciseManager["ExerciseManager<br>Exercise operations"]
+            WorkoutManager["WorkoutManager<br>Workout profile operations"]
+            WorkoutSessionManager["WorkoutSessionManager<br>Session operations"]
+        end
+        
+        subgraph BusinessUtilsGroup["Business Utilities"]
+            InputValidator["InputValidator<br>Validate user inputs"]
+            StringFormatter["StringFormatter<br>Format data for display"]
+            ConfigLoader["ConfigLoader<br>Load configuration"]
+            WorkoutPlaybackController["WorkoutPlaybackController<br>Control workout execution"]
+        end
+        
+        subgraph ExceptionsGroup["Business Exceptions"]
+            BusinessException["BusinessException<br>Base exception"]
+            DataAccessException["DataAccessException<br>Database errors"]
+            InputValidationExceptions["InputValidationExceptions<br>Validation errors"]
+            ApplicationInitException["ApplicationInitException<br>Initialization errors"]
+        end
+    end
+    
+    %% DATA ACCESS LAYER with components
+    subgraph DataLayer["Data Access Layer"]
+        direction TB
+        
+        subgraph DBInterfaces["Database Interfaces"]
+            IDatabase["IDatabase<br>Base operations"]
+            IExerciseDB["IExerciseDB<br>Exercise operations"]
+            IWorkoutDB["IWorkoutDB<br>Workout operations"]
+            IWorkoutSessionDB["IWorkoutSessionDB<br>Session operations"]
+        end
+        
+        subgraph DBImplementations["Database Implementations"]
+            HSQLDatabase["HSQLDatabase<br>Database connection"]
+            ExerciseDAO["ExerciseDAO<br>Exercise implementation"]
+            WorkoutDAO["WorkoutDAO<br>Workout implementation"]
+            WorkoutSessionDAO["WorkoutSessionDAO<br>Session implementation"]
+            Stubs["Test Stubs<br>Mock implementations"]
+        end
+        
+        subgraph PersistenceGroup["Persistence Management"]
+            PersistenceManager["PersistenceManager<br>Database orchestration"]
+            DatabaseFactory["DatabaseFactory<br>Create DB implementations"]
+        end
+        
+        DBException["DBException<br>Database errors"]
+    end
+    
+    %% DOMAIN OBJECTS
+    subgraph DomainLayer["Domain Objects (Shared Across Layers)"]
+        direction LR
+        Exercise["Exercise<br>Physical exercise definition"]
+        Tag["Tag<br>Exercise category/label"]
+        WorkoutProfile["WorkoutProfile<br>Complete workout definition"]
+        WorkoutItem["WorkoutItem<br>Exercise with parameters"]
+        WorkoutSession["WorkoutSession<br>Completed workout record"]
+        SessionItem["SessionItem<br>Completed exercise"]
+    end
+    
+    %% KEY RELATIONSHIPS BETWEEN COMPONENTS
+    
+    %% User interactions
+    User -->|"interacts with"| Activities
+    
+    %% Presentation Layer internal relationships
+    Activities -->|"opens"| FragmentsGroup
+    Activities -->|"use"| AdaptersGroup
+    Activities -->|"use"| UIUtilities
+    ErrorHandler -->|"displays via"| ToastErrorDisplay
+    
+    %% Presentation to Business Layer
+    Activities -->|"getInstance()"| ApplicationService
+    
+    %% Business Service to Managers
+    ApplicationService -->|"provides"| ManagersGroup
+    
+    %% Managers to Utilities
+    ManagersGroup -->|"use"| BusinessUtilsGroup
+    ManagersGroup -->|"throw"| ExceptionsGroup
+    
+    %% Business to Data Layer
+    ManagersGroup -->|"use interfaces"| DBInterfaces
+    
+    %% Data Layer internal relationships
+    PersistenceManager -->|"manages"| DatabaseFactory
+    DatabaseFactory -->|"creates"| DBImplementations
+    DBImplementations -->|"implement"| DBInterfaces
+    DBImplementations -->|"throw"| DBException
+    
+    %% Exception flow
+    DBException -->|"wrapped by"| DataAccessException
+    
+    %% Domain Objects relationships
+    WorkoutProfile -->|"contains"| WorkoutItem
+    WorkoutItem -->|"references"| Exercise
+    Exercise -->|"has"| Tag
+    WorkoutSession -->|"references"| WorkoutProfile
+    WorkoutSession -->|"contains"| SessionItem
+    SessionItem -->|"references"| Exercise
+    
+    %% Cross-layer Domain Objects usage
+    PresentationLayer -.->|"uses"| DomainLayer
+    BusinessLayer -.->|"operates on"| DomainLayer
+    DataLayer -.->|"persists"| DomainLayer
+    
+    %% Error handling flow
+    UIUtilities -.->|"handles"| ExceptionsGroup
+    
+    %% Example specific flows
+    ExerciseDetailActivity -->|"getExerciseByID()"| ExerciseManager
+    ExerciseManager -->|"getExerciseByID()"| IExerciseDB
+    WorkoutBuilderActivity -->|"saveWorkout()"| WorkoutManager
+    WorkoutManager -->|"saveWorkout()"| IWorkoutDB
+    WorkoutPlayerActivity -->|"creates"| WorkoutPlaybackController
+    WorkoutPlaybackController -->|"saveSession()"| WorkoutSessionManager
+    WorkoutSessionManager -->|"insertSession()"| IWorkoutSessionDB
+    
+    %% Apply styles to subgraphs
+    class PresentationLayer presentationLayer
+    class BusinessLayer businessLayer
+    class DataLayer dataLayer
+    class DomainLayer domainLayer

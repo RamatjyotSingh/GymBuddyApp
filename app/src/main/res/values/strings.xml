@@ -1,0 +1,97 @@
+<resources>
+
+
+    <!-- App Name -->
+    <string name="app_name">GymBuddy</string>
+
+    <!-- Navigation Drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Workout Management -->
+    <string name="new_workout">New Workout</string>
+    <string name="add_workout_item">Add Workout Item</string>
+    <string name="workout_icon">Workout Icon</string>
+    <string name="default_workout_icon_path">drawable/ic_default_workout.xml</string>
+    <string name="workout_name">Workout Name</string>
+    <string name="five_exercises">5 Exercises</string>
+
+    <!-- Exercise Management -->
+    <string name="select_exercise">Select Exercise</string>
+    <string name="add_exercise">Add Exercise</string>
+    <string name="exercise_name">Exercise Name</string>
+    <string name="more">+ More</string>
+
+    <!-- StartWorkoutListActivity strings -->
+    <string name="start_workout">Start Workout</string>
+    <string name="no_exercises">No exercises</string>
+    <string name="no_exercises_in_workout">No exercises in this workout</string>
+    <string name="exercise_count_format">%1$d exercises</string>
+
+    <!-- WorkoutPlayerActivity strings -->
+    <string name="setNumberPlaceholder">#</string>
+    <string name="delete_set_button_content_description">Delete Set</string>
+    <string name="weight_lbs">Weight (lbs)</string>
+    <string name="time_sec">Time (sec)</string>
+    <string name="reps">Reps</string>
+    <string name="current_exercise">Current Exercise</string>
+    <string name="sets">Sets</string>
+    <string name="weight">Weight</string>
+    <string name="previous">Previous</string>
+    <string name="add_set_entry_button_content_description">Add Set Entry Button</string>
+    <string name="next">Next</string>
+    <string name="exercise_image_content_description">Image of the current exercise</string>
+    <string name="time">Time</string>
+
+
+    <!--    default string -->
+    <string name="default_string">Default String</string>
+    <!--    exercise list search hint -->
+    <string name="exercise_list_search_hint">Search…</string>
+
+    <!-- Missing strings from error report -->
+    <string name="save">Save</string>
+    <string name="workout_log_search_hint">Search workout logs…</string>
+    <string name="no_selection">No Selection</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="view_more">View More</string>
+    <string name="home">Home</string>
+    <string name="build_workout">Build Workout</string>
+    <string name="workout_log">Workout Log</string>
+    <string name="instruction_num_color">#1E40AF</string>
+    <string name="exerciseid">exerciseID</string>
+    <string name="error_loading_workout_profiles">"Error loading workout profiles: "</string>
+    <string name="db_dir">db</string>
+    <string name="internal_error">Internal Error. please contact support</string>
+    <string name="tag_mainactivity">MainActivity</string>
+    <string name="db_script">gymbuddydb.script</string>
+    <string name="error_loading_db">Failed to load workout data, please try again later or contact support</string>
+    <string name="delete_workout">Delete workout</string>
+    <string name="exercise_removed">Exercise Deleted</string>
+    <string name="workout_deleted">Workout deleted successfully</string>
+    <string name="failed_to_delete_workout">Failed to delete workout</string>
+    <string name="error_deleting_workout">Error deleting workout: </string>
+        <!--loading text -->
+    <string name="initializing_app">Initializing application…</string>
+    <string name="project_script_relative_path">db/Project.script</string>
+    <string name="dbconfig_relative_path">db/DBConfig.properties</string>
+    <string name="project_script">Project.script</string>
+    <string name="dbconfig_properties">DBConfig.properties</string>
+    <string name="script_path_key">scriptPath</string>
+    <string name="config_path_key">configPath</string>
+    <string name="error_loading_exercise">Unable to load exercises please try again later.\ncontact support if the issue persists</string>
+    <string name="error_loading_profile">Unable to retrieve workout profile, please try again later.</string>
+    <string name="error_loading_items">Unable to retrieve workout items, please try again later.</string>
+    <string name="intent_workout_profile_id">workoutProfileId</string>
+    <string name="frag_listner_workout_item">workout_item</string>
+    <string name="error_saving_workout">Failed to save workout profile</string>
+    <string name="intent_exerciseid">exerciseID</string>
+    <string name="error_loading_workout_log">Unexpected error occurred. Unable to load workout log.\nPlease try again or contact support.</string>
+    <string name="intent_workout_session_id">workoutSessionId</string>
+
+</resources>
