@@ -1,0 +1,28 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base dark theme -->
+    <style name="Base.Theme.GymBuddy" parent="Theme.Material3.DayNight">
+        <!-- Color scheme -->
+        <item name="colorPrimary">@color/blue_200</item>
+        <item name="colorPrimaryContainer">@color/blue_800</item>
+        <item name="colorOnPrimaryContainer">@color/blue_100</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryContainer">@color/teal_700</item>
+        <item name="colorOnSecondaryContainer">@color/teal_100</item>
+        <item name="colorTertiary">@color/purple_200</item>
+        <item name="colorTertiaryContainer">@color/purple_700</item>
+        <item name="colorOnTertiaryContainer">@color/purple_100</item>
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorOnSurface">@color/dark_on_surface</item>
+        <item name="colorSurfaceVariant">@color/dark_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/dark_on_surface_variant</item>
+        <item name="colorOutline">@color/grey_700</item>
+        <item name="android:colorBackground">@color/dark_background</item>
+        
+      
+  
+    </style>
+    
+    
+    
+  
+</resources>
