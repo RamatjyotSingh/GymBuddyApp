@@ -46,16 +46,15 @@
     </LinearLayout>
 
     <!-- Exercise Cover Image -->
-    <ImageView
-        android:id="@+id/ivExerciseImage"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@id/exerciseNameLayout"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/exercise_image_content_description"
-        android:src="@drawable/ic_launcher_background" />
-
+   <ImageView
+    android:id="@+id/ivExerciseImage"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_below="@id/exerciseNameLayout"
+    android:layout_marginTop="16dp"
+    android:scaleType="centerCrop"
+    android:contentDescription="@string/exercise_image_content_description"
+    android:src="@drawable/ic_launcher_background" />
     <!-- Exercise Information -->
     <LinearLayout
         android:id="@+id/exerciseInfoLayout"
@@ -173,7 +172,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/exerciseInfoLayout"
-        android:layout_above="@+id/fabAddSet"
         android:nestedScrollingEnabled="false" />
 
     <!-- Add Set Entry Button -->
