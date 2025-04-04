@@ -1,6 +1,7 @@
 package comp3350.gymbuddy.presentation.activity;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import comp3350.gymbuddy.logic.ApplicationService;
 import comp3350.gymbuddy.objects.WorkoutItem;
 import comp3350.gymbuddy.objects.WorkoutProfile;
 import comp3350.gymbuddy.objects.WorkoutSession;
+import comp3350.gymbuddy.presentation.util.AssetLoader;
 import comp3350.gymbuddy.presentation.util.ErrorHandler;
 import comp3350.gymbuddy.presentation.util.ToastErrorDisplay;
 
@@ -93,6 +95,7 @@ public class WorkoutPlayerActivity extends Activity {
      * @param workoutSession the new workout session
      */
     private void onFinishedWorkout(WorkoutSession workoutSession) {
+
         // Go back to the main screen.
         finish();
     }
@@ -103,27 +106,35 @@ public class WorkoutPlayerActivity extends Activity {
      * @param workoutItem the workout item to display.
      */
     private void updateWorkoutItemInfo(WorkoutItem workoutItem) {
-        // Set the exercise name.
-        binding.tvExerciseName.setText(workoutItem.getExercise().getName());
+    // Set the exercise name.
+    binding.tvExerciseName.setText(workoutItem.getExercise().getName());
 
-        String sets = Integer.toString(workoutItem.getSets());
-        String time = null, reps = null, weight = null;
-
-        if (workoutItem.isTimeBased()) {
-            var formatter = new StringFormatter();
-            time = formatter.formatTime(workoutItem.getTime());
-        } else {
-            reps = Integer.toString(workoutItem.getReps());
-
-            if (workoutItem.hasWeight()) {
-                var formatter = new StringFormatter();
-                weight = formatter.formatWeight(workoutItem.getWeight());
-            }
-        }
-
-        setExerciseHeaders(sets, time, reps, weight);
+    // Load the exercise image from assets.
+    AssetLoader assetLoader = new AssetLoader();
+    Bitmap exerciseImage = assetLoader.loadImage(this, workoutItem.getExercise().getImagePath());
+    if (exerciseImage != null) {
+        binding.ivExerciseImage.setImageBitmap(exerciseImage);
+    } else {
+        binding.ivExerciseImage.setImageResource(R.drawable.ic_launcher_background); // Fallback image
     }
 
+    String sets = Integer.toString(workoutItem.getSets());
+    String time = null, reps = null, weight = null;
+
+    if (workoutItem.isTimeBased()) {
+        var formatter = new StringFormatter();
+        time = formatter.formatTime(workoutItem.getTime());
+    } else {
+        reps = Integer.toString(workoutItem.getReps());
+
+        if (workoutItem.hasWeight()) {
+            var formatter = new StringFormatter();
+            weight = formatter.formatWeight(workoutItem.getWeight());
+        }
+    }
+
+    setExerciseHeaders(sets, time, reps, weight);
+}
 
     /**
      * Sets the text labels for each of the exercise headers.
